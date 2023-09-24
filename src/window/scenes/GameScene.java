@@ -1,3 +1,11 @@
+package window.scenes;
+
+import entity.player.Player;
+import util.io.KL;
+import window.Window;
+import window.WindowConstants;
+
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
@@ -18,7 +26,7 @@ public class GameScene extends Scene{
         _player.update(deltaTime);
 
         if(KL.getKeyListener().isKeyDown(KeyEvent.VK_ESCAPE)){
-            Window.getWindow().changeState(Constants.MENU_SCENE);
+            Window.getWindow().changeState(WindowConstants.MENU_SCENE);
         }
 
     }
@@ -26,9 +34,9 @@ public class GameScene extends Scene{
     @Override
     public void draw(Graphics g) {
         g.setColor(Color.BLUE);
-        g.fillRect(0,0,Constants.SCREEN_WIDTH,Constants.SCREEN_HEIGHT);
+        g.fillRect(0,0, WindowConstants.SCREEN_WIDTH, WindowConstants.SCREEN_HEIGHT);
         g.setColor(Color.GREEN);
-        g.drawString(_displayInfo,10, (int) (Constants.INSET_SIZE*1.5));
+        g.drawString(_displayInfo,10, (int) (WindowConstants.INSET_SIZE*1.5));
 
 
         _player.draw(g);

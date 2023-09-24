@@ -1,25 +1,34 @@
+package entity.player;
+
+import util.io.KL;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 
 public class Player {
-    //private Point _position = new Point(10,20);
+    /**
+     * <p>
+     * Saves the position as a Point2D.Double object
+     *</p>
+     */
+    private Point2D.Double position = null;
 
-    private Point2D.Double _position = null;
 
-    private Color _characterColor = Color.GREEN;
+    /**<p>
+     * Saves a pointer to the singleton instance of the KeyListener class
+     *</p>
+     */
     private KL keyListener = KL.getKeyListener();
 
     public Player(){
-        _position = new Point2D.Double(10.0,20.0);
-
+        position = new Point2D.Double(10.0,20.0);
     }
 
 
     public void draw(Graphics g){
 
-        g.setColor(_characterColor);
-        g.fillRect((int) _position.x, (int) _position.y,Constants.PLAYER_WIDTH, Constants.PLAYER_HEIGHT);
+        g.setColor(PlayerConstants.characterColor);
+        g.fillRect((int) position.x, (int) position.y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
 
     }
 
@@ -32,11 +41,16 @@ public class Player {
 
 
 
-
+    /**
+     * <p>
+     * Uses the GetMovementVector() function to get information on how to move the player
+     * <br>
+     * Then normalizes that vector and moves the character by the unit vector multiplied by delta time and the player speed
+     *</p>
+     * @param deltaTime gets time since last frame to keep speed constant
+     */
     private void HandleMovement(double deltaTime){
         Point2D.Double movementVector = GetMovementVector();
-
-        System.out.println(movementVector.toString());
 
 
         if(movementVector.x == 1.0 && movementVector.y == 1.0){
@@ -47,11 +61,17 @@ public class Player {
         }
 
 
-        _position.x += movementVector.x * Constants.PLAYER_SPEED * deltaTime;
-        _position.y += movementVector.y * Constants.PLAYER_SPEED * deltaTime;
+        position.x += movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
+        position.y += movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
 
     }
 
+    /**
+     * <p>
+     * Uses the KeyListener to get the information of how to move the player
+     *</p>
+     * @return Point2D.Double returns the movement keys pressed as a vector to move the player by
+     */
     private Point2D.Double GetMovementVector(){
 
         Point2D.Double movementVector = new Point2D.Double();

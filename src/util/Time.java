@@ -1,3 +1,5 @@
+package util;
+
 public class Time {
 
 
@@ -8,7 +10,7 @@ public class Time {
       * <p>
       * Used to determine the time since the program started running
       *</p>
-      * @return      Time in seconds
+      * @return      util.Time in seconds
       */
      public static double getTime(){return (System.nanoTime() - timeStarted) * 1E-9;}
 }
