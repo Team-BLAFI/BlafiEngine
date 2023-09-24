@@ -1,3 +1,5 @@
+package util;
+
 public class Rect {
 
     int x,y,w,h;
