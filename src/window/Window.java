@@ -2,6 +2,7 @@ package window;
 
 import util.Time;
 import util.io.KL;
+import util.io.ML;
 import window.*;
 import window.scenes.EditorScene;
 import window.scenes.GameScene;
@@ -40,6 +41,8 @@ public class Window extends JFrame implements Runnable {
         changeState(WindowConstants.MENU_SCENE);
         WindowConstants.INSET_SIZE = getInsets().top;
         addKeyListener(KL.getKeyListener());
+        addMouseListener(ML.getMouseListener());
+        addMouseMotionListener(ML.getMouseListener());
 
     }
 
