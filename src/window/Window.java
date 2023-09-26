@@ -2,7 +2,7 @@ package window;
 
 import util.Time;
 import util.io.KL;
-import window.*;
+import util.io.ML;
 import window.scenes.EditorScene;
 import window.scenes.GameScene;
 import window.scenes.MenuScene;
@@ -22,8 +22,6 @@ public class Window extends JFrame implements Runnable {
 
     private boolean isRunning;
 
-    private int currentState;
-
     private Scene currentScene;
 
     private double windowsChangeCoolDown = 0.f;
@@ -40,6 +38,8 @@ public class Window extends JFrame implements Runnable {
         changeState(WindowConstants.MENU_SCENE);
         WindowConstants.INSET_SIZE = getInsets().top;
         addKeyListener(KL.getKeyListener());
+        addMouseListener(ML.getMouseListener());
+        addMouseMotionListener(ML.getMouseListener());
 
     }
 
@@ -69,8 +69,7 @@ public class Window extends JFrame implements Runnable {
      public void changeState(int newState){
         if(windowsChangeCoolDown <=0.f){
             windowsChangeCoolDown = 1.0;
-            currentState = newState;
-            switch (currentState){
+            switch (newState){
                 case 0:
                     currentScene = new MenuScene();
                     break;

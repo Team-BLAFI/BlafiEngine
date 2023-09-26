@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 
 public class GameScene extends Scene{
 
+
     private int _frameRate = 0;
     private String _displayInfo = "";
     private Player _player = new Player();

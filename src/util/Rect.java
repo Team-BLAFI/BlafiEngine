@@ -2,7 +2,7 @@ package util;
 
 public class Rect {
 
-    int x,y,w,h;
+    public int x,y,w,h;
 
 
     public Rect(int x, int y, int w, int h) {
@@ -11,4 +11,11 @@ public class Rect {
         this.w = w;
         this.h = h;
     }
+
+    public void moveBy(int dx, int dy)
+    {
+        x += dx;
+        y += dy;
+    }
+
 }

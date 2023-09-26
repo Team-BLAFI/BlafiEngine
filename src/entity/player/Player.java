@@ -1,6 +1,9 @@
 package entity.player;
 
+import util.Rect;
 import util.io.KL;
+import util.io.ML;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
