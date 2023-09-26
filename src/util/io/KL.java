@@ -28,7 +28,9 @@ public class KL extends KeyAdapter implements KeyListener
     }
 
     /**
-    sets the entry of the keyEvent in the dictionary to true when the key is released
+     * <p>
+     *sets the entry of the keyEvent in the dictionary to true when the key is pressed
+     *</p>
     */
     @Override
     public void keyPressed(KeyEvent e){
@@ -38,7 +40,9 @@ public class KL extends KeyAdapter implements KeyListener
     }
 
     /**
-    sets the entry of the keyEvent in the dictionary to false when the key is released
+     * <p>
+     * sets the entry of the keyEvent in the dictionary to false when the key is released
+     * </p>
     */
     @Override
     public void keyReleased(KeyEvent e) {
