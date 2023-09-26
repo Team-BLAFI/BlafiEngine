@@ -3,7 +3,6 @@ package window;
 import util.Time;
 import util.io.KL;
 import util.io.ML;
-import window.*;
 import window.scenes.EditorScene;
 import window.scenes.GameScene;
 import window.scenes.MenuScene;
@@ -22,8 +21,6 @@ public class Window extends JFrame implements Runnable {
     private static Window window = null;
 
     private boolean isRunning;
-
-    private int currentState;
 
     private Scene currentScene;
 
@@ -72,8 +69,7 @@ public class Window extends JFrame implements Runnable {
      public void changeState(int newState){
         if(windowsChangeCoolDown <=0.f){
             windowsChangeCoolDown = 1.0;
-            currentState = newState;
-            switch (currentState){
+            switch (newState){
                 case 0:
                     currentScene = new MenuScene();
                     break;

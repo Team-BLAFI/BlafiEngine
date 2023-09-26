@@ -11,4 +11,11 @@ public class Rect {
         this.w = w;
         this.h = h;
     }
+
+    public void moveBy(int dx, int dy)
+    {
+        x += dx;
+        y += dy;
+    }
+
 }
