@@ -155,4 +155,8 @@ public class Window extends JFrame implements Runnable {
 
         this.dispose();
     }
+
+    public void CloseWindow() {
+        isRunning = false;
+    }
 }
