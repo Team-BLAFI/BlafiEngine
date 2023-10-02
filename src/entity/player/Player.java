@@ -7,8 +7,11 @@ import util.io.ML;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
 public class Player {
+
+    private ArrayList<Component> components = new ArrayList<>();
     /**
      * <p>
      * Saves the position as a Point2D.Double object
