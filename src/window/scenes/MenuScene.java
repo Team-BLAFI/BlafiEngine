@@ -29,7 +29,10 @@ public class MenuScene extends Scene{
     private Rect quitButtonSpritePos = new Rect(0,16,32,16);
     private Rect quitButtonHoverSpritePos = new Rect(32,16,32,16);
 
-    private BufferedImage title, play, playHover, playCurrent, quit, quitHover, quitCurrent;
+
+    private Rect backgroundSpritePos = new Rect(0,32,64,32);
+
+    private BufferedImage background, play, playHover, playCurrent, quit, quitHover, quitCurrent;
 
     private double ScreenWidthMidPoint = (WindowConstants.SCREEN_WIDTH/2);
     private double ScreenHeightMidPoint = (WindowConstants.SCREEN_HEIGHT/2);
@@ -38,15 +41,15 @@ public class MenuScene extends Scene{
     private double windowHeight20per = WindowConstants.SCREEN_HEIGHT*(1.0/5);
 
 
-    private Color ButtonUnselected = Color.WHITE;
+
 
     private Rect playButtonHitBox;
     private Color playHitboxColor = Color.GREEN;
-    private Color playCurrentColor = Color.WHITE;
+
 
     private Rect quitButtonHitBox;
     private Color quitHitboxColor = Color.RED;
-    private Color quitCurrentColor = Color.WHITE;
+
 
     public MenuScene(){
         try{
@@ -58,6 +61,9 @@ public class MenuScene extends Scene{
             quit = spritesheet.getSubimage(quitButtonSpritePos.x, quitButtonSpritePos.y, quitButtonSpritePos.w, quitButtonSpritePos.h);
             quitHover = spritesheet.getSubimage(quitButtonHoverSpritePos.x, quitButtonHoverSpritePos.y, quitButtonHoverSpritePos.w, quitButtonHoverSpritePos.h);
             quitCurrent = quit;
+
+            background = spritesheet.getSubimage(backgroundSpritePos.x, backgroundSpritePos.y, backgroundSpritePos.w, backgroundSpritePos.h);
+
 
         }catch(Exception e){
             e.printStackTrace();
@@ -86,10 +92,8 @@ public class MenuScene extends Scene{
         boolean isMouseInsideQuit = mouseListener.isMouseInsideRect(quitButtonHitBox.x,quitButtonHitBox.y,quitButtonHitBox.w,quitButtonHitBox.h);
 
         playCurrent = isMouseInsidePlay ? playHover : play;
-        playCurrentColor = isMouseInsidePlay ? playHitboxColor : ButtonUnselected;
 
         quitCurrent = isMouseInsideQuit ? quitHover : quit;
-        quitCurrentColor = isMouseInsideQuit ? quitHitboxColor : ButtonUnselected;
 
         if (isMouseInsidePlay && mouseListener.isPressed(MouseEvent.BUTTON1)){
             Window.getWindow().changeState(WindowConstants.GAME_SCENE);
@@ -106,12 +110,11 @@ public class MenuScene extends Scene{
         g.setColor(Color.BLACK);
         g.fillRect(0,0, WindowConstants.SCREEN_WIDTH, WindowConstants.SCREEN_HEIGHT );
 
+        g.drawImage(background, 0,0,WindowConstants.SCREEN_WIDTH,WindowConstants.SCREEN_HEIGHT,null);
+
         g.drawImage(playCurrent, playButtonHitBox.x,playButtonHitBox.y,playButtonHitBox.w,playButtonHitBox.h,null);
-        g.setColor(playCurrentColor);
-        g.drawRect(playButtonHitBox.x,playButtonHitBox.y,playButtonHitBox.w,playButtonHitBox.h);
 
         g.drawImage(quitCurrent, quitButtonHitBox.x,quitButtonHitBox.y,quitButtonHitBox.w,quitButtonHitBox.h,null);
-        g.setColor(quitCurrentColor);
-        g.drawRect(quitButtonHitBox.x,quitButtonHitBox.y,quitButtonHitBox.w,quitButtonHitBox.h);
+
     }
 }
