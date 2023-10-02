@@ -6,14 +6,14 @@ import java.awt.*;
 
 public class Hitbox extends Component{
 
-    public Rect HitboxBounds;
+    public Rect hitboxBounds;
 
     public Hitbox(Rect rect){
-        this.HitboxBounds = rect;
+        this.hitboxBounds = rect;
     }
 
     public Hitbox(int x, int y, int w, int h){
-        this.HitboxBounds = new Rect(x,y,w,h);
+        this.hitboxBounds = new Rect(x,y,w,h);
     }
 
 
@@ -32,4 +32,13 @@ public class Hitbox extends Component{
     public void init() {
 
     }
+
+    public boolean overlaps(Rect hurtbox)
+    {
+        return (hitboxBounds.x     <= hurtbox.x + hurtbox.w) &&
+                (hitboxBounds.x + hitboxBounds.w >= hurtbox.x) &&
+                (hitboxBounds.y     <= hurtbox.y + hurtbox.h) &&
+                (hitboxBounds.y + hitboxBounds.h >= hurtbox.y);
+    }
+
 }
