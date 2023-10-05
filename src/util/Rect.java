@@ -18,4 +18,9 @@ public class Rect {
         y += dy;
     }
 
+    public void setPos(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+
 }

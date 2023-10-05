@@ -6,14 +6,14 @@ import java.awt.*;
 
 public class Hurtbox extends Component {
 
-    public Rect hurtboxBounds;
+    public Rect Bounds;
 
     public Hurtbox(Rect rect){
-        this.hurtboxBounds = rect;
+        this.Bounds = rect;
     }
 
     public Hurtbox(int x, int y, int w, int h){
-        this.hurtboxBounds = new Rect(x,y,w,h);
+        this.Bounds = new Rect(x,y,w,h);
     }
 
     @Override
@@ -26,17 +26,24 @@ public class Hurtbox extends Component {
 
     }
 
-    @Override
     public void init() {
 
     }
 
-    public boolean overlaps(Rect hitbox)
+    public boolean overlaps(Hitbox h)
     {
-        return (hurtboxBounds.x     <= hitbox.x + hitbox.w) &&
-                (hurtboxBounds.x + hurtboxBounds.w >= hitbox.x) &&
-                (hurtboxBounds.y     <= hitbox.y + hitbox.h) &&
-                (hurtboxBounds.y + hurtboxBounds.h >= hitbox.y);
+        Boolean isC1ToTheLeftOfC2 = (h.Bounds.x + h.Bounds.w < this.Bounds.x),
+                isC2ToTheLeftOfC1 = (this.Bounds.x + this.Bounds.w < h.Bounds.x),
+                isC1AboveC2       = (h.Bounds.y + h.Bounds.h < this.Bounds.y),
+                isC2AboveC1       = (this.Bounds.y + this.Bounds.h < h.Bounds.y);
+
+        if (isC1ToTheLeftOfC2 || isC2ToTheLeftOfC1 ){
+            return false;
+        }
+        if (isC1AboveC2 || isC2AboveC1 ){
+            return false;
+        }
+        return true;
     }
 
 }
