@@ -10,16 +10,20 @@ import java.util.Map;
 
 public class Animator extends Component{
 
-
     private Map<String, Animation> Animations = new HashMap<>();
     private Animation currentAnimation = null;
-    private BufferedImage currentFrame = null;
+    private Image currentFrame = null;
     private int currentFrameIndex = 0;
+    private double defaultFrameTime = 0.15;
     private double frameTime = 0.15;
     private double lastFrame = 0;
 
 
     public Animator(){
+    }
+    public Animator(double defaultFrameTime){
+        this.defaultFrameTime    = defaultFrameTime;
+        this.frameTime           = defaultFrameTime;
     }
 
     public void createAnimation(String AnimationName, String path, Rect[] rects){
@@ -42,16 +46,21 @@ public class Animator extends Component{
         Animations.get(AnimationName).yOffset = yOffset;
     }
 
-    public void createAnimation(String AnimationName, String path, Rect[] rects, int xOffset, int yOffset, double scaleFactor){
+    public void createAnimation(String animation_ID, String path, Rect[] rects, int xOffset, int yOffset, double scaleFactor){
 
-        Animations.put(AnimationName, new Animation(path, rects));
+        Animations.put(animation_ID, new Animation(path, rects, xOffset, yOffset, scaleFactor));
         if (currentAnimation == null){
-            currentAnimation = Animations.get(AnimationName);
+            currentAnimation = Animations.get(animation_ID);
             currentFrame = currentAnimation.getFrame(currentFrameIndex);
         }
-        Animations.get(AnimationName).xOffset = xOffset;
-        Animations.get(AnimationName).yOffset = yOffset;
-        Animations.get(AnimationName).scaleFactor = scaleFactor;
+    }
+
+    public void addAnimation(Animation animation, String animation_ID){
+        Animations.put(animation_ID,animation);
+        if (currentAnimation == null){
+            currentAnimation = Animations.get(animation_ID);
+            currentFrame = currentAnimation.getFrame(currentFrameIndex);
+        }
     }
 
     public void changeAnimationTo(String AnimationName){
@@ -62,9 +71,27 @@ public class Animator extends Component{
     }
 
     public void changeAnimationNotReset(String AnimationName){
+        this.frameTime = defaultFrameTime;
         if(Animations.containsKey(AnimationName)){
             currentAnimation = Animations.get(AnimationName);
         }
+    }
+
+    public void changeAnimationTo(String AnimationName, double frameTime){
+
+        this.setFrameTime(frameTime);
+        if(Animations.containsKey(AnimationName)){
+            currentAnimation = Animations.get(AnimationName);
+            currentFrameIndex = 0;
+        }
+
+    }
+
+    public void changeAnimationNotReset(String AnimationName, double frameTime){
+        if(Animations.containsKey(AnimationName)){
+            currentAnimation = Animations.get(AnimationName);
+        }
+        this.setFrameTime(frameTime);
     }
 
     public double getFrameTime() {
@@ -75,7 +102,7 @@ public class Animator extends Component{
         this.frameTime = frameTime;
     }
 
-    public BufferedImage getCurrentFrame() {
+    public Image getCurrentFrame() {
         return currentFrame;
     }
 
@@ -83,18 +110,18 @@ public class Animator extends Component{
         return (!Animations.isEmpty());
     }
 
-    public void setCurrentAnimationOffset(int xOffset, int yOffset) {
+    public void setCurrentAnimationOffset(int xOffset, int yOffset){
         currentAnimation.xOffset = xOffset;
         currentAnimation.yOffset = yOffset;
     }
 
-    public void RenderCurrentSprite(Graphics g, int x, int y){
+    public void RenderCurrentSprite(Graphics g,int x, int y){
         g.drawImage(
                 currentFrame,
                 (int) (x + currentAnimation.xOffset),
                 (int) (y + currentAnimation.yOffset),
-                (int) (currentFrame.getWidth() * currentAnimation.scaleFactor),
-                (int) (currentFrame.getHeight() * currentAnimation.scaleFactor),
+                (int) (currentFrame.getWidth(null) * currentAnimation.scaleFactor),
+                (int) (currentFrame.getHeight(null) * currentAnimation.scaleFactor),
                 null
         );
     }
@@ -102,10 +129,10 @@ public class Animator extends Component{
     public void RenderCurrentSpriteFlipVer(Graphics g,int x, int y){
         g.drawImage(
                 (Image) currentFrame,
-                (int) (x + currentAnimation.xOffset + currentFrame.getWidth() * currentAnimation.scaleFactor),
+                (int) (x + currentAnimation.xOffset + currentFrame.getWidth(null) * currentAnimation.scaleFactor),
                 (int) (y + currentAnimation.yOffset),
-                (int) (-currentFrame.getWidth() * currentAnimation.scaleFactor),
-                (int) (currentFrame.getHeight() * currentAnimation.scaleFactor),
+                (int) (-currentFrame.getWidth(null) * currentAnimation.scaleFactor),
+                (int) (currentFrame.getHeight(null) * currentAnimation.scaleFactor),
                 null
         );
     }
@@ -115,9 +142,9 @@ public class Animator extends Component{
         g.drawImage(
                 (Image) currentFrame,
                 (int) (x + currentAnimation.xOffset),
-                (int) (y + currentAnimation.yOffset + currentFrame.getHeight() * currentAnimation.scaleFactor),
-                (int) (currentFrame.getWidth() * currentAnimation.scaleFactor),
-                (int) (-currentFrame.getHeight() * currentAnimation.scaleFactor),
+                (int) (y + currentAnimation.yOffset + currentFrame.getHeight(null) * currentAnimation.scaleFactor),
+                (int) (currentFrame.getWidth(null) * currentAnimation.scaleFactor),
+                (int) (-currentFrame.getHeight(null) * currentAnimation.scaleFactor),
                 null
         );
     }
@@ -125,10 +152,10 @@ public class Animator extends Component{
     public void RenderCurrentSpriteFlipBoth(Graphics g,int x, int y){
         g.drawImage(
                 (Image) currentFrame,
-                (int) (x + currentAnimation.xOffset + currentFrame.getWidth() * currentAnimation.scaleFactor),
-                (int) (y + currentAnimation.yOffset + currentFrame.getHeight() * currentAnimation.scaleFactor),
-                (int) (-currentFrame.getWidth() * currentAnimation.scaleFactor),
-                (int) (-currentFrame.getHeight() * currentAnimation.scaleFactor),
+                (int) (x + currentAnimation.xOffset + currentFrame.getWidth(null) * currentAnimation.scaleFactor),
+                (int) (y + currentAnimation.yOffset + currentFrame.getHeight(null) * currentAnimation.scaleFactor),
+                (int) (-currentFrame.getWidth(null) * currentAnimation.scaleFactor),
+                (int) (-currentFrame.getHeight(null) * currentAnimation.scaleFactor),
                 null
         );
     }
@@ -157,4 +184,6 @@ public class Animator extends Component{
     public void draw(Graphics g) {
 
     }
+    
+
 }
