@@ -1,14 +1,17 @@
 package entity.player;
 
-import util.Rect;
+import component.Collider;
 import util.io.KL;
-import util.io.ML;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
 public class Player {
+
+    public Collider h;
+    private ArrayList<Component> components = new ArrayList<>();
     /**
      * <p>
      * Saves the position as a Point2D.Double object
@@ -25,6 +28,7 @@ public class Player {
 
     public Player(){
         position = new Point2D.Double(10.0,20.0);
+        h = new Collider((int) position.x, (int) position.y,PlayerConstants.PLAYER_WIDTH,PlayerConstants.PLAYER_HEIGHT);
     }
 
 
@@ -32,6 +36,8 @@ public class Player {
 
         g.setColor(PlayerConstants.characterColor);
         g.fillRect((int) position.x, (int) position.y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
+        g.setColor(Color.RED);
+        g.drawRect(h.Bounds.x,h.Bounds.y,h.Bounds.w,h.Bounds.h);
 
     }
 
@@ -39,6 +45,7 @@ public class Player {
     public void update(double deltaTime){
 
         HandleMovement(deltaTime);
+        h.Bounds.setPos((int) position.x, (int) position.y);
 
     }
 
