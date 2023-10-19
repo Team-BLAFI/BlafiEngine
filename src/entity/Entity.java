@@ -6,7 +6,7 @@ import java.awt.*;
 
 public abstract class Entity {
 
-    protected Transform transform;
+    public Transform transform;
 
     public abstract void update(double dt);
 
