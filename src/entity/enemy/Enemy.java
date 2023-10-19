@@ -1,5 +1,6 @@
 package entity.enemy;
 
+import component.Collider;
 import entity.Entity;
 import entity.player.Player;
 import util.Transform;
@@ -20,8 +21,27 @@ public class Enemy extends Entity {
 
     @Override
     public void update(double dt) {
-        Vector2D movementVector = transform.position.getVectorTo(playerTransform.position);
+        Collider p = new Collider(
+                (int) playerTransform.position.x,
+                (int) playerTransform.position.y,
+                (int) playerTransform.size.x,
+                (int) playerTransform.size.y
+        );
+        Collider e = new Collider(
+                (int) transform.position.x,
+                (int) transform.position.y,
+                (int) transform.size.x,
+                (int) transform.size.y
+        );
 
+        if (p.overlaps(e)){
+            Vector2D movementVector = transform.position.getVectorTo(playerTransform.position);
+            movementVector.multiply(EnemyConstants.ENEMY_SPEED * dt);
+
+            playerTransform.position.add(movementVector);
+        }
+
+        Vector2D movementVector = transform.position.getVectorTo(playerTransform.position);
         movementVector.multiply(EnemyConstants.ENEMY_SPEED * dt);
         transform.position.add(movementVector);
     }
