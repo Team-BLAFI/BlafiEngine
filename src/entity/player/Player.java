@@ -1,6 +1,9 @@
 package entity.player;
 
 import component.Collider;
+import entity.Entity;
+import util.Transform;
+import util.Vector2D;
 import util.io.KL;
 
 import java.awt.*;
@@ -8,16 +11,11 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-public class Player {
+public class Player extends Entity {
 
     public Collider h;
     private ArrayList<Component> components = new ArrayList<>();
-    /**
-     * <p>
-     * Saves the position as a Point2D.Double object
-     *</p>
-     */
-    private Point2D.Double position = null;
+
 
 
     /**<p>
@@ -27,15 +25,20 @@ public class Player {
     private KL keyListener = KL.getKeyListener();
 
     public Player(){
-        position = new Point2D.Double(10.0,20.0);
-        h = new Collider((int) position.x, (int) position.y,PlayerConstants.PLAYER_WIDTH,PlayerConstants.PLAYER_HEIGHT);
+        transform = new Transform(10.0,20.0, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
+        h = new Collider(
+                (int) transform.position.x,
+                (int) transform.position.y,
+                PlayerConstants.PLAYER_WIDTH,
+                PlayerConstants.PLAYER_HEIGHT
+        );
     }
 
 
     public void draw(Graphics g){
 
         g.setColor(PlayerConstants.characterColor);
-        g.fillRect((int) position.x, (int) position.y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
+        g.fillRect((int) transform.position.x, (int) transform.position.y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
         g.setColor(Color.RED);
         g.drawRect(h.Bounds.x,h.Bounds.y,h.Bounds.w,h.Bounds.h);
 
@@ -45,7 +48,7 @@ public class Player {
     public void update(double deltaTime){
 
         HandleMovement(deltaTime);
-        h.Bounds.setPos((int) position.x, (int) position.y);
+        h.Bounds.setPos((int) transform.position.x, (int) transform.position.y);
 
     }
 
@@ -71,8 +74,8 @@ public class Player {
         }
 
 
-        position.x += movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
-        position.y += movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
+        transform.position.x += movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
+        transform.position.y += movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
 
     }
 
