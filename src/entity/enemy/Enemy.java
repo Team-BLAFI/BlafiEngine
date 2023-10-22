@@ -1,6 +1,7 @@
 package entity.enemy;
 
 import component.Collider;
+import component.Health;
 import entity.Entity;
 import entity.player.Player;
 import util.Transform;
@@ -15,6 +16,12 @@ public class Enemy extends Entity {
     private Transform playerTransform;
 
     public Enemy(Transform p){
+        health = new Health(
+                100.0,
+                (int) (unit * 0.4),
+                (int) - unit,
+                this
+        );
         playerTransform = p;
         this.transform = new Transform( 0, 0,EnemyConstants.ENEMY_WIDTH, EnemyConstants.ENEMY_HEIGHT);
     }
@@ -48,6 +55,7 @@ public class Enemy extends Entity {
 
     @Override
     public void draw(Graphics g) {
+        health.drawHealthBar(g, (int) transform.position.x, (int) transform.position.y);
         g.fillRect((int) transform.position.x, (int) transform.position.y, (int) transform.size.x, (int) transform.size.y);
     }
 }

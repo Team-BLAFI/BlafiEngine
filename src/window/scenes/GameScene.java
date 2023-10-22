@@ -21,7 +21,7 @@ public class GameScene extends Scene{
     private String displayInfo = "";
     private Player player = new Player();
 
-    public ArrayList<Enemy> enemies = new ArrayList<>();
+    public static ArrayList<Enemy> enemies = new ArrayList<>();
 
     public GameScene(){
         enemies.add(new Enemy(player.transform));
