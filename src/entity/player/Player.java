@@ -1,10 +1,13 @@
 package entity.player;
 
 import component.Collider;
+import component.Health;
 import entity.Entity;
 import util.Transform;
 import util.Vector2D;
 import util.io.KL;
+import window.WindowConstants;
+import window.scenes.GameScene;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -13,8 +16,8 @@ import java.util.ArrayList;
 
 public class Player extends Entity {
 
-    public Collider h;
     private ArrayList<Component> components = new ArrayList<>();
+    private double unit = WindowConstants.SCREEN_UNIT;
 
 
 
@@ -26,31 +29,22 @@ public class Player extends Entity {
 
     public Player(){
         transform = new Transform(10.0,20.0, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
-        h = new Collider(
+        collider = new Collider(
                 (int) transform.position.x,
                 (int) transform.position.y,
                 PlayerConstants.PLAYER_WIDTH,
                 PlayerConstants.PLAYER_HEIGHT
         );
+        health = new Health(
+                100.0,
+                (int) (unit * 0.4),
+                (int) - unit,
+                this
+        );
     }
 
 
-    public void draw(Graphics g){
 
-        g.setColor(PlayerConstants.characterColor);
-        g.fillRect((int) transform.position.x, (int) transform.position.y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
-        g.setColor(Color.RED);
-        g.drawRect(h.Bounds.x,h.Bounds.y,h.Bounds.w,h.Bounds.h);
-
-    }
-
-
-    public void update(double deltaTime){
-
-        HandleMovement(deltaTime);
-        h.Bounds.setPos((int) transform.position.x, (int) transform.position.y);
-
-    }
 
 
 
@@ -106,6 +100,27 @@ public class Player extends Entity {
     }
 
 
+    public void draw(Graphics g){
+
+        g.setColor(PlayerConstants.characterColor);
+        g.fillRect((int) transform.position.x, (int) transform.position.y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
+        g.setColor(Color.RED);
+        g.drawRect(collider.Bounds.x,collider.Bounds.y,collider.Bounds.w,collider.Bounds.h);
+
+
+        health.draw(g);
+
+    }
+
+
+    public void update(double deltaTime){
+//        System.out.println(this.transform.position.x + ", " + this.transform.position.y);
+
+
+        HandleMovement(deltaTime);
+        collider.Bounds.setPos((int) transform.position.x, (int) transform.position.y);
+
+    }
 
 
 

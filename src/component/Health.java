@@ -62,7 +62,11 @@ public class Health extends Component{
         barFill.w = (int) (bar.w * fillPercentage);
     }
 
-    public void drawHealthBar(Graphics g, int x, int y){
+    @Override
+    public void draw(Graphics g){
+        int x = (int) owner.transform.position.x;
+        int y = (int) owner.transform.position.y;
+
         g.setColor(new Color(0x1F1F1F));
         g.fillRect(
                 x + bar.x,
@@ -99,8 +103,4 @@ public class Health extends Component{
 
     }
 
-    @Override
-    public void draw(Graphics g) {
-
-    }
 }

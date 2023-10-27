@@ -19,18 +19,28 @@ public class GameScene extends Scene{
 
     private int frameRate = 0;
     private String displayInfo = "";
-    private Player player = new Player();
+    public Player player;
+    private static GameScene gameScene = null;
 
     public static ArrayList<Enemy> enemies = new ArrayList<>();
 
     public GameScene(){
-        enemies.add(new Enemy(player.transform));
+        player = new Player();
+
     }
 
-
+public static GameScene getGameScene(){
+        if(GameScene.gameScene == null){
+            GameScene.gameScene = new GameScene();
+        }
+        return GameScene.gameScene;
+}
 
     @Override
     public void update(double deltaTime) {
+        if (enemies.isEmpty()){
+            enemies.add(new Enemy(player));
+        }
         frameRate = (int) (1/deltaTime);
         displayInfo = String.format("%d FPS (%.3f)", frameRate,deltaTime);
 
@@ -62,4 +72,5 @@ public class GameScene extends Scene{
 
 
     }
+
 }
