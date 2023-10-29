@@ -100,7 +100,6 @@ public class Window extends JFrame implements Runnable {
         currentScene.update(deltaTime);
 
 
-
         Image dbImage = createImage(getWidth(),getHeight());
         Graphics dbg = dbImage.getGraphics();
 
