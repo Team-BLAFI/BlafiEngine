@@ -1,14 +1,27 @@
 package component;
+
+import java.awt.*;
 import util.Transform;
+import util.*;
+import entity.player.*;
+import entity.*;
 
 
 public class Projectile {
 	public Transform body;
 	public BulletType type;
+	public int arrayPos;
+	public Vector2D aimingTo;
+	public Entity owner;
 	
 	public double baseCooldown;
 	public double baseFlightSpeed;
 	public double baseDamage;
+	public double maxFlightTime;  
+	public double currentFlightTime;
+	public double maxFlightDistance;
+	public double currentFlightDistance;
+	//either time or distance to determine when bullet is destroyed
 	
 	
 	public enum BulletType {
@@ -43,6 +56,9 @@ public class Projectile {
 		
 	}
 	
+	public void draw(Graphics g) {
+		
+	}
 	
 	
 }

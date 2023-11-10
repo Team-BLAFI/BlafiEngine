@@ -8,6 +8,7 @@ import util.io.KL;
 import util.io.ML;
 import util.Shooting;
 import component.Projectile;
+import component.Projectile.BulletType;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -16,7 +17,8 @@ import java.util.ArrayList;
 
 public class Player extends Entity {
 
-    public Collider h;
+    //private static final BulletType Standard = null;
+	public Collider h;
     private ArrayList<Component> components = new ArrayList<>();
     public Vector2D mousePos;
     public Shooting thisShooting;
@@ -121,7 +123,7 @@ public class Player extends Entity {
     public void onClick() {
     	mousePos.x = mouseListener.getX();
     	mousePos.y = mouseListener.getY();
-    	thisShooting.setAim(mousePos);
+    	thisShooting.shoot(Projectile.BulletType.Standard, mousePos);
     	
     }
 
