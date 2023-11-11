@@ -1,8 +1,11 @@
 package window.scenes;
 
 import component.Collider;
+
 import component.Hitbox;
+import component.TileManager;
 import entity.enemy.Enemy;
+
 import entity.player.Player;
 import util.Rect;
 import util.io.KL;
@@ -21,6 +24,7 @@ public class GameScene extends Scene{
     private String displayInfo = "";
     private Player player = new Player();
 
+    private TileManager tileManager = new TileManager();
     public ArrayList<Enemy> enemies = new ArrayList<>();
 
     public GameScene(){
@@ -51,6 +55,7 @@ public class GameScene extends Scene{
     public void draw(Graphics g) {
         g.setColor(Color.BLUE);
         g.fillRect(0,0, WindowConstants.SCREEN_WIDTH, WindowConstants.SCREEN_HEIGHT);
+        tileManager.draw(g);
         g.setColor(Color.GREEN);
         g.drawString(displayInfo,10, (int) (WindowConstants.INSET_SIZE*1.5));
 

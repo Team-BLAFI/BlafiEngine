@@ -2,7 +2,7 @@ package window;
 
 public class WindowConstants {
 
-    public static int SCREEN_WIDTH = 1440;
+    public static int SCREEN_WIDTH = 840;
     public static int SCREEN_HEIGHT = (int) (SCREEN_WIDTH * 0.5625);
 
     public static double SCREEN_UNIT = SCREEN_WIDTH * 0.01;
@@ -19,4 +19,5 @@ public class WindowConstants {
     public static final int EDITOR_SCENE = 2;
 
 
+    public static final int tileSize = 16;
 }

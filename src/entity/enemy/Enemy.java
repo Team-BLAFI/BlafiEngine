@@ -16,7 +16,7 @@ public class Enemy extends Entity {
 
     public Enemy(Transform p){
         playerTransform = p;
-        this.transform = new Transform( 0, 0,EnemyConstants.ENEMY_WIDTH, EnemyConstants.ENEMY_HEIGHT);
+        this.transform = new Transform( 600, 100,EnemyConstants.ENEMY_WIDTH, EnemyConstants.ENEMY_HEIGHT);
     }
 
     @Override
@@ -34,16 +34,19 @@ public class Enemy extends Entity {
                 (int) transform.size.y
         );
 
+
+
         if (p.overlaps(e)){
             Vector2D movementVector = transform.position.getVectorTo(playerTransform.position);
             movementVector.multiply(EnemyConstants.ENEMY_SPEED * dt);
 
             playerTransform.position.add(movementVector);
-        }
 
+        }
         Vector2D movementVector = transform.position.getVectorTo(playerTransform.position);
         movementVector.multiply(EnemyConstants.ENEMY_SPEED * dt);
         transform.position.add(movementVector);
+
     }
 
     @Override
