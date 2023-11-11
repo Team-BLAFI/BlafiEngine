@@ -1,7 +1,6 @@
 package window.scenes;
 
 import component.Collider;
-import component.Hitbox;
 import entity.player.Player;
 import util.Rect;
 import util.io.KL;

@@ -12,8 +12,6 @@ import window.scenes.Scene;
 import javax.swing.*;
 import java.awt.*;
 
-
-
 //todo: implement chapter 2 of the textbook to add v-sync/full-screen in this window
 
 public class Window extends JFrame implements Runnable {

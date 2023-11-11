@@ -17,4 +17,5 @@ public class WindowConstants {
     public static final int EDITOR_SCENE = 2;
 
 
+    public static final int tileSize = 16;
 }
