@@ -35,7 +35,7 @@ public class Shooting {
 		Projectile thisBullet = new Projectile();
 		allBullets.put(numBullets, currentBullet);
 		numBullets += 1;
-		currentBullet.owner = shooter;
+//		currentBullet.owner = shooter;
 		return thisBullet;
 	}
 	
@@ -64,10 +64,11 @@ public class Shooting {
 		}
 		//make array of bullets and loop through them
 	}
-	/*public void draw(Graphics g) { 
-		g.fillRect((int)bullet.body.position.x, (int) bullet.body.position.y, (int) bullet.body.size.x, (int) bullet.body.size.y);
-	}*/
-	
+	public void draw(Graphics g) {
+		g.setColor(Color.RED);
+		g.fillRect((int)currentBullet.body.position.x, (int) currentBullet.body.position.y, (int) currentBullet.body.size.x, (int) currentBullet.body.size.y);
+	}
+
 	
 	
 }

@@ -12,6 +12,8 @@ import component.Projectile.BulletType;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
@@ -20,7 +22,7 @@ public class Player extends Entity {
     //private static final BulletType Standard = null;
 	public Collider h;
     private ArrayList<Component> components = new ArrayList<>();
-    public Vector2D mousePos;
+    public Vector2D mousePos = new Vector2D();
     public Shooting thisShooting;
     
 
@@ -39,7 +41,7 @@ public class Player extends Entity {
                 PlayerConstants.PLAYER_WIDTH,
                 PlayerConstants.PLAYER_HEIGHT
         );
-        initShooting();
+        thisShooting = new Shooting(this);
     }
 
 
@@ -50,6 +52,12 @@ public class Player extends Entity {
         g.setColor(Color.RED);
         g.drawRect(h.Bounds.x,h.Bounds.y,h.Bounds.w,h.Bounds.h);
 
+        g.setColor(Color.YELLOW);
+        if(mousePos != null) {
+            System.out.println("mouse x,y: " + mousePos.x + ", " + mousePos.y);
+            g.drawRect((int)mousePos.x, (int)mousePos.y, 40, 40);
+        }
+
     }
 
 
@@ -57,7 +65,8 @@ public class Player extends Entity {
 
         HandleMovement(deltaTime);
         h.Bounds.setPos((int) transform.position.x, (int) transform.position.y);
-        if (mouseListener.isPressed(0)) {
+
+        if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
         	onClick();
         }
     }

@@ -8,7 +8,7 @@ import entity.*;
 
 
 public class Projectile {
-	public Transform body;
+	public Transform body = new Transform();
 	public BulletType type;
 	public int arrayPos;
 	public Vector2D aimingTo;
@@ -39,7 +39,7 @@ public class Projectile {
 		this.type = type;
 		switch (type) {
 		case Standard:
-			body = new Transform(0, 0, 4, 4);
+			body = new Transform(0, 0, 40, 40);
 				
 		default:
 			break;
@@ -57,7 +57,8 @@ public class Projectile {
 	}
 	
 	public void draw(Graphics g) {
-		
+		g.setColor(Color.RED);
+		g.fillRect((int)body.position.x,(int)body.position.x, 40, 40);
 	}
 	
 	
