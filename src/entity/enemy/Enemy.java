@@ -36,77 +36,14 @@ public class Enemy extends Entity {
         );
     }
 
-    public void changeState(State newState) {
-        this.state = newState;
-    }
-
-    private void HandleMovement(double deltaTime){
-        Vector2D movementVector = this.GetMovementVector();
-
-//        Vector2D movementVector = new Vector2D(1,0);
-
-        movementVector.normalize();
-        this.transform.position.x += movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
-        this.transform.position.y += movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
-
-    }
-
-    private Vector2D GetMovementVector(){
-
-        Vector2D movementVector = new Vector2D();
-
-        if(this.isBelow(p)){
-            movementVector.y -= 1.0;
-        }else if(this.isAbove(p)){
-            movementVector.y += 1.0;
-        }
 
 
-        if(this.isRightOf(p)){
-            movementVector.x -= 1.0;
-        }else if(this.isLeftOf(p)){
-            movementVector.x += 1.0;
-        }
-
-        return movementVector;
-    }
-
-    public boolean isLeftOf(Entity e) {
-        return this.transform.position.x < e.transform.position.x;
-    }
-
-    public boolean isRightOf(Entity e) {
-        return this.transform.position.x > e.transform.position.x;
-    }
-
-    public boolean isAbove(Entity e) {
-        return this.transform.position.y < e.transform.position.y;
-    }
-
-    public boolean isBelow(Entity e) {
-        return this.transform.position.y > e.transform.position.y;
-    }
-
-    public void attacking(){
-
-    }
 
 
     @Override
     public void update(double dt) {
 
-
-        HandleMovement(dt);
-        System.out.println(this.transform.position.x + ", " + this.transform.position.y);
-
-//        if(state == state.IDLE) {
-//
-//        } else if() {
-//
-//        }
-
-
-
+        
 
     }
 
