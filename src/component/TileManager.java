@@ -41,9 +41,10 @@ public class TileManager {
                 Rect tileBounds = new Rect(j * screenUnit + xOffset, i * screenUnit + yOffset, screenUnit, screenUnit);
                 Collider tileCollider = new Collider(tileBounds);
 
-                if (playerCollider.overlaps(tileCollider)) {
+                if (playerCollider.overlaps(tileCollider) && tileNum == 1) {
                     // Handle collision between player and tile here
                     System.out.println("Collision detected!");
+
                 }
             }
         }
@@ -74,7 +75,7 @@ public class TileManager {
         try{
             BufferedImage sprite = ImageIO.read(new File("src/assets/grasstileset.png"));
             // Grass Tile
-            tileImage[1] = new Tile(new ImageIcon(sprite.getSubimage(grassPos.x, grassPos.y, grassPos.w, grassPos.h)));
+           tileImage[1] = new Tile(new ImageIcon(sprite.getSubimage(grassPos.x, grassPos.y, grassPos.w, grassPos.h)));
 
             // Wall Tile
             tileImage[0] = new Tile(new ImageIcon(sprite.getSubimage(wallPos.x, wallPos.y, wallPos.w, wallPos.h)));
@@ -92,6 +93,7 @@ public class TileManager {
         for(int i = 0; i < roomSize; i++){
             for(int j = 0; j< roomSize; j++){
                 int tileNum = mapTileNum[j][i];
+//                if(tileNum == 0)            continue;
                 g.drawImage(tileImage[tileNum].image.getImage(), j*screenUnit+ xOffset, i*screenUnit + yOffset ,screenUnit, screenUnit, null);
 
             }
