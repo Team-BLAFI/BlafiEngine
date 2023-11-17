@@ -44,8 +44,15 @@ public class GameScene extends Scene{
         displayInfo = String.format("%d FPS (%.3f)", frameRate,deltaTime);
 
         player.update(deltaTime);
-        for (Enemy e: enemies) {
-            e.update(deltaTime);
+        for (int i  = 0; i < enemies.size(); i ++) {
+            if(enemies.get(i).isToBeDestroy()){
+                enemies.remove(i);
+                continue;
+            }
+
+            enemies.get(i).update(deltaTime);
+
+
         }
 
         if(KL.getKeyListener().isKeyDown(KeyEvent.VK_ESCAPE)){

@@ -34,19 +34,20 @@ public class Weapon extends Component{
         if(activeRC>0){
             return;
         }
-        if (fireCD <=0) {
+        if (fireCD <=0 && currentMag > 0) {
             // shoot bullet
             Vector2D v = new Vector2D(x,y);
-            v = owner.transform.position.getVectorTo(v);
+            Vector2D travelDirection = owner.transform.position.getVectorTo(v);
 
             liveProjectiles.add(new Projectile(
                     (int) owner.transform.position.x,
                     (int) owner.transform.position.y,
-                    v)
+                    travelDirection,
+                    3)
             );
             fireCD = fireRate;
             currentMag--;
-        } else {
+        } else if (currentMag == 0){
             reload();
         }
     }
@@ -61,10 +62,19 @@ public class Weapon extends Component{
     public void update(double deltaTime) {
         fireCD -= deltaTime;
         activeRC -= deltaTime;
-        System.out.println(fireCD);
-        for (Projectile p:liveProjectiles) {
-            p.update(deltaTime);
+        for (int i =0; i < liveProjectiles.size(); i++) {
+
+            if (liveProjectiles.get(i) == null){
+                continue;
+            }
+            if (liveProjectiles.get(i).getToBeDestroy()){
+                liveProjectiles.remove(i);
+                continue;
+            }
+            liveProjectiles.get(i).update(deltaTime);
+
         }
+
     }
 
     @Override

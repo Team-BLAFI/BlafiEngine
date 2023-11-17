@@ -38,7 +38,10 @@ public class Player extends Entity {
     private ML mouseListener = ML.getMouseListener();
 
     public Player(){
-        transform = new Transform(10.0,20.0, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
+        double w = WindowConstants.SCREEN_WIDTH;
+        double h = WindowConstants.SCREEN_HEIGHT;
+
+        transform = new Transform(w/2.0,h/2, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
 
         collider = new Collider(
                 (int) transform.position.x,
@@ -48,7 +51,7 @@ public class Player extends Entity {
         );
 
 //        thisShooting = new Shooting(this);
-        weapon = new Weapon(this, 10, 1, 3,10,100);
+        weapon = new Weapon(this, 10, 0.3, 3,10,100);
 
 
         health = new Health(
@@ -80,7 +83,10 @@ public class Player extends Entity {
         collider.Bounds.setPos((int) transform.position.x, (int) transform.position.y);
 
         if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
-        	onClick();
+            weapon.shoot(mouseListener.getX(), mouseListener.getY());
+        }
+        if (keyListener.isKeyDown(KeyEvent.VK_R)){
+            weapon.reload();
         }
         weapon.update(deltaTime);
     }
@@ -135,11 +141,6 @@ public class Player extends Entity {
     }
 
 
-    public void onClick() {
-        mousePos.x = mouseListener.getX();
-        mousePos.y = mouseListener.getY();
-        weapon.shoot(mousePos.x, mousePos.y);
-//        thisShooting.shoot(Projectile.BulletType.Standard, mousePos);
-    }
+
     
 }

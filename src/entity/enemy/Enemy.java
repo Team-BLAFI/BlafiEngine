@@ -29,8 +29,10 @@ public class Enemy extends Entity {
 
 
     public Enemy(Player p){
+        double w = WindowConstants.SCREEN_WIDTH;
+        double h = WindowConstants.SCREEN_HEIGHT;
         this.p = p;
-        this.transform = new Transform( 0, 0,EnemyConstants.ENEMY_WIDTH, EnemyConstants.ENEMY_HEIGHT);
+        this.transform = new Transform( w/3, h/2,EnemyConstants.ENEMY_WIDTH, EnemyConstants.ENEMY_HEIGHT);
         health = new Health(
                 100.0,
                 (int) (unit * -.5),
