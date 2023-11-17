@@ -22,7 +22,7 @@ public class Window extends JFrame implements Runnable {
 
     private boolean isRunning;
 
-    private Scene currentScene;
+    private Scene currentScene = new MenuScene();
 
     private double windowsChangeCoolDown = 0.f;
 
@@ -63,31 +63,40 @@ public class Window extends JFrame implements Runnable {
     /**
      * <p>
      * Changes the current scene
-     *</p>
-     * @param       newState     Pass in an integer to change the current scene(Use Constant Define Values)
+     * </p>
+     *
+     * @param newState Pass in an integer to change the current scene(Use Constant Define Values)
+     * @return
      */
-     public void changeState(int newState){
-        if(windowsChangeCoolDown <=0.f){
-            windowsChangeCoolDown = 1.0;
-            switch (newState){
-                case 0:
-                    currentScene = new MenuScene();
-                    break;
-                case 1:
-                    currentScene = new GameScene();
-                    break;
-                case 2:
-                    currentScene = new EditorScene();
-                    break;
-                default:
-                    System.out.println("Unknown window.scenes.Scene");
-                    currentScene = null;
-                    break;
+     public void changeState(int newState) {
+         if (windowsChangeCoolDown <= 0.f) {
+             windowsChangeCoolDown = 1.0;
+             switch (newState) {
+                 case 0:
+                     currentScene = new MenuScene();
+                     break;
+                 case 1:
+                     currentScene = new GameScene();
+                     break;
+                 case 2:
+                     currentScene = new EditorScene();
+                     break;
+                 default:
+                     System.out.println("Unknown window.scenes.Scene");
+                     currentScene = null;
+                     break;
 
-            }
-        }
+             }
 
+         }
      }
+
+     public Scene getCurrentScene(){
+         return currentScene;
+     }
+
+
+
 
     /**<p>
      * Calls the update method for the current scene and sets up and calls the draw method right after

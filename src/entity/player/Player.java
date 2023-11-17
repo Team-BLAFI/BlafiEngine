@@ -1,14 +1,21 @@
 package entity.player;
 
 import component.Collider;
+import component.Health;
+
 import entity.Entity;
 import util.Transform;
 import util.Vector2D;
 import util.io.KL;
+
 import util.io.ML;
 import util.Shooting;
 import component.Projectile;
 import component.Projectile.BulletType;
+
+import window.WindowConstants;
+import window.scenes.GameScene;
+
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -24,7 +31,8 @@ public class Player extends Entity {
     private ArrayList<Component> components = new ArrayList<>();
     public Vector2D mousePos = new Vector2D();
     public Shooting thisShooting;
-    
+
+    private double unit = WindowConstants.SCREEN_UNIT;
 
     /**<p>
      * Saves a pointer to the singleton instance of the KeyListener class
@@ -35,18 +43,25 @@ public class Player extends Entity {
 
     public Player(){
         transform = new Transform(10.0,20.0, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
-        h = new Collider(
+
+        collider = new Collider(
                 (int) transform.position.x,
                 (int) transform.position.y,
                 PlayerConstants.PLAYER_WIDTH,
                 PlayerConstants.PLAYER_HEIGHT
         );
+
         thisShooting = new Shooting(this);
+
+        health = new Health(
+                100.0,
+                (int) (unit * 0.4),
+                (int) - unit,
+                this
+        );
     }
 
-
     public void draw(Graphics g){
-
         g.setColor(PlayerConstants.characterColor);
         g.fillRect((int) transform.position.x, (int) transform.position.y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
         g.setColor(Color.RED);
@@ -57,13 +72,13 @@ public class Player extends Entity {
             System.out.println("mouse x,y: " + mousePos.x + ", " + mousePos.y);
             g.drawRect((int)mousePos.x, (int)mousePos.y, 40, 40);
         }
-
+        health.draw(g);
     }
 
-
     public void update(double deltaTime){
-
+//        System.out.println(this.transform.position.x + ", " + this.transform.position.y);
         HandleMovement(deltaTime);
+        collider.Bounds.setPos((int) transform.position.x, (int) transform.position.y);
         h.Bounds.setPos((int) transform.position.x, (int) transform.position.y);
 
         if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
@@ -124,17 +139,11 @@ public class Player extends Entity {
         return movementVector;
     }
 
-    public void initShooting() {
-    	thisShooting = new Shooting(this);
-  
-    }
 
     public void onClick() {
-    	mousePos.x = mouseListener.getX();
-    	mousePos.y = mouseListener.getY();
-    	thisShooting.shoot(Projectile.BulletType.Standard, mousePos);
-    	
+        mousePos.x = mouseListener.getX();
+        mousePos.y = mouseListener.getY();
+        thisShooting.shoot(Projectile.BulletType.Standard, mousePos);
     }
-
     
 }
