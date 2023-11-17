@@ -19,13 +19,12 @@ public class GameScene extends Scene{
 
     private int frameRate = 0;
     private String displayInfo = "";
-    public Player player;
+    public static Player player = new Player();
     private static GameScene gameScene = null;
 
     public static ArrayList<Enemy> enemies = new ArrayList<>();
 
     public GameScene(){
-        player = new Player();
 
     }
 

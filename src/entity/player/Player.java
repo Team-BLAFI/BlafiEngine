@@ -3,10 +3,11 @@ package entity.player;
 import component.Collider;
 import component.Health;
 
+import component.Weapon;
 import entity.Entity;
 import component.Projectile;
 
-import util.Shooting;
+//import util.Shooting;
 import util.Transform;
 import util.Vector2D;
 import util.io.KL;
@@ -24,7 +25,8 @@ public class Player extends Entity {
     //private static final BulletType Standard = null;
     private ArrayList<Component> components = new ArrayList<>();
     public Vector2D mousePos = new Vector2D();
-    public Shooting thisShooting;
+//    public Shooting thisShooting;
+    public Weapon weapon;
 
     private double unit = WindowConstants.SCREEN_UNIT;
 
@@ -45,7 +47,9 @@ public class Player extends Entity {
                 PlayerConstants.PLAYER_HEIGHT
         );
 
-        thisShooting = new Shooting(this);
+//        thisShooting = new Shooting(this);
+        weapon = new Weapon(this, 10, 1, 3,10,100);
+
 
         health = new Health(
                 100.0,
@@ -64,9 +68,10 @@ public class Player extends Entity {
         g.setColor(Color.YELLOW);
         if(mousePos != null) {
             System.out.println("mouse x,y: " + mousePos.x + ", " + mousePos.y);
-            g.drawRect((int)mousePos.x, (int)mousePos.y, 40, 40);
+//            g.drawRect((int)mousePos.x, (int)mousePos.y, 40, 40);
         }
         health.draw(g);
+        weapon.draw(g);
     }
 
     public void update(double deltaTime){
@@ -77,9 +82,8 @@ public class Player extends Entity {
         if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
         	onClick();
         }
+        weapon.update(deltaTime);
     }
-
-
 
     /**
      * <p>
@@ -92,14 +96,12 @@ public class Player extends Entity {
     private void HandleMovement(double deltaTime){
         Point2D.Double movementVector = GetMovementVector();
 
-
         if(movementVector.x == 1.0 && movementVector.y == 1.0){
             double movementVectorMagnitude = Math.sqrt(movementVector.x * movementVector.x + movementVector.y * movementVector.y);
 
             movementVector.x = movementVector.x / movementVectorMagnitude;
             movementVector.y = movementVector.y / movementVectorMagnitude;
         }
-
 
         transform.position.x += movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
         transform.position.y += movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
@@ -136,7 +138,8 @@ public class Player extends Entity {
     public void onClick() {
         mousePos.x = mouseListener.getX();
         mousePos.y = mouseListener.getY();
-        thisShooting.shoot(Projectile.BulletType.Standard, mousePos);
+        weapon.shoot(mousePos.x, mousePos.y);
+//        thisShooting.shoot(Projectile.BulletType.Standard, mousePos);
     }
     
 }

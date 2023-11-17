@@ -11,7 +11,7 @@ public abstract class Entity {
 
     public Transform transform;
     public Collider collider;
-    protected Health health = null;
+    public Health health = null;
 
 
     public abstract void update(double dt);
