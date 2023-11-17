@@ -1,6 +1,7 @@
 package entity.player;
 
 import component.Collider;
+import component.TileManager;
 import entity.Entity;
 import util.Transform;
 import util.Vector2D;
@@ -16,7 +17,7 @@ public class Player extends Entity {
     public Collider h;
     private ArrayList<Component> components = new ArrayList<>();
 
-
+    private TileManager tileManager;
 
     /**<p>
      * Saves a pointer to the singleton instance of the KeyListener class
@@ -32,6 +33,7 @@ public class Player extends Entity {
                 PlayerConstants.PLAYER_WIDTH,
                 PlayerConstants.PLAYER_HEIGHT
         );
+        tileManager = new TileManager();
     }
 
 
@@ -49,7 +51,7 @@ public class Player extends Entity {
 
         HandleMovement(deltaTime);
         h.Bounds.setPos((int) transform.position.x, (int) transform.position.y);
-
+        tileManager.checkCollisions(h);
     }
 
 
