@@ -51,7 +51,7 @@ public class Player extends Entity {
         );
 
 //        thisShooting = new Shooting(this);
-        weapon = new Weapon(this, 10, 0.3, 3,10,100);
+        weapon = new Weapon(this, 30, 0.1, 2,100,100);
 
 
         health = new Health(

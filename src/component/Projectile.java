@@ -42,10 +42,11 @@ public class Projectile extends Component{
 		Standard, Slow, Piercing, Ricochet
 	}
 	public Projectile(int x, int y, Vector2D travDir, double lifeTime) {
-		transform = new Transform(x, y, unit, unit);
+		transform = new Transform(x, y, unit/2, unit/2);
 		this.travelDirection = travDir;
 		this.lifeTime = lifeTime;
 		this.toBeDestroy = false;
+		setType(BulletType.Standard);
 	}
 	public Projectile(BulletType type) {
 		setType(type);
@@ -55,9 +56,8 @@ public class Projectile extends Component{
 		this.type = type;
 		switch (type) {
 		case Standard:
-			transform = new Transform(0, 0, 40, 40);
 			this.baseDamage = 30;
-			this.baseFlightSpeed = 50;
+			this.baseFlightSpeed = 70;
 			this.maxHits = 1;
 			break;
 		case Slow:
@@ -149,7 +149,7 @@ public class Projectile extends Component{
 
 	public void draw(Graphics g) {
 		g.setColor(Color.RED);
-		g.fillRect((int) transform.position.x,(int) transform.position.y, (int) unit, (int) unit);
+		g.fillRect((int) transform.position.x,(int) transform.position.y, (int) transform.size.x, (int) transform.size.y);
 	}
 
 	@Override

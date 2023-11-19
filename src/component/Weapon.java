@@ -42,8 +42,8 @@ public class Weapon extends Component{
             Vector2D travelDirection = owner.transform.position.getVectorTo(v);
 
             liveProjectiles.add(new Projectile(
-                    (int) owner.transform.position.x,
-                    (int) owner.transform.position.y,
+                    (int) (owner.transform.position.x + owner.transform.size.x/2),
+                    (int) (owner.transform.position.y + owner.transform.size.y/2),
                     travelDirection,
                     3)
             );

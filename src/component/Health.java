@@ -66,7 +66,7 @@ public class Health extends Component{
     public void draw(Graphics g){
         int x = (int) owner.transform.position.x;
         int y = (int) owner.transform.position.y;
-
+        if(health >= maxHealth) return;
         g.setColor(new Color(0x1F1F1F));
         g.fillRect(
                 x + bar.x,
