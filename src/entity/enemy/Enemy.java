@@ -1,5 +1,4 @@
 package entity.enemy;
-
 import component.Collider;
 import component.Health;
 import entity.Entity;
@@ -27,7 +26,6 @@ public class Enemy extends Entity {
     private double attackActive;
     private Player p;
 
-
     public Enemy(Player p){
         double w = WindowConstants.SCREEN_WIDTH;
         double h = WindowConstants.SCREEN_HEIGHT;
@@ -40,10 +38,6 @@ public class Enemy extends Entity {
                 this
         );
     }
-
-
-
-
 
     @Override
     public void update(double dt) {
@@ -83,7 +77,6 @@ public class Enemy extends Entity {
         if(d.getMagnitude()<unit*3.5){
             GameScene.player.health.takeDamage(10*dt);
         }
-
 
     }
 

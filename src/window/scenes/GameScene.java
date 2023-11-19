@@ -1,8 +1,11 @@
 package window.scenes;
 
 import component.Collider;
+
 import component.Hitbox;
+import component.TileManager;
 import entity.enemy.Enemy;
+
 import entity.player.Player;
 import util.Rect;
 import util.io.KL;
@@ -22,7 +25,11 @@ public class GameScene extends Scene{
     public static Player player = new Player();
     private static GameScene gameScene = null;
 
+
     public static ArrayList<Enemy> enemies = new ArrayList<>();
+
+    private TileManager tileManager = new TileManager();
+ 
 
     public GameScene(){
 
@@ -44,6 +51,7 @@ public class GameScene extends Scene{
         displayInfo = String.format("%d FPS (%.3f)", frameRate,deltaTime);
 
         player.update(deltaTime);
+
         for (int i  = 0; i < enemies.size(); i ++) {
             if(enemies.get(i).isToBeDestroy()){
                 enemies.remove(i);
@@ -55,6 +63,7 @@ public class GameScene extends Scene{
 
         }
 
+
         if(KL.getKeyListener().isKeyDown(KeyEvent.VK_ESCAPE)){
             Window.getWindow().changeState(WindowConstants.MENU_SCENE);
         }
@@ -65,11 +74,12 @@ public class GameScene extends Scene{
 
     @Override
     public void draw(Graphics g) {
-        g.setColor(Color.BLUE);
+        //Sets color to dark gray
+        g.setColor(Color.decode("#23272a"));
         g.fillRect(0,0, WindowConstants.SCREEN_WIDTH, WindowConstants.SCREEN_HEIGHT);
+        tileManager.draw(g);
         g.setColor(Color.GREEN);
         g.drawString(displayInfo,10, (int) (WindowConstants.INSET_SIZE*1.5));
-
 
         player.draw(g);
         for (Enemy e: enemies) {

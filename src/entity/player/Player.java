@@ -1,9 +1,13 @@
 package entity.player;
 
 import component.Collider;
+
 import component.Health;
 
 import component.Weapon;
+
+import component.TileManager;
+
 import entity.Entity;
 import component.Projectile;
 
@@ -30,6 +34,9 @@ public class Player extends Entity {
 
     private double unit = WindowConstants.SCREEN_UNIT;
 
+    private TileManager tileManager;
+
+
     /**<p>
      * Saves a pointer to the singleton instance of the KeyListener class
      *</p>
@@ -38,6 +45,7 @@ public class Player extends Entity {
     private ML mouseListener = ML.getMouseListener();
 
     public Player(){
+
         double w = WindowConstants.SCREEN_WIDTH;
         double h = WindowConstants.SCREEN_HEIGHT;
 
@@ -49,6 +57,9 @@ public class Player extends Entity {
                 PlayerConstants.PLAYER_WIDTH,
                 PlayerConstants.PLAYER_HEIGHT
         );
+        tileManager = new TileManager();
+    }
+
 
 //        thisShooting = new Shooting(this);
         weapon = new Weapon(this, 30, 0.1, 2,100,100);
@@ -78,9 +89,9 @@ public class Player extends Entity {
     }
 
     public void update(double deltaTime){
-//        System.out.println(this.transform.position.x + ", " + this.transform.position.y);
         HandleMovement(deltaTime);
         collider.Bounds.setPos((int) transform.position.x, (int) transform.position.y);
+
 
         if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
             weapon.shoot(mouseListener.getX(), mouseListener.getY());
@@ -88,10 +99,18 @@ public class Player extends Entity {
         if (keyListener.isKeyDown(KeyEvent.VK_R)){
             weapon.reload();
         }
-        if (keyListener.isKeyDown(KeyEvent.VK_Z)){
-            weapon.reload();
-        }
+     
         weapon.update(deltaTime);
+
+        /**
+         * <p>Checks for collision in the the TileManager class</p>
+         * returns true when player touches tileNum 1 (walls/dirt image)
+         * then stops player's movement and speed when it touches tile
+         */
+        if(tileManager.checkCollisions(h)){
+            transform.position.x -= movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
+            transform.position.y -= movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
+        }
     }
 
     /**
@@ -114,7 +133,6 @@ public class Player extends Entity {
 
         transform.position.x += movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
         transform.position.y += movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
-
     }
 
     /**
