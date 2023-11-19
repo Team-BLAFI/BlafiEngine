@@ -88,10 +88,6 @@ public class Weapon extends Component{
         }
     }
 
-    @Override
-    public void init() {
-
-    }
 }
 
 //specific fire rates based on bullet(add weapon entity for projectile class, to edit weapon properties on projectile creation?)

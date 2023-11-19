@@ -58,8 +58,6 @@ public class Player extends Entity {
                 PlayerConstants.PLAYER_HEIGHT
         );
         tileManager = new TileManager();
-    }
-
 
 //        thisShooting = new Shooting(this);
         weapon = new Weapon(this, 30, 0.1, 2,100,100);
@@ -80,16 +78,14 @@ public class Player extends Entity {
         g.drawRect(collider.Bounds.x,collider.Bounds.y,collider.Bounds.w,collider.Bounds.h);
 
         g.setColor(Color.YELLOW);
-        if(mousePos != null) {
-            System.out.println("mouse x,y: " + mousePos.x + ", " + mousePos.y);
-//            g.drawRect((int)mousePos.x, (int)mousePos.y, 40, 40);
-        }
+
         health.draw(g);
         weapon.draw(g);
     }
 
     public void update(double deltaTime){
         HandleMovement(deltaTime);
+        Point2D.Double movementVector = GetMovementVector();
         collider.Bounds.setPos((int) transform.position.x, (int) transform.position.y);
 
 
@@ -99,18 +95,18 @@ public class Player extends Entity {
         if (keyListener.isKeyDown(KeyEvent.VK_R)){
             weapon.reload();
         }
-     
-        weapon.update(deltaTime);
 
         /**
          * <p>Checks for collision in the the TileManager class</p>
          * returns true when player touches tileNum 1 (walls/dirt image)
          * then stops player's movement and speed when it touches tile
          */
-        if(tileManager.checkCollisions(h)){
+        if(tileManager.checkCollisions(collider)){
             transform.position.x -= movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
             transform.position.y -= movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
         }
+     
+        weapon.update(deltaTime);
     }
 
     /**

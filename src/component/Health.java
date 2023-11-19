@@ -94,11 +94,6 @@ public class Health extends Component{
     }
 
     @Override
-    public void init() {
-
-    }
-
-    @Override
     public void update(double deltaTime) {
 
     }
