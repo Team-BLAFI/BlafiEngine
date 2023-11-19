@@ -45,7 +45,7 @@ public class Weapon extends Component{
                     (int) (owner.transform.position.x + owner.transform.size.x/2),
                     (int) (owner.transform.position.y + owner.transform.size.y/2),
                     travelDirection,
-                    3)
+                    this.lifeTime)
             );
             fireCD = fireRate;
             currentMag--;
