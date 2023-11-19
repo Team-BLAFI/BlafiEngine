@@ -31,7 +31,7 @@ public class TileManager {
         loadMap();
     }
 
-    public void checkCollisions(Collider playerCollider) {
+    public boolean checkCollisions(Collider playerCollider) {
         int screenUnit = (int) SCREEN_UNIT*4;
         int xOffset =  WindowConstants.SCREEN_WIDTH/2 - screenUnit * roomSize/2;
         int yOffset =  WindowConstants.SCREEN_HEIGHT/2 - screenUnit * roomSize/2;
@@ -44,10 +44,11 @@ public class TileManager {
                 if (playerCollider.overlaps(tileCollider) && tileNum == 1) {
                     // Handle collision between player and tile here
                     System.out.println("Collision detected!");
-
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     /**<p>

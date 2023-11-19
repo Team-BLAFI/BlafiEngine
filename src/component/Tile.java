@@ -8,7 +8,6 @@ import java.awt.*;
 public class Tile {
 
     public ImageIcon image;
-
     public Tile(ImageIcon i){
         this.image = i;
     }

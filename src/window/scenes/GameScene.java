@@ -39,9 +39,9 @@ public class GameScene extends Scene{
         displayInfo = String.format("%d FPS (%.3f)", frameRate,deltaTime);
 
         player.update(deltaTime);
-        for (Enemy e: enemies) {
-            e.update(deltaTime);
-        }
+//        for (Enemy e: enemies) {
+//            e.update(deltaTime);
+//        }
 
         if(KL.getKeyListener().isKeyDown(KeyEvent.VK_ESCAPE)){
             Window.getWindow().changeState(WindowConstants.MENU_SCENE);

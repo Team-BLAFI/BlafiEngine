@@ -26,7 +26,10 @@ public class Player extends Entity {
     private KL keyListener = KL.getKeyListener();
 
     public Player(){
-        transform = new Transform(10.0,20.0, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
+        /**
+         * Change position of Player to place inside tiles
+         * */
+        transform = new Transform(500.0,300.0, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
         h = new Collider(
                 (int) transform.position.x,
                 (int) transform.position.y,
@@ -48,10 +51,22 @@ public class Player extends Entity {
 
 
     public void update(double deltaTime){
+        /*Need to refactor movementVector later*/
+        /*Trying to handle collision detection in update method*/
 
+        Point2D.Double movementVector = GetMovementVector();
         HandleMovement(deltaTime);
         h.Bounds.setPos((int) transform.position.x, (int) transform.position.y);
-        tileManager.checkCollisions(h);
+
+        /**
+         * <p>Checks for collision in the the TileManager class</p>
+         * returns true when player touches tileNum 1 (walls/dirt image)
+         * then stops player's movement and speed when it touches tile
+         */
+        if(tileManager.checkCollisions(h)){
+            transform.position.x -= movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
+            transform.position.y -= movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
+        }
     }
 
 
@@ -78,7 +93,6 @@ public class Player extends Entity {
 
         transform.position.x += movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
         transform.position.y += movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
-
     }
 
     /**
