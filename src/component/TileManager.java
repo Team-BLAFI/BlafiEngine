@@ -25,7 +25,7 @@ public class TileManager {
     int [][] mapTileNum;
 
     public TileManager(){
-        tileImage = new Tile[2];
+        tileImage = new Tile[28];
         mapTileNum = new int[WindowConstants.SCREEN_WIDTH][WindowConstants.SCREEN_HEIGHT];
         getTileImage();
         loadMap();
@@ -41,10 +41,21 @@ public class TileManager {
                 Rect tileBounds = new Rect(j * screenUnit + xOffset, i * screenUnit + yOffset, screenUnit, screenUnit);
                 Collider tileCollider = new Collider(tileBounds);
 
-                if (playerCollider.overlaps(tileCollider) && tileNum == 1) {
+                if (playerCollider.overlaps(tileCollider)) {
                     // Handle collision between player and tile here
-                    System.out.println("Collision detected!");
-                    return playerCollider.overlaps(tileCollider);
+                    switch (tileNum){
+                        case 1:
+                        case 7:
+                        case 9:
+                        case 14:
+                        case 16:
+                        case 22:
+                            //System.out.println("Collision detected!");
+                            return playerCollider.overlaps(tileCollider);
+                        default:
+                            break;
+                    }
+
                 }
             }
         }
@@ -55,35 +66,36 @@ public class TileManager {
      * Loads up map from text file called TileMap.txt
      * </p>
      * */
+
     public void loadMap() {
         try{
-            BufferedReader br = new BufferedReader(new FileReader("src/assets/TileMap.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("src/assets/roguelite.txt"));
             for (int row = 0; row < roomSize; row++){
               String line = br.readLine();
+
               for (int col = 0; col < roomSize; col++){
                   String[] numbers = line.split(" ");
-
                   int num = Integer.parseInt(numbers[col]);
                   mapTileNum[col][row] = num;
-
               }
             }
             br.close();
-        }catch(Exception e){e.printStackTrace();}
+        }catch(IOException | NumberFormatException e){e.printStackTrace();}
     }
 
     public void getTileImage(){
         try{
-            BufferedImage sprite = ImageIO.read(new File("src/assets/grasstileset.png"));
-            // Grass Tile
-           tileImage[1] = new Tile(new ImageIcon(sprite.getSubimage(grassPos.x, grassPos.y, grassPos.w, grassPos.h)));
+            BufferedImage sprite = ImageIO.read(new File("src/assets/tileset_roguelite.png"));
+            for(int i = 0; i < 4; i++){
+                for(int j = 0; j < 7; j++){
+                    int index = i * 7 + j;
+                    tileImage[index] = new Tile(new ImageIcon(sprite.getSubimage(j*16, i*16, 16, 16)));
+                }
+            }
 
-            // Wall Tile
-            tileImage[0] = new Tile(new ImageIcon(sprite.getSubimage(wallPos.x, wallPos.y, wallPos.w, wallPos.h)));
 
         }catch (Exception e){e.printStackTrace();}
     }
-
 
     public void draw(Graphics g) {
         int inset = WindowConstants.INSET_SIZE;
@@ -94,7 +106,6 @@ public class TileManager {
         for(int i = 0; i < roomSize; i++){
             for(int j = 0; j< roomSize; j++){
                 int tileNum = mapTileNum[j][i];
-//                if(tileNum == 0)            continue;
                 g.drawImage(tileImage[tileNum].image.getImage(), j*screenUnit+ xOffset, i*screenUnit + yOffset ,screenUnit, screenUnit, null);
 
             }

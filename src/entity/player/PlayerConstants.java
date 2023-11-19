@@ -10,7 +10,7 @@ public class PlayerConstants {
     //region Dimension variables
     //==============================================================================
 
-    public static final int PLAYER_HEIGHT = (int) (WindowConstants.SCREEN_WIDTH*(1.0/10));
+    public static final int PLAYER_HEIGHT = (int) (WindowConstants.SCREEN_UNIT*4);
     public static final int PLAYER_WIDTH = (int) (PLAYER_HEIGHT*(1.0/1.5));
 
     //endregion
