@@ -1,6 +1,10 @@
 package entity.player;
 
 import component.Collider;
+import component.TileManager;
+import entity.Entity;
+import util.Transform;
+import util.Vector2D;
 import util.io.KL;
 
 import java.awt.*;
@@ -8,17 +12,12 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-public class Player {
+public class Player extends Entity {
 
     public Collider h;
     private ArrayList<Component> components = new ArrayList<>();
-    /**
-     * <p>
-     * Saves the position as a Point2D.Double object
-     *</p>
-     */
-    private Point2D.Double position = null;
 
+    private TileManager tileManager;
 
     /**<p>
      * Saves a pointer to the singleton instance of the KeyListener class
@@ -27,15 +26,24 @@ public class Player {
     private KL keyListener = KL.getKeyListener();
 
     public Player(){
-        position = new Point2D.Double(10.0,20.0);
-        h = new Collider((int) position.x, (int) position.y,PlayerConstants.PLAYER_WIDTH,PlayerConstants.PLAYER_HEIGHT);
+        /**
+         * Change position of Player to place inside tilemap
+         * */
+        transform = new Transform(500.0,300.0, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
+        h = new Collider(
+                (int) transform.position.x,
+                (int) transform.position.y,
+                PlayerConstants.PLAYER_WIDTH,
+                PlayerConstants.PLAYER_HEIGHT
+        );
+        tileManager = new TileManager();
     }
 
 
     public void draw(Graphics g){
 
         g.setColor(PlayerConstants.characterColor);
-        g.fillRect((int) position.x, (int) position.y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
+        g.fillRect((int) transform.position.x, (int) transform.position.y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
         g.setColor(Color.RED);
         g.drawRect(h.Bounds.x,h.Bounds.y,h.Bounds.w,h.Bounds.h);
 
@@ -43,10 +51,22 @@ public class Player {
 
 
     public void update(double deltaTime){
+        /*Need to refactor movementVector later*/
+        /*Trying to handle collision detection in update method*/
 
+        Point2D.Double movementVector = GetMovementVector();
         HandleMovement(deltaTime);
-        h.Bounds.setPos((int) position.x, (int) position.y);
+        h.Bounds.setPos((int) transform.position.x, (int) transform.position.y);
 
+        /**
+         * <p>Checks for collision in the the TileManager class</p>
+         * returns true when player touches tileNum 1 (walls/dirt image)
+         * then stops player's movement and speed when it touches tile
+         */
+        if(tileManager.checkCollisions(h)){
+            transform.position.x -= movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
+            transform.position.y -= movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
+        }
     }
 
 
@@ -71,9 +91,8 @@ public class Player {
         }
 
 
-        position.x += movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
-        position.y += movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
-
+        transform.position.x += movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
+        transform.position.y += movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
     }
 
     /**
