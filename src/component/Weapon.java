@@ -19,6 +19,8 @@ public class Weapon extends Component{
     int currentMag;
     ArrayList<Projectile> liveProjectiles = new ArrayList<>();
     double lifeTime;
+    
+   
 
     public Weapon(Entity owner, double dmg, double fireRate, double reloadCooldown, int magSize, double lifeTime) {
         this.owner = owner;
@@ -57,6 +59,8 @@ public class Weapon extends Component{
         activeRC = reloadCooldown;
         currentMag = magSize;
     }
+    
+    
 
     @Override
     public void update(double deltaTime) {
@@ -89,3 +93,11 @@ public class Weapon extends Component{
 
     }
 }
+
+//specific fire rates based on bullet(add weapon entity for projectile class, to edit weapon properties on projectile creation?)
+//refactor "projectile type" into broader set of properties that can be combined
+//
+
+
+
+

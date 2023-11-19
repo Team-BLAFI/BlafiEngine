@@ -88,6 +88,9 @@ public class Player extends Entity {
         if (keyListener.isKeyDown(KeyEvent.VK_R)){
             weapon.reload();
         }
+        if (keyListener.isKeyDown(KeyEvent.VK_Z)){
+            weapon.reload();
+        }
         weapon.update(deltaTime);
     }
 

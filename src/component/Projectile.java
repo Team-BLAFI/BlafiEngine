@@ -26,8 +26,8 @@ public class Projectile extends Component{
 	public double baseDamage;
 	public double maxFlightTime;  
 	public double currentFlightTime;
-	public double maxFlightDistance;
-	public double currentFlightDistance;
+	
+	public int maxHits;
 	//either time or distance to determine when bullet is destroyed
 
 
@@ -39,7 +39,7 @@ public class Projectile extends Component{
 	
 	
 	public enum BulletType {
-		Standard, Ricochet
+		Standard, Slow, Piercing, Ricochet
 	}
 	public Projectile(int x, int y, Vector2D travDir, double lifeTime) {
 		transform = new Transform(x, y, unit, unit);
@@ -56,8 +56,27 @@ public class Projectile extends Component{
 		switch (type) {
 		case Standard:
 			transform = new Transform(0, 0, 40, 40);
-				
+			this.baseDamage = 30;
+			this.baseFlightSpeed = 50;
+			this.maxHits = 1;
+			break;
+		case Slow:
+			this.baseDamage = 40;
+			this.baseFlightSpeed = 30;
+			this.maxHits = 1;
+			break;
+		case Piercing:
+			this.baseDamage = 20;
+			this.baseFlightSpeed = 40;
+			this.maxHits = 5;
+			break;
+		case Ricochet:
+			this.baseDamage = 20;
+			this.baseFlightSpeed = 40;
+			this.maxHits = 3;
+			break;
 		default:
+			setType(BulletType.Standard);
 			break;
 			
 		}
@@ -68,8 +87,22 @@ public class Projectile extends Component{
 		transform.position.y = y;
 	}
 	
-	public void onHit(Collider hit) {
-		
+	public void onHit(Enemy e) {
+		e.health.takeDamage(this.baseDamage);
+		hit.add(e);
+		maxHits -=1;
+		if (maxHits <= 0) {
+			toBeDestroy = true;
+		}
+		if (type == BulletType.Ricochet) {
+			Bounce();
+		}
+	}
+	
+	public void Bounce() {
+		this.baseDamage +=20;
+		this.lifeTime += 50;
+		//change travel direction
 	}
 
 	public boolean getToBeDestroy(){
@@ -101,10 +134,7 @@ public class Projectile extends Component{
 						(int) e.transform.size.y
 				);
 				if (bullet.overlaps(enemy) && !hit.contains(e)){
-
-					e.health.takeDamage(30);
-					hit.add(e);
-					toBeDestroy = true;
+					onHit(e);
 				}
 			}
 
@@ -112,8 +142,8 @@ public class Projectile extends Component{
 		}
 
 
-		transform.position.x += travelDirection.x * unit * 50 * deltaTime;
-		transform.position.y += travelDirection.y * unit * 50 * deltaTime;
+		transform.position.x += travelDirection.x * unit * baseFlightSpeed * deltaTime;
+		transform.position.y += travelDirection.y * unit * baseFlightSpeed * deltaTime;
 
 	}
 
