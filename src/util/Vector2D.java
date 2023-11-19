@@ -13,6 +13,10 @@ public class Vector2D{
         this.y = y;
     }
 
+    public double getMagnitude(){
+        return Math.sqrt(x * x + y * y);
+    }
+
     public void normalize(){
         double movementVectorMagnitude = Math.sqrt(x * x + y * y);
 
@@ -37,9 +41,10 @@ public class Vector2D{
         y -= v.y;
     }
 
-    public void multiply(double s){
+    public Vector2D multiply(double s){
         x *= s;
         y *= s;
+        return this;
     }
 
 
@@ -47,8 +52,16 @@ public class Vector2D{
         Vector2D ret = new Vector2D(v.x - x, v.y - y);
         ret.normalize();
 
+
         return ret;
     }
+
+    public Vector2D getVectorToNotNorm(Vector2D v){
+        Vector2D ret = new Vector2D(v.x - x, v.y - y);
+
+        return ret;
+    }
+
 
 
 }

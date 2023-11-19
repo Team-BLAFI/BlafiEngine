@@ -22,26 +22,47 @@ public class GameScene extends Scene{
 
     private int frameRate = 0;
     private String displayInfo = "";
-    private Player player = new Player();
+    public static Player player = new Player();
+    private static GameScene gameScene = null;
+
+
+    public static ArrayList<Enemy> enemies = new ArrayList<>();
 
     private TileManager tileManager = new TileManager();
-    public ArrayList<Enemy> enemies = new ArrayList<>();
+ 
 
     public GameScene(){
-        enemies.add(new Enemy(player.transform));
+
     }
 
-
+    public static GameScene getGameScene(){
+        if(GameScene.gameScene == null){
+            GameScene.gameScene = new GameScene();
+        }
+        return GameScene.gameScene;
+    }
 
     @Override
     public void update(double deltaTime) {
+        if (enemies.isEmpty()){
+            enemies.add(new Enemy(player));
+        }
         frameRate = (int) (1/deltaTime);
         displayInfo = String.format("%d FPS (%.3f)", frameRate,deltaTime);
 
         player.update(deltaTime);
-//        for (Enemy e: enemies) {
-//            e.update(deltaTime);
-//        }
+
+        for (int i  = 0; i < enemies.size(); i ++) {
+            if(enemies.get(i).isToBeDestroy()){
+                enemies.remove(i);
+                continue;
+            }
+
+            enemies.get(i).update(deltaTime);
+
+
+        }
+
 
         if(KL.getKeyListener().isKeyDown(KeyEvent.VK_ESCAPE)){
             Window.getWindow().changeState(WindowConstants.MENU_SCENE);
@@ -67,4 +88,5 @@ public class GameScene extends Scene{
 
 
     }
+
 }
