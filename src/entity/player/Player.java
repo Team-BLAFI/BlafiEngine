@@ -27,7 +27,7 @@ public class Player extends Entity {
 
     public Player(){
         /**
-         * Change position of Player to place inside tiles
+         * Change position of Player to place inside tilemap
          * */
         transform = new Transform(500.0,300.0, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
         h = new Collider(

@@ -44,7 +44,7 @@ public class TileManager {
                 if (playerCollider.overlaps(tileCollider) && tileNum == 1) {
                     // Handle collision between player and tile here
                     System.out.println("Collision detected!");
-                    return true;
+                    return playerCollider.overlaps(tileCollider);
                 }
             }
         }
