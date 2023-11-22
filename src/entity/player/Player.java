@@ -9,7 +9,6 @@ import component.Weapon;
 import component.TileManager;
 
 import entity.Entity;
-import component.Projectile;
 
 //import util.Shooting;
 import util.Transform;
@@ -21,15 +20,9 @@ import window.WindowConstants;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
 
 public class Player extends Entity {
 
-    //private static final BulletType Standard = null;
-    private ArrayList<Component> components = new ArrayList<>();
-    public Vector2D mousePos = new Vector2D();
-//    public Shooting thisShooting;
     public Weapon weapon;
 
     private double unit = WindowConstants.SCREEN_UNIT;
@@ -52,8 +45,8 @@ public class Player extends Entity {
         transform = new Transform(w/2.0,h/2, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
 
         collider = new Collider(
-                (int) transform.position.x,
-                (int) transform.position.y,
+                (int) transform.getX(),
+                (int) transform.getY(),
                 PlayerConstants.PLAYER_WIDTH,
                 PlayerConstants.PLAYER_HEIGHT
         );
@@ -73,7 +66,7 @@ public class Player extends Entity {
 
     public void draw(Graphics g){
         g.setColor(PlayerConstants.characterColor);
-        g.fillRect((int) transform.position.x, (int) transform.position.y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
+        g.fillRect((int) transform.getX(), (int) transform.getY(), PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
         g.setColor(Color.RED);
         g.drawRect(collider.Bounds.x,collider.Bounds.y,collider.Bounds.w,collider.Bounds.h);
 
@@ -85,8 +78,8 @@ public class Player extends Entity {
 
     public void update(double deltaTime){
         HandleMovement(deltaTime);
-        Point2D.Double movementVector = GetMovementVector();
-        collider.Bounds.setPos((int) transform.position.x, (int) transform.position.y);
+        Vector2D movementVector = GetMovementVector();
+        collider.Bounds.setPos((int) transform.getX(), (int) transform.getY());
 
 
         if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
@@ -102,15 +95,12 @@ public class Player extends Entity {
          * then stops player's movement and speed when it touches tile</p>
          */
         if(tileManager.checkCollisions(collider)){
-            /**
-             * <p> Need to allow player to move if there's no walls x-axis or y-axis.
-             * Right now, player cannot move when player goes diagonally.
-             * Will need to fix later on
-             * </p>
-             */
 
-            transform.position.x -= movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
-            transform.position.y -= movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
+            movementVector.multiply(PlayerConstants.PLAYER_SPEED * deltaTime);
+
+            transform.setX(transform.getX() - movementVector.getX());
+            transform.setY(transform.getY() - movementVector.getY());
+
         }
      
         weapon.update(deltaTime);
@@ -125,17 +115,14 @@ public class Player extends Entity {
      * @param deltaTime gets time since last frame to keep speed constant
      */
     private void HandleMovement(double deltaTime){
-        Point2D.Double movementVector = GetMovementVector();
+        Vector2D movementVector = GetMovementVector();
 
-        if(movementVector.x == 1.0 && movementVector.y == 1.0){
-            double movementVectorMagnitude = Math.sqrt(movementVector.x * movementVector.x + movementVector.y * movementVector.y);
+        movementVector.normalize();
 
-            movementVector.x = movementVector.x / movementVectorMagnitude;
-            movementVector.y = movementVector.y / movementVectorMagnitude;
-        }
+        movementVector.multiply(PlayerConstants.PLAYER_SPEED * deltaTime);
+        transform.setX(transform.getX() + movementVector.getX());
+        transform.setY(transform.getY() + movementVector.getY());
 
-        transform.position.x += movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
-        transform.position.y += movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
     }
 
     /**
@@ -144,24 +131,25 @@ public class Player extends Entity {
      *</p>
      * @return Point2D.Double returns the movement keys pressed as a vector to move the player by
      */
-    private Point2D.Double GetMovementVector(){
+    private Vector2D GetMovementVector() {
 
-        Point2D.Double movementVector = new Point2D.Double();
+        Vector2D movementVector = new Vector2D();
 
-        if(keyListener.isKeyDown(KeyEvent.VK_W)){
-            movementVector.y -= 1.0;
+        if (keyListener.isKeyDown(KeyEvent.VK_W)) {
+            movementVector.setY(movementVector.getY() - 1.0);
         }
-        if(keyListener.isKeyDown(KeyEvent.VK_S)){
-            movementVector.y += 1.0;
+        if (keyListener.isKeyDown(KeyEvent.VK_S)) {
+            movementVector.setY(movementVector.getY() + 1.0);
         }
-        if(keyListener.isKeyDown(KeyEvent.VK_A)){
-            movementVector.x -= 1.0;
+        if (keyListener.isKeyDown(KeyEvent.VK_A)) {
+            movementVector.setX(movementVector.getX() - 1.0);
         }
-        if(keyListener.isKeyDown(KeyEvent.VK_D)){
-            movementVector.x += 1.0;
+        if (keyListener.isKeyDown(KeyEvent.VK_D)) {
+            movementVector.setX(movementVector.getX() + 1.0);
         }
 
         return movementVector;
     }
 
 }
+
