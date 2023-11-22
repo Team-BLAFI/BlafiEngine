@@ -97,11 +97,18 @@ public class Player extends Entity {
         }
 
         /**
-         * <p>Checks for collision in the the TileManager class</p>
+         * <p>Checks for collision in the the TileManager class
          * returns true when player touches tileNum 1 (walls/dirt image)
-         * then stops player's movement and speed when it touches tile
+         * then stops player's movement and speed when it touches tile</p>
          */
         if(tileManager.checkCollisions(collider)){
+            /**
+             * <p> Need to allow player to move if there's no walls x-axis or y-axis.
+             * Right now, player cannot move when player goes diagonally.
+             * Will need to fix later on
+             * </p>
+             */
+
             transform.position.x -= movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
             transform.position.y -= movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
         }
@@ -157,7 +164,4 @@ public class Player extends Entity {
         return movementVector;
     }
 
-
-
-    
 }
