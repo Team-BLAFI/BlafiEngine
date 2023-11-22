@@ -38,13 +38,17 @@ public class Weapon extends Component{
         }
         if (fireCD <=0 && currentMag > 0) {
             // shoot bullet
-            Vector2D v = new Vector2D(x,y);
-            Vector2D travelDirection = owner.transform.position.getVectorTo(v);
+
+            Vector2D origin = new Vector2D(owner.transform.getCenterX(),owner.transform.getCenterY());
+            Vector2D destination = new Vector2D(x,y);
+
+            Vector2D bulletTravelDirection = origin.getVectorTo(destination);
+
 
             liveProjectiles.add(new Projectile(
-                    (int) (owner.transform.position.x + owner.transform.size.x/2),
-                    (int) (owner.transform.position.y + owner.transform.size.y/2),
-                    travelDirection,
+                    (int) (origin.getX()),
+                    (int) (origin.getY()),
+                    bulletTravelDirection,
                     this.lifeTime)
             );
             fireCD = fireRate;
