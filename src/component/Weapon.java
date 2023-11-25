@@ -5,9 +5,12 @@ import util.Vector2D;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Weapon extends Component{
     Entity owner;
+
+    public WeaponPresets weaponPresets;
     Projectile bullet;
 
     double dmg;
@@ -30,7 +33,14 @@ public class Weapon extends Component{
         this.magSize = magSize;
         this.currentMag = magSize;
         this.lifeTime = lifeTime;
+
     }
+    public void setRandomFireRateTest() {
+        Random rand = new Random();
+        this.fireRate = rand.nextInt(4);
+        System.out.println("random fire rate" + this.fireRate);
+    }
+
 
     public void shoot(double x, double y) {
         if(activeRC>0){
@@ -60,7 +70,6 @@ public class Weapon extends Component{
         currentMag = magSize;
     }
     
-    
 
     @Override
     public void update(double deltaTime) {
@@ -88,10 +97,6 @@ public class Weapon extends Component{
         }
     }
 
-    @Override
-    public void init() {
-
-    }
 }
 
 //specific fire rates based on bullet(add weapon entity for projectile class, to edit weapon properties on projectile creation?)

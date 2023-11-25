@@ -7,5 +7,6 @@ public class Main {
 
         Thread thread = new Thread(window);
         thread.start();
+
     }
 }

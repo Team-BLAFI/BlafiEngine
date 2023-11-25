@@ -152,10 +152,5 @@ public class Projectile extends Component{
 		g.fillRect((int) transform.position.x,(int) transform.position.y, (int) transform.size.x, (int) transform.size.y);
 	}
 
-	@Override
-	public void init() {
-
-	}
-
 
 }
