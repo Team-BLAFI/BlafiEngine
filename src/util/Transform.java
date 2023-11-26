@@ -25,6 +25,15 @@ public class Transform {
     }
 
 
+
+    public Transform(Transform transform) {
+        position.setX(transform.getX());
+        position.setY(transform.getY());
+        size.setX(transform.getWidth());
+        size.setY(transform.getHeight());
+    }
+
+
     public double getX(){
         return position.getX();
     }
