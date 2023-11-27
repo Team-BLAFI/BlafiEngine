@@ -19,8 +19,12 @@ public class Weapon extends Component{
     int currentMag;
     ArrayList<Projectile> liveProjectiles = new ArrayList<>();
     double lifeTime;
-    
-   
+
+    @Override
+    public String toString() {
+        return String.format("[Mag Size=%s], [Bullets=%d]",
+                magSize, currentMag);
+    }
 
     public Weapon(Entity owner, double dmg, double fireRate, double reloadCooldown, int magSize, double lifeTime) {
         this.owner = owner;

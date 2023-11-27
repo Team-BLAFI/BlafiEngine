@@ -49,7 +49,7 @@ public class Player extends Entity {
         double w = WindowConstants.SCREEN_WIDTH;
         double h = WindowConstants.SCREEN_HEIGHT;
 
-        transform = new Transform(w/2.0,h/2, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
+        transform = new Transform(w/20.,h/2, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
 
         collider = new Collider(
                 (int) transform.position.x,
@@ -61,7 +61,6 @@ public class Player extends Entity {
 
 //        thisShooting = new Shooting(this);
         weapon = new Weapon(this, 30, 0.1, 2,100,100);
-
 
         health = new Health(
                 100.0,
@@ -81,6 +80,7 @@ public class Player extends Entity {
 
         health.draw(g);
         weapon.draw(g);
+
     }
 
     public void update(double deltaTime){
