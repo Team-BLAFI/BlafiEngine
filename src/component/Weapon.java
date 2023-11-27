@@ -22,7 +22,7 @@ public class Weapon extends Component{
 
     @Override
     public String toString() {
-        return String.format("[Mag Size=%s], [Bullets=%d]",
+        return String.format("[Mag:%s], [Bullets:%d]",
                 magSize, currentMag);
     }
 

@@ -52,7 +52,7 @@ public class GameScene extends Scene{
         frameRate = (int) (1/deltaTime);
         weaponInfo = player.weapon.toString();
         // Displays the INFO to UI
-        displayInfo = String.format("%d FPS (%.3f) %n Weapon Info: %n %s", frameRate,deltaTime, weaponInfo );
+        displayInfo = String.format("%d FPS (%.3f)", frameRate,deltaTime);
 
         player.update(deltaTime);
 
@@ -91,7 +91,7 @@ public class GameScene extends Scene{
         }
         // UI
         ui.draw(g, displayInfo, 10, (WindowConstants.INSET_SIZE*4));
-//        ui.draw(g, player.weapon.toString(), 10, (WindowConstants.INSET_SIZE*5));
+        ui.draw(g, "Gun:"+weaponInfo, 10, (WindowConstants.INSET_SIZE*5));
     }
 
 }

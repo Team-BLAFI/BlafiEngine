@@ -36,7 +36,6 @@ public class Player extends Entity {
 
     private TileManager tileManager;
 
-
     /**<p>
      * Saves a pointer to the singleton instance of the KeyListener class
      *</p>
