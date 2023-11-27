@@ -15,22 +15,29 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import static entity.player.PlayerConstants.IDLE_ANIMATION_ID;
+import static entity.player.PlayerConstants.*;
 import static util.Vector2D.zero;
 
 public class Player extends Entity {
 
     public Weapon weapon;
 
+    //region private fields
     private double unit = WindowConstants.SCREEN_UNIT;
-
+    private STATES state = STATES.IDLE;
     private TileManager tileManager;
-
     private Animator animator;
-
     private boolean isShooting = false;
+    private boolean isFacingLeft = false;
+    private Vector2D velocity = new Vector2D();
+    Vector2D drag = new Vector2D();
+    private double max_velocity = unit * 0.15;
+    private double max_shootingVelocity = max_velocity * 0.3;
+    private double currMaxVel = 0;
+    private double friction = 0;
+    private double acceleration = 0;
 
-
+    //endregion
 
 
     /**<p>
@@ -39,6 +46,10 @@ public class Player extends Entity {
      */
     private KL keyListener = KL.getKeyListener();
     private ML mouseListener = ML.getMouseListener();
+
+    private enum STATES {
+        IDLE, RUN, RUNSHOOTING, ACCELERATING, RUNMAXSPEED
+    }
 
     public Player(){
 
@@ -69,6 +80,10 @@ public class Player extends Entity {
 
         animator = new Animator();
         animator.addAnimation(PlayerConstants.PLAYER_IDLE, IDLE_ANIMATION_ID);
+        animator.addAnimation(PlayerConstants.PLAYER_RUN, RUN_ANIMATION_ID);
+        animator.addAnimation(PlayerConstants.PLAYER_RUNMAXSPEED, RUNMAXSPEED_ANIMATION_ID);
+        animator.addAnimation(PlayerConstants.PLAYER_RUNSHOOTING, RUNSHOOTING_ANIMATION_ID);
+
         animator.changeAnimationTo(IDLE_ANIMATION_ID);
     }
 
@@ -82,17 +97,6 @@ public class Player extends Entity {
      *</p>
      * @param deltaTime gets time since last frame to keep speed constant
      */
-    //region private fields
-    //FIXME WIP
-    private Vector2D velocity = new Vector2D();
-    Vector2D drag = new Vector2D();
-    private double max_velocity = unit * 0.15;
-    private double max_shootingVelocity = max_velocity * 0.3;
-    private double currMaxVel = 0;
-    private double friction = 0;
-    private double acceleration = 0;
-
-    //endregion
     private void HandleMovement(double deltaTime){
         currMaxVel = isShooting ? max_shootingVelocity: max_velocity;
         friction = currMaxVel * 12;
@@ -148,9 +152,11 @@ public class Player extends Entity {
             movementVector.setY(movementVector.getY() + 1.0);
         }
         if (keyListener.isKeyDown(KeyEvent.VK_A)) {
+            isFacingLeft = true;
             movementVector.setX(movementVector.getX() - 1.0);
         }
         if (keyListener.isKeyDown(KeyEvent.VK_D)) {
+            isFacingLeft = false;
             movementVector.setX(movementVector.getX() + 1.0);
         }
 
@@ -164,7 +170,19 @@ public class Player extends Entity {
         g.drawRect(collider.Bounds.x,collider.Bounds.y,collider.Bounds.w,collider.Bounds.h);
         health.draw(g);
         weapon.draw(g);
-        animator.RenderCurrentSprite(g, (int) transform.getX(), (int) transform.getY());
+
+        if (isFacingLeft && !isShooting) {
+            animator.RenderCurrentSpriteFlipVer(g, (int) transform.getX(), (int) transform.getY());
+        } else if (!isShooting) {
+            animator.RenderCurrentSprite(g, (int) transform.getX(), (int) transform.getY());
+        }
+
+        if (isShooting && mouseListener.getX() < transform.getCenterX()) {
+            animator.RenderCurrentSpriteFlipVer(g, (int) transform.getX(), (int) transform.getY());
+        } else if (isShooting) {
+            animator.RenderCurrentSprite(g, (int) transform.getX(), (int) transform.getY());
+        }
+
         debug(g);
     }
 
@@ -172,9 +190,9 @@ public class Player extends Entity {
         HandleMovement(deltaTime);
         collider.Bounds.setPos((int) transform.getX(), (int) transform.getY());
 
-
         if (mouseListener.isPressed(MouseEvent.BUTTON1) && !weapon.isReloading()) {
             this.isShooting = true;
+            animator.changeAnimationTo(RUNSHOOTING_ANIMATION_ID);
             weapon.shoot(mouseListener.getX(), mouseListener.getY());
         }
         if (!mouseListener.isPressed(MouseEvent.BUTTON1)) {
@@ -189,6 +207,8 @@ public class Player extends Entity {
          * returns true when player touches tileNum 1 (walls/dirt image)
          * then stops player's movement and speed when it touches tile
          */
+
+        animator.changeAnimationTo(velocity.getMagnitude() != 0 ? RUN_ANIMATION_ID : IDLE_ANIMATION_ID);
 
         animator.update(deltaTime);
         weapon.update(deltaTime);

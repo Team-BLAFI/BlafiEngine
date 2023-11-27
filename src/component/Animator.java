@@ -64,7 +64,7 @@ public class Animator extends Component{
     }
 
     public void changeAnimationTo(String AnimationName){
-        if(Animations.containsKey(AnimationName)){
+        if(Animations.containsKey(AnimationName) && Animations.get(AnimationName) != currentAnimation){
             currentAnimation = Animations.get(AnimationName);
             currentFrameIndex = 0;
         }
@@ -72,7 +72,7 @@ public class Animator extends Component{
 
     public void changeAnimationNotReset(String AnimationName){
         this.frameTime = defaultFrameTime;
-        if(Animations.containsKey(AnimationName)){
+        if(Animations.containsKey(AnimationName) && Animations.get(AnimationName) != currentAnimation){
             currentAnimation = Animations.get(AnimationName);
         }
     }
@@ -80,7 +80,7 @@ public class Animator extends Component{
     public void changeAnimationTo(String AnimationName, double frameTime){
 
         this.setFrameTime(frameTime);
-        if(Animations.containsKey(AnimationName)){
+        if(Animations.containsKey(AnimationName) && Animations.get(AnimationName) != currentAnimation){
             currentAnimation = Animations.get(AnimationName);
             currentFrameIndex = 0;
         }
@@ -88,7 +88,7 @@ public class Animator extends Component{
     }
 
     public void changeAnimationNotReset(String AnimationName, double frameTime){
-        if(Animations.containsKey(AnimationName)){
+        if(Animations.containsKey(AnimationName) && Animations.get(AnimationName) != currentAnimation){
             currentAnimation = Animations.get(AnimationName);
         }
         this.setFrameTime(frameTime);
