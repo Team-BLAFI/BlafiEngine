@@ -16,6 +16,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import static entity.player.PlayerConstants.IDLE_ANIMATION_ID;
+import static util.Vector2D.zero;
+
 public class Player extends Entity {
 
     public Weapon weapon;
@@ -25,6 +27,9 @@ public class Player extends Entity {
     private TileManager tileManager;
 
     private Animator animator;
+
+    private boolean isShooting = false;
+
 
 
 
@@ -77,28 +82,53 @@ public class Player extends Entity {
      *</p>
      * @param deltaTime gets time since last frame to keep speed constant
      */
-    private void HandleMovement(double deltaTime){
-        Vector2D movementVector = GetMovementVector();
+    //region private fields
+    //FIXME WIP
+    private Vector2D velocity = new Vector2D();
+    Vector2D drag = new Vector2D();
+    private double max_velocity = unit * 0.15;
+    private double max_shootingVelocity = max_velocity * 0.3;
+    private double currMaxVel = 0;
+    private double friction = 0;
+    private double acceleration = 0;
 
+    //endregion
+    private void HandleMovement(double deltaTime){
+        currMaxVel = isShooting ? max_shootingVelocity: max_velocity;
+        friction = currMaxVel * 12;
+        acceleration = currMaxVel * 12;
+
+        Vector2D movementVector = GetMovementVector();
         movementVector.normalize();
 
-        movementVector.multiply(PlayerConstants.PLAYER_SPEED * deltaTime);
+        movementVector.multiply(acceleration * deltaTime);
 
-//        transform.movePositionBy(movementVector);
+        velocity.add(movementVector);
 
-        Transform newPos = new Transform(transform);
+        if (movementVector.getMagnitude() == 0) {
 
-        newPos.moveXBy(movementVector.getX());
-        if(tileManager.checkCollisions(newPos.getAsCollider())){
-            newPos.setX(transform.getX());
+            if(velocity.getMagnitude() > 0.01){
+                drag = new Vector2D(-velocity.getX(), -velocity.getY());
+                drag.normalize();
+                drag.multiply(friction * deltaTime);
+                velocity.add(drag);
+            }else{
+                velocity = new Vector2D();
+                drag = new Vector2D();
+            }
         }
-        newPos.moveYBy(movementVector.getY());
-        if(tileManager.checkCollisions(newPos.getAsCollider())){
-            newPos.setY(transform.getY());
+        velocity.clamp(0,currMaxVel);
+
+        Vector2D oldPos = new Vector2D(transform.getPosition());
+
+        this.transform.moveXBy(velocity.getX());
+        if(tileManager.checkCollisions(this.transform.getAsCollider())){
+            this.transform.setX(oldPos.getX());
         }
-
-        transform.setPosition(newPos.getPosition());
-
+        this.transform.moveYBy(velocity.getY());
+        if(tileManager.checkCollisions(this.transform.getAsCollider())){
+            this.transform.setY(oldPos.getY());
+        }
     }
 
     /**
@@ -135,6 +165,7 @@ public class Player extends Entity {
         health.draw(g);
         weapon.draw(g);
         animator.RenderCurrentSprite(g, (int) transform.getX(), (int) transform.getY());
+        debug(g);
     }
 
     public void update(double deltaTime){
@@ -142,8 +173,12 @@ public class Player extends Entity {
         collider.Bounds.setPos((int) transform.getX(), (int) transform.getY());
 
 
-        if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
+        if (mouseListener.isPressed(MouseEvent.BUTTON1) && !weapon.isReloading()) {
+            this.isShooting = true;
             weapon.shoot(mouseListener.getX(), mouseListener.getY());
+        }
+        if (!mouseListener.isPressed(MouseEvent.BUTTON1)) {
+            this.isShooting = false;
         }
         if (keyListener.isKeyDown(KeyEvent.VK_R)){
             weapon.reload();
@@ -157,5 +192,14 @@ public class Player extends Entity {
 
         animator.update(deltaTime);
         weapon.update(deltaTime);
+    }
+
+    public void debug(Graphics g) {
+        g.setColor(Color.WHITE);
+        Font myFont = new Font ("Courier New", 1, 17);
+        g.setFont(myFont);
+        g.drawString(String.format("Velocity: %.3f", velocity.getMagnitude()),WindowConstants.SCREEN_WIDTH-300, (int) (WindowConstants.INSET_SIZE*1.5));
+        g.drawString(String.format("Current Max Velocity: %.3f", currMaxVel),WindowConstants.SCREEN_WIDTH-300, (int) (WindowConstants.INSET_SIZE*1.5)+18);
+        g.drawString(String.format("Drag: %.3f", drag.getMagnitude()),WindowConstants.SCREEN_WIDTH-300, (int) (WindowConstants.INSET_SIZE*1.5)+36);
     }
 }

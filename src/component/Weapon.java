@@ -64,7 +64,9 @@ public class Weapon extends Component{
         currentMag = magSize;
     }
     
-    
+    public boolean isReloading() {
+        return activeRC > 0;
+    }
 
     @Override
     public void update(double deltaTime) {

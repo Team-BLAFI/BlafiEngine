@@ -1,6 +1,8 @@
 package util;
 
 public class Vector2D{
+
+    public static Vector2D zero = new Vector2D(0 ,0);
     private double x;
     private double y;
 
@@ -27,6 +29,16 @@ public class Vector2D{
 
         x = movementVectorMagnitude != 0 ? x / movementVectorMagnitude: x;
         y = movementVectorMagnitude != 0 ? y / movementVectorMagnitude: y;
+    }
+
+    public void clamp(double min, double max) {
+        if (this.getMagnitude() >= max){
+            this.normalize();
+            this.multiply(max);
+        }else if (this.getMagnitude() <= min){
+            this.normalize();
+            this.multiply(min);
+        }
     }
 
     public Vector2D getNormalize(){
