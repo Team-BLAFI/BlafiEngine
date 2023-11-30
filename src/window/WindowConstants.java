@@ -1,5 +1,7 @@
 package window;
 
+import util.Vector2D;
+
 public class WindowConstants {
 
     public static int SCREEN_WIDTH = 1440;
@@ -11,7 +13,7 @@ public class WindowConstants {
 
     public static final String SCREEN_TITLE = "UntitledRoguelite";
 
-
+    public static final Vector2D MID_SCREENPOINT = new Vector2D(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 
     //=====================================window.Scene Constants=====================================
     public static final int MENU_SCENE = 0;
