@@ -14,12 +14,12 @@ import java.awt.event.KeyEvent;
 
 public class Enemy extends Entity {
 
-    private enum State{
-        IDLE, FOLLOWING, ATTACKING
-    }
-    private double unit = WindowConstants.SCREEN_UNIT;
+    private final double damagePerSecond = 30.0;
 
-    private State state = State.IDLE;
+
+    private double unit = WindowConstants.SCREEN_UNIT;
+    private final double moveSpeed = 17.5 * unit;
+    private final double reach = 4 * unit;
     private final double attackSpeed = 1.0;
     private double attackActive;
     private Player p;
@@ -37,8 +37,9 @@ public class Enemy extends Entity {
         );
     }
 
-    @Override
-    public void update(double dt) {
+
+
+    public void controlEnemy(double dt){
         Vector2D movementVector = new Vector2D();
 
         if(KL.getKeyListener().isKeyDown(KeyEvent.VK_UP)){
@@ -56,25 +57,56 @@ public class Enemy extends Entity {
 
         movementVector.normalize();
 
-        movementVector.multiply(PlayerConstants.PLAYER_SPEED * dt);
+        movementVector.multiply(moveSpeed * dt);
 
         transform.setX(transform.getX() + movementVector.getX());
         transform.setY(transform.getY() + movementVector.getY());
 
+    }
 
 
-        Vector2D d = new Vector2D(transform.getCenterX(), transform.getCenterY());
+    public void aroundPLayer(double dt){
+        Vector2D mv = new Vector2D(transform.getPosition());
+        mv.rotate( dt * PlayerConstants.PLAYER_SPEED/10 ,p.transform.getCenterX(),p.transform.getCenterY());
 
-        d = d.getVectorToNotNorm(new Vector2D(p.transform.getCenterX(),p.transform.getCenterY()));
-
-        if(d.getMagnitude()<unit*5){
-            GameScene.player.health.takeDamage(30*dt);
-        }
+        transform.setPosition(mv);
 
     }
 
+    public void chasePlayer(double dt){
+
+        Vector2D v = getVectorToPlayer();
+        if (v.getMagnitude() > reach){
+            v.normalize();
+            transform.movePositionBy(v.multiply(moveSpeed * dt));
+        }
+    }
+
+    private Vector2D getVectorToPlayer() {
+        return new Vector2D(transform.getCenterPoint().getVectorTo(p.transform.getCenterPoint()));
+    }
+
+
+    public void dealDamage(double dt){
+        if(getVectorToPlayer().getMagnitude()<=reach){
+            GameScene.player.health.takeDamage(damagePerSecond *dt);
+        }
+    }
+
+    @Override
+    public void update(double dt) {
+//        aroundPLayer(dt);
+        chasePlayer(dt);
+        aroundPLayer(dt);
+        dealDamage(dt);
+    }
+
+
+
+
     @Override
     public void draw(Graphics g) {
+        Vector2D s = WindowConstants.MID_SCREENPOINT;
 
 
         g.fillRect(
@@ -91,13 +123,14 @@ public class Enemy extends Entity {
         g.setColor(Color.GREEN);
         g.drawLine(x, y, (int) (x+4*unit),y);
         g.drawLine(x, y, x, (int) (y-4*unit));
+//        g.drawLine((int) s.getX(), (int) s.getY(), (int) (s.getX() + unit), (int) s.getY());
 
-       g.drawOval(
-               (int) (transform.getCenterX() - 4*unit),
-               (int) (transform.getCenterY() - 4*unit),
-               (int) (8*unit),
-               (int) (8*unit)
-       );
 
+        g.drawOval(
+                (int) (transform.getCenterX() - 4*unit),
+                (int) (transform.getCenterY() - 4*unit),
+                (int) (8*unit),
+                (int) (8*unit)
+        );
     }
 }
