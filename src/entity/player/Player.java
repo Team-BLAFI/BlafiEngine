@@ -89,19 +89,6 @@ public class Player extends Entity {
             weapon.reload();
         }
 
-        /**
-         * <p>Checks for collision in the the TileManager class
-         * returns true when player touches tileNum 1 (walls/dirt image)
-         * then stops player's movement and speed when it touches tile</p>
-         */
-        if(tileManager.checkCollisions(collider)){
-
-            movementVector.multiply(PlayerConstants.PLAYER_SPEED * deltaTime);
-
-            transform.setX(transform.getX() - movementVector.getX());
-            transform.setY(transform.getY() - movementVector.getY());
-
-        }
      
         weapon.update(deltaTime);
     }
@@ -114,16 +101,27 @@ public class Player extends Entity {
      *</p>
      * @param deltaTime gets time since last frame to keep speed constant
      */
-    private void HandleMovement(double deltaTime){
-        Vector2D movementVector = GetMovementVector();
+        private void HandleMovement(double deltaTime){
+            Vector2D movementVector = GetMovementVector();
 
-        movementVector.normalize();
+            movementVector.normalize();
 
-        movementVector.multiply(PlayerConstants.PLAYER_SPEED * deltaTime);
-        transform.setX(transform.getX() + movementVector.getX());
-        transform.setY(transform.getY() + movementVector.getY());
+            movementVector.multiply(PlayerConstants.PLAYER_SPEED * deltaTime);
 
-    }
+            Transform newPos = new Transform(transform);
+
+            newPos.moveXBy(movementVector.getX());
+            if(tileManager.checkCollisions(newPos.getAsCollider())){
+                newPos.setX(transform.getX());
+            }
+            newPos.moveYBy(movementVector.getY());
+            if(tileManager.checkCollisions(newPos.getAsCollider())){
+                newPos.setY(transform.getY());
+            }
+
+            transform.setPosition(newPos.getPosition());
+
+        }
 
     /**
      * <p>
