@@ -1,19 +1,25 @@
 package component;
 
 import util.Rect;
+import entity.*;
 
 import java.awt.*;
 
 public class Collider extends Component{
 
     public Rect Bounds;
-
+    public Entity owner;
+    
     public Collider(Rect rect){
         this.Bounds = rect;
     }
 
     public Collider(int x, int y, int w, int h){
         this.Bounds = new Rect(x,y,w,h);
+    }
+    
+    public Collider(Entity owner) {
+    	this.owner = owner;
     }
 
 
@@ -45,5 +51,6 @@ public class Collider extends Component{
         }
         return true;
     }
+
 
 }

@@ -64,9 +64,9 @@ public class Health extends Component{
 
     @Override
     public void draw(Graphics g){
-        int x = (int) owner.transform.position.x;
-        int y = (int) owner.transform.position.y;
-
+        int x = (int) owner.transform.getX();
+        int y = (int) owner.transform.getY();
+        if(health >= maxHealth) return;
         g.setColor(new Color(0x1F1F1F));
         g.fillRect(
                 x + bar.x,
@@ -94,13 +94,7 @@ public class Health extends Component{
     }
 
     @Override
-    public void init() {
-
-    }
-
-    @Override
     public void update(double deltaTime) {
 
     }
-
 }

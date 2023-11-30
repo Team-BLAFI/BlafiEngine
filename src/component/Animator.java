@@ -160,10 +160,10 @@ public class Animator extends Component{
         );
     }
 
-    @Override
-    public void init() {
-
-    }
+//    @Override
+//    public void init() {
+//
+//    }
 
     @Override
     public void update(double deltaTime) {

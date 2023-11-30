@@ -1,8 +1,8 @@
 package util;
 
 public class Vector2D{
-    public double x;
-    public double y;
+    private double x;
+    private double y;
 
     public Vector2D(){
         x = 0;
@@ -11,6 +11,10 @@ public class Vector2D{
     public Vector2D(double x, double y){
         this.x = x;
         this.y = y;
+    }
+
+    public double getMagnitude(){
+        return Math.sqrt(x * x + y * y);
     }
 
     public void normalize(){
@@ -37,9 +41,10 @@ public class Vector2D{
         y -= v.y;
     }
 
-    public void multiply(double s){
+    public Vector2D multiply(double s){
         x *= s;
         y *= s;
+        return this;
     }
 
 
@@ -47,8 +52,29 @@ public class Vector2D{
         Vector2D ret = new Vector2D(v.x - x, v.y - y);
         ret.normalize();
 
+
         return ret;
     }
 
+    public Vector2D getVectorToNotNorm(Vector2D v){
+        Vector2D ret = new Vector2D(v.x - x, v.y - y);
 
+        return ret;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
 }
