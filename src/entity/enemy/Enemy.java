@@ -93,6 +93,62 @@ public class Enemy extends Entity {
         }
     }
 
+    public void stateMachine(double deltaTime) {
+        if (nextState != null && stateLock <= 0){
+            state = nextState;
+            nextState = null;
+        }
+
+        switch (state) {
+            case Idle:
+            case Moving:
+                determineMovingDir(deltaTime);
+                handleAI(deltaTime);
+            case Attacking:
+                handleAttack(deltaTime);
+            case Recovering:
+                handleRecovery(deltaTime);
+                break;
+            default:
+                break;
+        }
+    }
+
+    //TODO animations
+    private void determineMovingDir(double deltaTime) {
+
+    }
+    private void handleAI(double deltaTime) {
+        Vector2D v = getVectorToPlayer();
+        if (v.getMagnitude() <= reach){
+            nextState = State.Attacking;
+        }else{
+            chasePlayer(deltaTime);
+        }
+
+    }
+    double recoveryTime = 0, windUp = 0;
+    private void handleAttack(double deltaTime) {
+        if (stateLock<=0){
+            stateLock = 1;
+            nextState = State.Idle;
+            windUp = 0.5;
+        }else if (windUp <= 0) {
+            System.out.println("ATTACK");
+        }
+
+    }
+
+    private void handleRecovery(double dt){
+
+    }
+
+    private void handleCD(double dt){
+        recoveryTime -= dt;
+        stateLock -= dt;
+        windUp -= dt;
+    }
+
     @Override
     public void update(double dt) {
 //        aroundPLayer(dt);
@@ -100,9 +156,6 @@ public class Enemy extends Entity {
         aroundPLayer(dt);
         dealDamage(dt);
     }
-
-
-
 
     @Override
     public void draw(Graphics g) {
