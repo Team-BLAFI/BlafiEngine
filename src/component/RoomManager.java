@@ -23,7 +23,7 @@ public class RoomManager {
         roomImage = new RoomTile[28];
         mapTileNum = new int[WindowConstants.SCREEN_WIDTH][WindowConstants.SCREEN_HEIGHT];
         getTileImage();
-        loadMap();
+        loadMap("src/assets/roguelite.txt");
     }
 
     public boolean checkCollisions(Collider playerCollider) {
@@ -58,14 +58,9 @@ public class RoomManager {
         return false;
     }
 
-    /**<p>
-     * Loads up map from text file called TileMap.txt
-     * </p>
-     * */
-
-    public void loadMap() {
+    public void loadMap(String fileName) {
         try{
-            BufferedReader br = new BufferedReader(new FileReader("src/assets/roguelite.txt"));
+            BufferedReader br = new BufferedReader(new FileReader(fileName));
             for (int row = 0; row < roomSize; row++){
               String line = br.readLine();
 
@@ -107,4 +102,4 @@ public class RoomManager {
         }
 
     }
-    }
+}
