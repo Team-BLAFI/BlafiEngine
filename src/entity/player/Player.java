@@ -65,7 +65,8 @@ public class Player extends Entity {
                 100.0,
                 (int) (unit * 0.4),
                 (int) - unit,
-                this
+                this,
+                true
         );
     }
 
