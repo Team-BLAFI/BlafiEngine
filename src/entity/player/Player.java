@@ -6,7 +6,7 @@ import component.Health;
 
 import component.Weapon;
 
-import component.TileManager;
+import component.RoomManager;
 
 import entity.Entity;
 
@@ -27,7 +27,7 @@ public class Player extends Entity {
 
     private double unit = WindowConstants.SCREEN_UNIT;
 
-    private TileManager tileManager;
+    private RoomManager roomManager;
 
 
     /**<p>
@@ -50,7 +50,7 @@ public class Player extends Entity {
                 PlayerConstants.PLAYER_WIDTH,
                 PlayerConstants.PLAYER_HEIGHT
         );
-        tileManager = new TileManager();
+        roomManager = new RoomManager();
 
 //        thisShooting = new Shooting(this);
         weapon = new Weapon(this, 30, 0.1, 2,100,100);
@@ -111,11 +111,11 @@ public class Player extends Entity {
             Transform newPos = new Transform(transform);
 
             newPos.moveXBy(movementVector.getX());
-            if(tileManager.checkCollisions(newPos.getAsCollider())){
+            if(roomManager.checkCollisions(newPos.getAsCollider())){
                 newPos.setX(transform.getX());
             }
             newPos.moveYBy(movementVector.getY());
-            if(tileManager.checkCollisions(newPos.getAsCollider())){
+            if(roomManager.checkCollisions(newPos.getAsCollider())){
                 newPos.setY(transform.getY());
             }
 

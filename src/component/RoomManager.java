@@ -1,8 +1,5 @@
 package component;
-import entity.player.PlayerConstants;
 import util.Rect;
-import util.Transform;
-import util.Vector2D;
 import window.WindowConstants;
 
 
@@ -14,18 +11,16 @@ import java.io.*;
 
 import static window.WindowConstants.SCREEN_UNIT;
 
-public class TileManager {
+public class RoomManager {
 
-    private Rect grassPos = new Rect(128,64,16,16);
-    private Rect wallPos = new Rect(80, 64, 16, 16);
     // SCREEN CONSTANTS
     private int roomSize = 13;
 
-    private Tile[] tileImage;
+    private RoomTile[] roomImage;
     int [][] mapTileNum;
 
-    public TileManager(){
-        tileImage = new Tile[28];
+    public RoomManager(){
+        roomImage = new RoomTile[28];
         mapTileNum = new int[WindowConstants.SCREEN_WIDTH][WindowConstants.SCREEN_HEIGHT];
         getTileImage();
         loadMap();
@@ -52,6 +47,7 @@ public class TileManager {
                         case 22:
                             //System.out.println("Collision detected!");
                             return playerCollider.overlaps(tileCollider);
+
                         default:
                             break;
                     }
@@ -89,7 +85,7 @@ public class TileManager {
             for(int i = 0; i < 4; i++){
                 for(int j = 0; j < 7; j++){
                     int index = i * 7 + j;
-                    tileImage[index] = new Tile(new ImageIcon(sprite.getSubimage(j*16, i*16, 16, 16)));
+                    roomImage[index] = new RoomTile(new ImageIcon(sprite.getSubimage(j*16, i*16, 16, 16)));
                 }
             }
 
@@ -98,7 +94,6 @@ public class TileManager {
     }
 
     public void draw(Graphics g) {
-        int inset = WindowConstants.INSET_SIZE;
         int screenUnit = (int) SCREEN_UNIT*4;
         int xOffset =  WindowConstants.SCREEN_WIDTH/2 - screenUnit * roomSize/2;
         int yOffset =  WindowConstants.SCREEN_HEIGHT/2 - screenUnit * roomSize/2;
@@ -106,7 +101,7 @@ public class TileManager {
         for(int i = 0; i < roomSize; i++){
             for(int j = 0; j< roomSize; j++){
                 int tileNum = mapTileNum[j][i];
-                g.drawImage(tileImage[tileNum].image.getImage(), j*screenUnit+ xOffset, i*screenUnit + yOffset ,screenUnit, screenUnit, null);
+                g.drawImage(roomImage[tileNum].image.getImage(), j*screenUnit+ xOffset, i*screenUnit + yOffset ,screenUnit, screenUnit, null);
 
             }
         }

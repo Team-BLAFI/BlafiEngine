@@ -3,7 +3,7 @@ package window.scenes;
 import component.Collider;
 
 import component.Hitbox;
-import component.TileManager;
+import component.RoomManager;
 import entity.enemy.Enemy;
 
 import entity.player.Player;
@@ -28,7 +28,7 @@ public class GameScene extends Scene{
 
     public static ArrayList<Enemy> enemies = new ArrayList<>();
 
-    private TileManager tileManager = new TileManager();
+    private RoomManager roomManager= new RoomManager();
  
 
     public GameScene(){
@@ -77,7 +77,7 @@ public class GameScene extends Scene{
         //Sets color to dark gray
         g.setColor(Color.decode("#23272a"));
         g.fillRect(0,0, WindowConstants.SCREEN_WIDTH, WindowConstants.SCREEN_HEIGHT);
-        tileManager.draw(g);
+        roomManager.draw(g);
         g.setColor(Color.GREEN);
         g.drawString(displayInfo,10, (int) (WindowConstants.INSET_SIZE*1.5));
 
