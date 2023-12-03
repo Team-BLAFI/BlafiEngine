@@ -59,6 +59,7 @@ public class Health extends Component{
     public double getMaxHealth(){
         return maxHealth;
     }
+
     public void takeDamage(double d){
         health -= d;
 
@@ -75,17 +76,8 @@ public class Health extends Component{
     }
     @Override
     public void draw(Graphics g){
-        int x;
-        int y;
-        if (!isPlayer){
-            // If Enemy, position is above head
-            x = (int) owner.transform.position.x;
-            y = (int) owner.transform.position.y;
-        }else{
-            // If Player, use these positions
-            x = 10;
-            y = 10;
-        }
+        int x = (int) owner.transform.position.x;;
+        int y = (int) owner.transform.position.y;;
 
         if(!isPlayer && (health >= maxHealth)) return;
         g.setColor(new Color(0x1F1F1F));

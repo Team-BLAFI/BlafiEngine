@@ -30,7 +30,7 @@ public class GameScene extends Scene{
     public static ArrayList<Enemy> enemies = new ArrayList<>();
 
     private TileManager tileManager = new TileManager();
-    private final UI ui = new UI(this);
+    private final UI ui = new UI(this, player.health);
 
 
     public GameScene(){
@@ -92,6 +92,7 @@ public class GameScene extends Scene{
         // UI
         ui.draw(g, displayInfo, 10, (WindowConstants.INSET_SIZE*4));
         ui.draw(g, "Gun:"+weaponInfo, 10, (WindowConstants.INSET_SIZE*5));
+        ui.drawHealth(g, player.health);
     }
 
 }
