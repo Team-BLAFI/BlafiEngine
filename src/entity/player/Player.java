@@ -21,6 +21,9 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import static window.WindowConstants.SCREEN_UNIT;
+import static window.WindowConstants.tileSize;
+
 public class Player extends Entity {
 
     public Weapon weapon;
@@ -102,6 +105,9 @@ public class Player extends Entity {
      * @param deltaTime gets time since last frame to keep speed constant
      */
         private void HandleMovement(double deltaTime){
+            int screenUnit = (int) SCREEN_UNIT*4;
+            int xOffset =  WindowConstants.SCREEN_WIDTH / 2 - screenUnit * RoomManager.roomWidth/2;
+            int yOffset =  WindowConstants.SCREEN_HEIGHT/2 - screenUnit * RoomManager.roomHeight/2;
             Vector2D movementVector = GetMovementVector();
 
             movementVector.normalize();
@@ -111,16 +117,8 @@ public class Player extends Entity {
             Transform newPos = new Transform(transform);
 
             newPos.moveXBy(movementVector.getX());
-            if(roomManager.checkCollisions(newPos.getAsCollider())){
-                newPos.setX(transform.getX());
-            }
             newPos.moveYBy(movementVector.getY());
-            if(roomManager.checkCollisions(newPos.getAsCollider())){
-                newPos.setY(transform.getY());
-            }
-
             transform.setPosition(newPos.getPosition());
-
         }
 
     /**

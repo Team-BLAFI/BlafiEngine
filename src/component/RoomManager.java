@@ -1,104 +1,116 @@
 package component;
 import util.Rect;
 import window.WindowConstants;
-
+import entity.player.Player;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.ArrayList;
 
-import static window.WindowConstants.SCREEN_UNIT;
+import static window.WindowConstants.*;
 
 public class RoomManager {
 
+    public static int roomWidth = 16;
+    public static int roomHeight = 12;
+    public static int [][] mapTileNum;
     // SCREEN CONSTANTS
-    private int roomSize = 13;
+    public static boolean isDoor = false;
+    public static boolean isDoorOpen = false;
+    private ArrayList<Room> rooms = new ArrayList<>();
+    private Room currentRoom = new Room();
 
-    private RoomTile[] roomImage;
-    int [][] mapTileNum;
+    int screenUnit = (int) SCREEN_UNIT*4;
+    int xOffset =  WindowConstants.SCREEN_WIDTH/2 - screenUnit * roomWidth/2;
+    int yOffset =  WindowConstants.SCREEN_HEIGHT/2 - screenUnit * roomHeight/2;
+
+    public static ImageIcon[] tileSprites = new ImageIcon[48];
+
 
     public RoomManager(){
-        roomImage = new RoomTile[28];
+        Room currentRoom = new Room();
+        rooms.add(currentRoom);
         mapTileNum = new int[WindowConstants.SCREEN_WIDTH][WindowConstants.SCREEN_HEIGHT];
-        getTileImage();
-        loadMap("src/assets/roguelite.txt");
+        loadTileAtlas();
+        currentRoom.loadMap();
     }
 
-    public boolean checkCollisions(Collider playerCollider) {
-        int screenUnit = (int) SCREEN_UNIT*4;
-        int xOffset =  WindowConstants.SCREEN_WIDTH/2 - screenUnit * roomSize/2;
-        int yOffset =  WindowConstants.SCREEN_HEIGHT/2 - screenUnit * roomSize/2;
-        for (int i = 0; i < roomSize; i++) {
-            for (int j = 0; j < roomSize; j++) {
-                int tileNum = mapTileNum[j][i];
-                Rect tileBounds = new Rect(j * screenUnit + xOffset, i * screenUnit + yOffset, screenUnit, screenUnit);
-                Collider tileCollider = new Collider(tileBounds);
+//    public boolean checkCollisions(Collider playerCollider) {
+//        int screenUnit = (int) SCREEN_UNIT*4;
+//        int xOffset =  WindowConstants.SCREEN_WIDTH/2 - screenUnit * roomWidth/2;
+//        int yOffset =  WindowConstants.SCREEN_HEIGHT/2 - screenUnit * roomHeight/2;
+//        for (int i = 0; i < roomHeight; i++) {
+//            for (int j = 0; j < roomWidth; j++) {
+//                int tileNum = mapTileNum[j][i];
+//                Rect tileBounds = new Rect(j * screenUnit + xOffset, i * screenUnit + yOffset, screenUnit, screenUnit);
+//                Collider tileCollider = new Collider(tileBounds);
+//
+//                if (playerCollider.overlaps(tileCollider)) {
+//                    // Handle collision between player and tile here
+//                    switch (tileNum){
+//                        case 0:
+//                        case 1:
+//                        case 10:
+//                        case 17:
+//                        case 20:
+//                        case 34:
+//                            return playerCollider.overlaps(tileCollider);
+//                        case 22:
+//                        case 30:
+//                        case 38:
+//                        case 46:
+//                            handleTileOpenDoor();
+//                            return true;
+//                        default:
+//                            break;
+//                    }
+//
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
-                if (playerCollider.overlaps(tileCollider)) {
-                    // Handle collision between player and tile here
-                    switch (tileNum){
-                        case 1:
-                        case 7:
-                        case 9:
-                        case 14:
-                        case 16:
-                        case 22:
-                            //System.out.println("Collision detected!");
-                            return playerCollider.overlaps(tileCollider);
 
-                        default:
-                            break;
-                    }
+    private void handleTileOpenDoor() {
+        Room currentRoom = new Room();
+        isDoor = true;
+    }
 
+
+    public void loadTileAtlas(){
+        try{
+            BufferedImage sprite = ImageIO.read(new File("src/assets/roguelite_tileset.png"));
+            for(int i = 0; i < 6; i++) {
+                for (int j = 0; j < 8; j++) {
+                    int index = i * 8 + j;
+                    tileSprites[index] =  new ImageIcon(sprite.getSubimage(j * 16, i * 16, 16, 16));
                 }
             }
-        }
-        return false;
-    }
-
-    public void loadMap(String fileName) {
-        try{
-            BufferedReader br = new BufferedReader(new FileReader(fileName));
-            for (int row = 0; row < roomSize; row++){
-              String line = br.readLine();
-
-              for (int col = 0; col < roomSize; col++){
-                  String[] numbers = line.split(" ");
-                  int num = Integer.parseInt(numbers[col]);
-                  mapTileNum[col][row] = num;
-              }
-            }
-            br.close();
-        }catch(IOException | NumberFormatException e){e.printStackTrace();}
-    }
-
-    public void getTileImage(){
-        try{
-            BufferedImage sprite = ImageIO.read(new File("src/assets/tileset_roguelite.png"));
-            for(int i = 0; i < 4; i++){
-                for(int j = 0; j < 7; j++){
-                    int index = i * 7 + j;
-                    roomImage[index] = new RoomTile(new ImageIcon(sprite.getSubimage(j*16, i*16, 16, 16)));
-                }
-            }
-
-
         }catch (Exception e){e.printStackTrace();}
     }
 
+    public void makeNewRoom(){
+        currentRoom = new Room();
+    }
+
+    public Room getCurrentRoom(){
+        return currentRoom;
+    }
+
     public void draw(Graphics g) {
-        int screenUnit = (int) SCREEN_UNIT*4;
-        int xOffset =  WindowConstants.SCREEN_WIDTH/2 - screenUnit * roomSize/2;
-        int yOffset =  WindowConstants.SCREEN_HEIGHT/2 - screenUnit * roomSize/2;
 
-        for(int i = 0; i < roomSize; i++){
-            for(int j = 0; j< roomSize; j++){
-                int tileNum = mapTileNum[j][i];
-                g.drawImage(roomImage[tileNum].image.getImage(), j*screenUnit+ xOffset, i*screenUnit + yOffset ,screenUnit, screenUnit, null);
+        currentRoom.draw(g);
 
-            }
+    }
+
+    public void debugNewRoom(Player p){
+        if (currentRoom.isInDoor(p.transform.getAsCollider())){
+            currentRoom = new Room();
+            p.transform.setPosition(SCREEN_WIDTH/2,SCREEN_HEIGHT/2);
         }
 
     }

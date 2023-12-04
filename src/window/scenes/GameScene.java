@@ -15,6 +15,7 @@ import window.WindowConstants;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.security.Key;
 import java.util.ArrayList;
 
 public class GameScene extends Scene{
@@ -57,16 +58,21 @@ public class GameScene extends Scene{
                 enemies.remove(i);
                 continue;
             }
-
             enemies.get(i).update(deltaTime);
-
-
         }
 
+        roomManager.getCurrentRoom().collidesWithTiles(player.transform.getAsCollider());
+        roomManager.debugNewRoom(player);
 
         if(KL.getKeyListener().isKeyDown(KeyEvent.VK_ESCAPE)){
             Window.getWindow().changeState(WindowConstants.MENU_SCENE);
         }
+
+        if(KL.getKeyListener().isKeyDown(KeyEvent.VK_K)){
+            roomManager.makeNewRoom();
+        }
+
+
 
 
 
