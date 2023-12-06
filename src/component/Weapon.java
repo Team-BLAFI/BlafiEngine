@@ -22,8 +22,8 @@ public class Weapon extends Component{
 
     @Override
     public String toString() {
-        return String.format("[Mag:%s], [Bullets:%d]",
-                magSize, currentMag);
+        return String.format("%d/%s",
+                currentMag, magSize);
     }
 
     public Weapon(Entity owner, double dmg, double fireRate, double reloadCooldown, int magSize, double lifeTime) {

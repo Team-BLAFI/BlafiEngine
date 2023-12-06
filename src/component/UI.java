@@ -2,22 +2,26 @@ package component;
 import java.awt.Graphics2D;
 
 import entity.player.Player;
+import util.Rect;
 import window.Window;
 import window.scenes.Scene;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import static window.WindowConstants.SCREEN_UNIT;
-
-
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class UI {
     Scene gp;
     Font arial_40;
-    Health PlayerHealth;
     double unit = SCREEN_UNIT;
-//    double health = PlayerHealth.getHealth();
-//    double maxHealth = PlayerHealth.getMaxHealth();
-
+    //Health Variables
+    Health PlayerHealth;
+    private ImageIcon bar;
+    private ImageIcon bullet;
+    private ImageIcon barFill;
+    private ImageIcon barOutline;
     public UI(Scene gp, Health ph){
         this.gp = gp;
         this.PlayerHealth = ph;
@@ -32,17 +36,55 @@ public class UI {
         g2.drawString(Text,x,y);
 
     }
+    public void drawBullet(Graphics g2, int x, int y){
+        try{
+            BufferedImage bulletSprite = ImageIO.read(new File("src/assets/bullet.png"));
+            bullet = new ImageIcon(bulletSprite.getSubimage(10,0,11,31));
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        g2.drawImage(
+                bullet.getImage(),
+                x,
+                y,
+                25,
+                62,
+                null);
+    }
     public void drawHealth(Graphics g2, Health ph){
-        // Health
-        g2.setColor(new Color(0x1F1F1F));
-        g2.fillRect((int)unit, (int)unit*3, 200, 25);
+        // Read File
+        try{
+            BufferedImage healthBarSprite = ImageIO.read(new File("src/assets/health_bar.png"));
+            BufferedImage healthSprite = ImageIO.read(new File("src/assets/health.png"));
 
-        g2.setColor(new Color(0xE23131));
-        g2.fillRect((int)unit, (int)unit*3, (int)ph.getHealth()*2, 25
-        );
+            bar = new ImageIcon(healthBarSprite.getSubimage(1,2,125,11));
+            barFill = new ImageIcon(healthSprite.getSubimage(1,2,119,7));
 
-        g2.setColor(new Color(0xFFFBFB));
-        g2.drawRect((int)unit, (int)unit*3, 200, 25);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /* -- Health -- */
+        // bar
+        g2.drawImage(
+                bar.getImage(),
+                (int)unit,
+                (int)unit*3,
+                400,
+                25,
+                null);
+
+        // bar fill
+        if (ph.getHealth() > 0){
+            g2.drawImage(
+                    barFill.getImage(),
+                    (int)unit,
+                    (int)unit*3,
+                    (int)ph.getHealth()*4,
+                    20,
+                    null);
+
+        }
 
     }
 

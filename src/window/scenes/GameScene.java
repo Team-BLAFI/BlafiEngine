@@ -89,10 +89,15 @@ public class GameScene extends Scene{
         for (Enemy e: enemies) {
             e.draw(g);
         }
-        // UI
-        ui.draw(g, displayInfo, 10, (WindowConstants.INSET_SIZE*4));
-        ui.draw(g, "Gun:"+weaponInfo, 10, (WindowConstants.INSET_SIZE*5));
+        //-- UI --
+        //FPS
+        ui.draw(g, displayInfo, WindowConstants.SCREEN_WIDTH-(int)WindowConstants.SCREEN_UNIT*20, (int)WindowConstants.SCREEN_UNIT*5);
+        //Health
         ui.drawHealth(g, player.health);
+        //Weapon
+        ui.drawBullet(g,(int)WindowConstants.SCREEN_UNIT*2, (int)WindowConstants.SCREEN_UNIT*7 );
+        ui.draw(g, weaponInfo, (int)WindowConstants.SCREEN_UNIT*5, (WindowConstants.INSET_SIZE*5));
+
     }
 
 }
