@@ -12,6 +12,8 @@ import window.scenes.GameScene;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
+import static entity.enemy.Enemy.States.*;
+
 public class Enemy extends Entity {
 
     private final double damagePerSecond = 30.0;
@@ -94,6 +96,15 @@ public class Enemy extends Entity {
         }
     }
 
+    // TODO Need to continue working on state machine
+    public enum States {
+        Idle, Moving, Attacking, Recovering
+    }
+
+    States nextState;
+    States state;
+    double stateLock;
+
     public void stateMachine(double deltaTime) {
         if (nextState != null && stateLock <= 0){
             state = nextState;
@@ -122,7 +133,7 @@ public class Enemy extends Entity {
     private void handleAI(double deltaTime) {
         Vector2D v = getVectorToPlayer();
         if (v.getMagnitude() <= reach){
-            nextState = State.Attacking;
+            nextState = Attacking;
         }else{
             chasePlayer(deltaTime);
         }
@@ -132,7 +143,7 @@ public class Enemy extends Entity {
     private void handleAttack(double deltaTime) {
         if (stateLock<=0){
             stateLock = 1;
-            nextState = State.Idle;
+            nextState = Idle;
             windUp = 0.5;
         }else if (windUp <= 0) {
             System.out.println("ATTACK");
