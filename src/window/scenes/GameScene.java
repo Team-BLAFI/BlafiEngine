@@ -95,8 +95,8 @@ public class GameScene extends Scene{
         //Health
         ui.drawHealth(g, player.health);
         //Weapon
-        ui.drawBullet(g,(int)WindowConstants.SCREEN_UNIT*2, (int)WindowConstants.SCREEN_UNIT*7 );
-        ui.draw(g, weaponInfo, (int)WindowConstants.SCREEN_UNIT*5, (WindowConstants.INSET_SIZE*5));
+        ui.drawBullet(g,(int)WindowConstants.SCREEN_UNIT*2, (int)WindowConstants.SCREEN_UNIT*50 );
+        ui.draw(g, weaponInfo, (int)WindowConstants.SCREEN_UNIT*5, ((int)WindowConstants.SCREEN_UNIT*53 ));
 
     }
 
