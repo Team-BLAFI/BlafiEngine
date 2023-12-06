@@ -29,7 +29,6 @@ public class Player extends Entity {
 
     private TileManager tileManager;
 
-
     /**<p>
      * Saves a pointer to the singleton instance of the KeyListener class
      *</p>
@@ -42,7 +41,7 @@ public class Player extends Entity {
         double w = WindowConstants.SCREEN_WIDTH;
         double h = WindowConstants.SCREEN_HEIGHT;
 
-        transform = new Transform(w/2.0,h/2, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
+        transform = new Transform(w/20.,h/2, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
 
         collider = new Collider(
                 (int) transform.getX(),
@@ -55,12 +54,12 @@ public class Player extends Entity {
 //        thisShooting = new Shooting(this);
         weapon = new Weapon(this, 30, 0.1, 2,100,100);
 
-
         health = new Health(
                 100.0,
                 (int) (unit * 0.4),
                 (int) - unit,
-                this
+                this,
+                true
         );
     }
 
@@ -74,6 +73,7 @@ public class Player extends Entity {
 
         health.draw(g);
         weapon.draw(g);
+
     }
 
     public void update(double deltaTime){
