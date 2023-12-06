@@ -41,7 +41,7 @@ public class Player extends Entity {
         double w = WindowConstants.SCREEN_WIDTH;
         double h = WindowConstants.SCREEN_HEIGHT;
 
-        transform = new Transform(w/20.,h/2, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
+        transform = new Transform(w/2.0,h/2, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
 
         collider = new Collider(
                 (int) transform.getX(),
