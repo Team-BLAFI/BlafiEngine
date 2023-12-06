@@ -33,7 +33,8 @@ public class Enemy extends Entity {
                 100.0,
                 (int) (unit * -.5),
                 (int) - unit,
-                this
+                this,
+                false
         );
     }
 
