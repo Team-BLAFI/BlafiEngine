@@ -1,15 +1,10 @@
 package window.scenes;
 
-import component.Collider;
-
-import component.Hitbox;
 import component.TileManager;
 import component.UI;
-import component.Weapon;
 import entity.enemy.Enemy;
 
 import entity.player.Player;
-import util.Rect;
 import util.io.KL;
 import window.Window;
 import window.WindowConstants;

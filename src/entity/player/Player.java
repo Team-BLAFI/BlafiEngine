@@ -9,6 +9,9 @@ import util.Transform;
 import util.Vector2D;
 import util.io.KL;
 import util.io.ML;
+import weapons.Shotgun;
+import weapons.Weapon;
+import weapons.WeaponPresets;
 import window.WindowConstants;
 
 import java.awt.*;
@@ -178,11 +181,12 @@ public class Player extends Entity {
 
     public void addNewWeapon() {
         System.out.println("intial activation");
-        weaponInventory.add(weaponPresets.createShotgun(this));
+        //weaponInventory.add(weaponPresets.createShotgun(this));
+        weaponInventory.add(new Shotgun(this, 10, 0.3, 0.2, 6, 3, 6));
         currWeaponIndex = weaponInventory.size() - 1;
         setWeapon();
         System.out.println("player addNewWeapon invoked");
-        currWeapon.setRandomFireRateTest();
+        //currWeapon.setRandomFireRateTest();
     }
 
     public void setWeapon() {

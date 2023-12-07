@@ -1,13 +1,16 @@
-package component;
+package weapons;
 
+import component.Component;
+import component.Projectile;
 import entity.Entity;
 import util.Vector2D;
+import weapons.WeaponPresets;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Weapon extends Component{
+public class Weapon extends Component {
     Entity owner;
 
     public WeaponPresets weaponPresets;
@@ -37,14 +40,13 @@ public class Weapon extends Component{
         this.magSize = magSize;
         this.currentMag = magSize;
         this.lifeTime = lifeTime;
-
     }
+
     public void setRandomFireRateTest() {
         Random rand = new Random();
         this.fireRate = rand.nextInt(4);
         System.out.println("random fire rate" + this.fireRate);
     }
-
 
     public void shoot(double x, double y) {
         if(activeRC>0){
