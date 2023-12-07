@@ -32,13 +32,11 @@ public class WeaponPresets {
                 if (fireCD <=0 && currentMag > 0) {
                     // shoot bullet
                     Vector2D v = new Vector2D(x, y);
-                    Vector2D travelDirection = owner.transform.position.getVectorTo(v);
-                    travelDirection.x = xRotate(travelDirection.x, travelDirection.y, 30);
-                    travelDirection.y = yRotate(travelDirection.x, travelDirection.y, 30);
+                    Vector2D travelDirection = owner.transform.getPosition().getVectorTo(v);
 
                     liveProjectiles.add(new Projectile(
-                            (int) (owner.transform.position.x + owner.transform.size.x / 2),
-                            (int) (owner.transform.position.y + owner.transform.size.y / 2),
+                            (int) (owner.transform.getX() + owner.transform.getWidth() / 2),
+                            (int) (owner.transform.getY() + owner.transform.getHeight() / 2),
                             travelDirection,
                             this.lifeTime)
                     );
@@ -58,14 +56,14 @@ public class WeaponPresets {
     }
     public Vector2D getVectorFromAngle(Vector2D initVec, double angle) {
 
-    }*/
+    }
     public double xRotate(double x, double y, double angle) {
         return (x * java.lang.Math.cos(angle)) - (y * java.lang.Math.sin(angle));
     }
     public double yRotate(double x, double y, double angle) {
         return (x * java.lang.Math.sin(angle)) + (y * java.lang.Math.cos(angle));
     }
-
+*/
 
 
 

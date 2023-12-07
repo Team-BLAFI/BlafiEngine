@@ -81,11 +81,7 @@ public class Projectile extends Component{
 			
 		}
 	}
-	
-	public void setPos(double x, double y) {
-		transform.position.x = x;
-		transform.position.y = y;
-	}
+
 	
 	public void onHit(Enemy e) {
 		e.health.takeDamage(this.baseDamage);
@@ -120,36 +116,31 @@ public class Projectile extends Component{
 
 		if(!GameScene.enemies.isEmpty()){
 			for (Enemy e : GameScene.enemies) {
-				Collider bullet = new Collider(
-						(int) transform.position.x,
-						(int) transform.position.y,
-						(int) transform.size.x,
-						(int) transform.size.y
-				);
 
-				Collider enemy = new Collider(
-						(int) e.transform.position.x,
-						(int) e.transform.position.y,
-						(int) e.transform.size.x,
-						(int) e.transform.size.y
-				);
-				if (bullet.overlaps(enemy) && !hit.contains(e)){
+				Collider bulletC = this.transform.getAsCollider();
+				Collider enemyC = e.transform.getAsCollider();
+
+				if (bulletC.overlaps(enemyC) && !hit.contains(e)){
 					onHit(e);
 				}
 			}
-
-
 		}
 
+		Vector2D moveVector = new Vector2D(travelDirection.getX(), travelDirection.getY());
+		moveVector.multiply(unit * baseFlightSpeed * deltaTime);
 
-		transform.position.x += travelDirection.x * unit * baseFlightSpeed * deltaTime;
-		transform.position.y += travelDirection.y * unit * baseFlightSpeed * deltaTime;
+		transform.movePositionBy( moveVector );
 
 	}
 
 	public void draw(Graphics g) {
 		g.setColor(Color.RED);
-		g.fillRect((int) transform.position.x,(int) transform.position.y, (int) transform.size.x, (int) transform.size.y);
+		g.fillRect(
+				(int) transform.getX(),
+				(int) transform.getY(),
+				(int) transform.getWidth(),
+				(int) transform.getHeight()
+		);
 	}
 
 

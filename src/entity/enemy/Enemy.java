@@ -1,5 +1,4 @@
 package entity.enemy;
-import component.Collider;
 import component.Health;
 import entity.Entity;
 import entity.player.Player;
@@ -7,7 +6,6 @@ import entity.player.PlayerConstants;
 import util.Transform;
 import util.Vector2D;
 import util.io.KL;
-import window.Window;
 import window.WindowConstants;
 import window.scenes.GameScene;
 
@@ -35,7 +33,8 @@ public class Enemy extends Entity {
                 100.0,
                 (int) (unit * -.5),
                 (int) - unit,
-                this
+                this,
+                false
         );
     }
 
@@ -44,38 +43,33 @@ public class Enemy extends Entity {
         Vector2D movementVector = new Vector2D();
 
         if(KL.getKeyListener().isKeyDown(KeyEvent.VK_UP)){
-            movementVector.y -= 1.0;
+            movementVector.setY(movementVector.getY() - 1.0);
         }
         if(KL.getKeyListener().isKeyDown(KeyEvent.VK_DOWN)){
-            movementVector.y += 1.0;
+            movementVector.setY(movementVector.getY() + 1.0);
         }
         if(KL.getKeyListener().isKeyDown(KeyEvent.VK_LEFT)){
-            movementVector.x -= 1.0;
+            movementVector.setX(movementVector.getX() - 1.0);
         }
         if(KL.getKeyListener().isKeyDown(KeyEvent.VK_RIGHT)){
-            movementVector.x += 1.0;
+            movementVector.setX(movementVector.getX() + 1.0);
         }
 
-        if(movementVector.x == 1.0 && movementVector.y == 1.0){
-            double movementVectorMagnitude = Math.sqrt(movementVector.x * movementVector.x + movementVector.y * movementVector.y);
+        movementVector.normalize();
 
-            movementVector.x = movementVector.x / movementVectorMagnitude;
-            movementVector.y = movementVector.y / movementVectorMagnitude;
-        }
+        movementVector.multiply(PlayerConstants.PLAYER_SPEED * dt);
 
-        transform.position.x += movementVector.x * PlayerConstants.PLAYER_SPEED * dt;
-        transform.position.y += movementVector.y * PlayerConstants.PLAYER_SPEED * dt;
+        transform.setX(transform.getX() + movementVector.getX());
+        transform.setY(transform.getY() + movementVector.getY());
 
-        double px = p.transform.position.x + p.transform.size.x/2;
-        double py = p.transform.position.y + p.transform.size.y/2;
 
-        double x = transform.position.x + transform.size.x/2;
-        double y = transform.position.y + transform.size.y/2;
 
-        Vector2D d = new Vector2D(x,y);
-        d = d.getVectorToNotNorm(new Vector2D(px,py));
-        if(d.getMagnitude()<unit*3.5){
-            GameScene.player.health.takeDamage(10*dt);
+        Vector2D d = new Vector2D(transform.getCenterX(), transform.getCenterY());
+
+        d = d.getVectorToNotNorm(new Vector2D(p.transform.getCenterX(),p.transform.getCenterY()));
+
+        if(d.getMagnitude()<unit*5){
+            GameScene.player.health.takeDamage(30*dt);
         }
 
     }
@@ -84,13 +78,27 @@ public class Enemy extends Entity {
     public void draw(Graphics g) {
 
 
-        g.fillRect((int) this.transform.position.x, (int) this.transform.position.y, (int) this.transform.size.x, (int) this.transform.size.y);
+        g.fillRect(
+                (int) this.transform.getX(),
+                (int) this.transform.getY(),
+                (int) this.transform.getWidth(),
+                (int) this.transform.getHeight()
+        );
         health.draw(g);
 
-        int x = (int) (transform.position.x + transform.size.x/2);
-        int y = (int) (transform.position.y + transform.size.y/2);
+        int x = (int) (transform.getCenterX());
+        int y = (int) (transform.getCenterY());
 
         g.setColor(Color.GREEN);
-        g.drawLine(x,y, (int) (x+3.5*unit),y);
+        g.drawLine(x, y, (int) (x+4*unit),y);
+        g.drawLine(x, y, x, (int) (y-4*unit));
+
+       g.drawOval(
+               (int) (transform.getCenterX() - 4*unit),
+               (int) (transform.getCenterY() - 4*unit),
+               (int) (8*unit),
+               (int) (8*unit)
+       );
+
     }
 }

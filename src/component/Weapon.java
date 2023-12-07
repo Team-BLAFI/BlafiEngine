@@ -22,8 +22,12 @@ public class Weapon extends Component{
     int currentMag;
     ArrayList<Projectile> liveProjectiles = new ArrayList<>();
     double lifeTime;
-    
-   
+
+    @Override
+    public String toString() {
+        return String.format("%d/%s",
+                currentMag, magSize);
+    }
 
     public Weapon(Entity owner, double dmg, double fireRate, double reloadCooldown, int magSize, double lifeTime) {
         this.owner = owner;
@@ -48,16 +52,20 @@ public class Weapon extends Component{
         }
         if (fireCD <=0 && currentMag > 0) {
             // shoot bullet
-            Vector2D v = new Vector2D(x,y);
-            Vector2D travelDirection = owner.transform.position.getVectorTo(v);
 
-            createProjectile(travelDirection);
-            /*liveProjectiles.add(new Projectile(
-                    (int) (owner.transform.position.x + owner.transform.size.x/2),
-                    (int) (owner.transform.position.y + owner.transform.size.y/2),
-                    travelDirection,
+            Vector2D origin = new Vector2D(owner.transform.getCenterX(),owner.transform.getCenterY());
+            Vector2D destination = new Vector2D(x,y);
+
+            Vector2D bulletTravelDirection = origin.getVectorTo(destination);
+
+
+            //createProjectile(travelDirection);
+            liveProjectiles.add(new Projectile(
+                    (int) (origin.getX()),
+                    (int) (origin.getY()),
+                    bulletTravelDirection,
                     this.lifeTime)
-            );*/
+            );
             fireCD = fireRate;
             currentMag--;
         } else if (currentMag == 0){
@@ -66,8 +74,8 @@ public class Weapon extends Component{
     }
     public void createProjectile(Vector2D travelDirection) {
         liveProjectiles.add(new Projectile(
-                (int) (owner.transform.position.x + owner.transform.size.x/2),
-                (int) (owner.transform.position.y + owner.transform.size.y/2),
+                (int) (owner.transform.getX() + owner.transform.getSize().getX()/2),
+                (int) (owner.transform.getY() + owner.transform.getSize().getY()/2),
                 travelDirection,
                 this.lifeTime)
         );
