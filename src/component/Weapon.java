@@ -51,17 +51,27 @@ public class Weapon extends Component{
             Vector2D v = new Vector2D(x,y);
             Vector2D travelDirection = owner.transform.position.getVectorTo(v);
 
-            liveProjectiles.add(new Projectile(
+            createProjectile(travelDirection);
+            /*liveProjectiles.add(new Projectile(
                     (int) (owner.transform.position.x + owner.transform.size.x/2),
                     (int) (owner.transform.position.y + owner.transform.size.y/2),
                     travelDirection,
                     this.lifeTime)
-            );
+            );*/
             fireCD = fireRate;
             currentMag--;
         } else if (currentMag == 0){
             reload();
         }
+    }
+    public void createProjectile(Vector2D travelDirection) {
+        liveProjectiles.add(new Projectile(
+                (int) (owner.transform.position.x + owner.transform.size.x/2),
+                (int) (owner.transform.position.y + owner.transform.size.y/2),
+                travelDirection,
+                this.lifeTime)
+        );
+
     }
 
     public void reload() {

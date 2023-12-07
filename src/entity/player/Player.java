@@ -72,6 +72,8 @@ public class Player extends Entity {
         );
         weaponPresets = new WeaponPresets();
     }
+
+
     public void draw(Graphics g){
         g.setColor(PlayerConstants.characterColor);
         g.fillRect((int) transform.position.x, (int) transform.position.y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
@@ -82,34 +84,13 @@ public class Player extends Entity {
 
         health.draw(g);
         if (currWeapon == null) addNewWeapon();
-        currWeapon.draw(g);
-    }
-
-
-    public void addNewWeapon() {
-        System.out.println("intial activation");
-        weaponInventory.add(weaponPresets.createDefault(this));
-        currWeaponIndex = weaponInventory.size() - 1;
-        setWeapon();
-        System.out.println("player addNewWeapon invoked");
-        currWeapon.setRandomFireRateTest();
-    }
-
-    public void setWeapon() {
-        currWeapon = weaponInventory.get(currWeaponIndex);
-        System.out.println("setting weapon" + currWeaponIndex);
-    }
-    public void switchWeapon(int addIndex) {
-        currWeaponIndex += addIndex;
-        if (currWeaponIndex >= weaponInventory.size()) {
-            currWeaponIndex = 0;
+        //currWeapon.draw(g);
+        for (int i = 0; i < weaponInventory.size(); i++) {
+            weaponInventory.get(i).draw(g);
         }
-        if (currWeaponIndex < 0) {
-            currWeaponIndex = weaponInventory.size() - 1;
-        }
-        currWeapon = weaponInventory.get(currWeaponIndex);
-        System.out.println("switched weapon!" + currWeaponIndex);
     }
+
+
 
     public void update(double deltaTime){
         HandleMovement(deltaTime);
@@ -144,8 +125,10 @@ public class Player extends Entity {
             transform.position.x -= movementVector.x * PlayerConstants.PLAYER_SPEED * deltaTime;
             transform.position.y -= movementVector.y * PlayerConstants.PLAYER_SPEED * deltaTime;
         }
-     
-        currWeapon.update(deltaTime);
+
+        for (int i = 0; i < weaponInventory.size(); i++) {
+            weaponInventory.get(i).update(deltaTime);
+        }
     }
 
     /**
@@ -195,8 +178,32 @@ public class Player extends Entity {
 
         return movementVector;
     }
+    public void addNewWeapon() {
+        System.out.println("intial activation");
+        weaponInventory.add(weaponPresets.createShotgun(this));
+        currWeaponIndex = weaponInventory.size() - 1;
+        setWeapon();
+        System.out.println("player addNewWeapon invoked");
+        currWeapon.setRandomFireRateTest();
+    }
 
-
-
+    public void setWeapon() {
+        currWeapon = weaponInventory.get(currWeaponIndex);
+        System.out.println("setting weapon" + currWeaponIndex);
+    }
+    public void switchWeapon(int addIndex) {
+        currWeaponIndex += addIndex;
+        if (currWeaponIndex >= weaponInventory.size()) {
+            currWeaponIndex = 0;
+        }
+        if (currWeaponIndex < 0) {
+            currWeaponIndex = weaponInventory.size() - 1;
+        }
+        currWeapon = weaponInventory.get(currWeaponIndex);
+        System.out.println("switched weapon!" + currWeaponIndex);
+    }
+//FIXME cooldown is reset when weapon is switched; bypass cooldown when weapon switched
+    //feature?
+//FIXME creates and switches weapons every frame; one press is many creations and switches
     
 }
