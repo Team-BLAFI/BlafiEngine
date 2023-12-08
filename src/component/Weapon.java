@@ -19,8 +19,10 @@ public class Weapon extends Component{
     int currentMag;
     ArrayList<Projectile> liveProjectiles = new ArrayList<>();
     double lifeTime;
-    
-   
+
+    public int getCurrentMag(){
+        return currentMag;
+    }
 
     public Weapon(Entity owner, double dmg, double fireRate, double reloadCooldown, int magSize, double lifeTime) {
         this.owner = owner;
@@ -39,6 +41,7 @@ public class Weapon extends Component{
         if (fireCD <=0 && currentMag > 0) {
             // shoot bullet
 
+            Sound.WEAPON_SHOOT_0.play();
             Vector2D origin = new Vector2D(owner.transform.getCenterX(),owner.transform.getCenterY());
             Vector2D destination = new Vector2D(x,y);
 

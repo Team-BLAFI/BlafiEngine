@@ -1,8 +1,9 @@
-package window.scenes;
+                                                                                                                                                                                                                                               package window.scenes;
 
 import component.Collider;
 
 import component.Hitbox;
+import component.Sound;
 import component.TileManager;
 import entity.enemy.Enemy;
 
@@ -23,27 +24,30 @@ public class GameScene extends Scene{
     private int frameRate = 0;
     private String displayInfo = "";
     public static Player player = new Player();
+
     private static GameScene gameScene = null;
 
-
+//    private Sound sound = new Sound();
     public static ArrayList<Enemy> enemies = new ArrayList<>();
 
     private TileManager tileManager = new TileManager();
  
 
     public GameScene(){
-
+        Sound.playMusic(Sound.TRACK_2.getClip());
     }
 
     public static GameScene getGameScene(){
         if(GameScene.gameScene == null){
             GameScene.gameScene = new GameScene();
+
         }
         return GameScene.gameScene;
     }
 
     @Override
     public void update(double deltaTime) {
+
         if (enemies.isEmpty()){
             enemies.add(new Enemy(player));
         }
@@ -63,6 +67,36 @@ public class GameScene extends Scene{
 
         }
 
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_1)){
+            Sound.setVolume(0.1f, Sound.TRACK_2);
+        }
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_2)){
+            Sound.setVolume(0.2f, Sound.TRACK_2);
+        }
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_3)){
+            Sound.setVolume(0.3f, Sound.TRACK_2);
+        }
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_4)){
+            Sound.setVolume(0.4f, Sound.TRACK_2);
+        }
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_5)){
+            Sound.setVolume(0.5f, Sound.TRACK_2);
+        }
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_6)){
+            Sound.setVolume(0.6f, Sound.TRACK_2);
+        }
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_7)){
+            Sound.setVolume(0.7f, Sound.TRACK_2);
+        }
+
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_M)){
+            Sound.playMusic(Sound.TRACK_2.getClip());
+        }
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_N)){
+            Sound.playMusic(Sound.TRACK_1.getClip());
+        }
+
+
 
         if(KL.getKeyListener().isKeyDown(KeyEvent.VK_ESCAPE)){
             Window.getWindow().changeState(WindowConstants.MENU_SCENE);
@@ -71,7 +105,6 @@ public class GameScene extends Scene{
 
 
     }
-
     @Override
     public void draw(Graphics g) {
         //Sets color to dark gray
@@ -86,6 +119,7 @@ public class GameScene extends Scene{
             e.draw(g);
         }
 
+        //Sound
 
     }
 

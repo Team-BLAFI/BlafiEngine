@@ -1,5 +1,6 @@
 package window;
 
+import component.Sound;
 import util.Time;
 import util.io.KL;
 import util.io.ML;
@@ -152,7 +153,6 @@ public class Window extends JFrame implements Runnable {
 
 
                 update(deltaTime);
-
             }
 
         }catch(Exception e){
@@ -160,6 +160,7 @@ public class Window extends JFrame implements Runnable {
         }
 
         this.dispose();
+
     }
 
     public void CloseWindow() {

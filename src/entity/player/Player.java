@@ -1,12 +1,6 @@
 package entity.player;
 
-import component.Collider;
-
-import component.Health;
-
-import component.Weapon;
-
-import component.TileManager;
+import component.*;
 
 import entity.Entity;
 
@@ -24,7 +18,6 @@ import java.awt.event.MouseEvent;
 public class Player extends Entity {
 
     public Weapon weapon;
-
     private double unit = WindowConstants.SCREEN_UNIT;
 
     private TileManager tileManager;
@@ -64,6 +57,8 @@ public class Player extends Entity {
         );
     }
 
+
+
     public void draw(Graphics g){
         g.setColor(PlayerConstants.characterColor);
         g.fillRect((int) transform.getX(), (int) transform.getY(), PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
@@ -84,6 +79,8 @@ public class Player extends Entity {
 
         if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
             weapon.shoot(mouseListener.getX(), mouseListener.getY());
+
+
         }
         if (keyListener.isKeyDown(KeyEvent.VK_R)){
             weapon.reload();
