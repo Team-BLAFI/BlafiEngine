@@ -30,7 +30,9 @@ public class Player extends Entity {
 
     ArrayList<Weapon> weaponInventory = new ArrayList<>();
     public int currWeaponIndex =  0;
+    public double switchWepCD;
 
+    public int maxInventorySize;
     public WeaponPresets weaponPresets;
     private double unit = WindowConstants.SCREEN_UNIT;
 
@@ -70,6 +72,8 @@ public class Player extends Entity {
                 true
         );
         weaponPresets = new WeaponPresets();
+        maxInventorySize = 4;
+        switchWepCD = 1.5;
     }
 
 
@@ -132,6 +136,7 @@ public class Player extends Entity {
         for (int i = 0; i < weaponInventory.size(); i++) {
             weaponInventory.get(i).update(deltaTime);
         }
+        switchWepCD -= deltaTime;
     }
 
     /**
@@ -181,12 +186,16 @@ public class Player extends Entity {
 
     public void addNewWeapon() {
         System.out.println("intial activation");
+        if (weaponInventory.size() >= 4) {
+            System.out.println("inventory full!");
+            return;
+        }
         //weaponInventory.add(weaponPresets.createShotgun(this));
         weaponInventory.add(new Shotgun(this, 10, 0.3, 0.2, 6, 3, 6));
         currWeaponIndex = weaponInventory.size() - 1;
         setWeapon();
         System.out.println("player addNewWeapon invoked");
-        //currWeapon.setRandomFireRateTest();
+        currWeapon.setRandomFireRateTest();
     }
 
     public void setWeapon() {
@@ -194,6 +203,10 @@ public class Player extends Entity {
         System.out.println("setting weapon" + currWeaponIndex);
     }
     public void switchWeapon(int addIndex) {
+        if (switchWepCD > 0){
+            System.out.println("switch cd");
+            return;
+        }
         currWeaponIndex += addIndex;
         if (currWeaponIndex >= weaponInventory.size()) {
             currWeaponIndex = 0;
@@ -203,9 +216,9 @@ public class Player extends Entity {
         }
         currWeapon = weaponInventory.get(currWeaponIndex);
         System.out.println("switched weapon!" + currWeaponIndex);
+        switchWepCD = 1.5;
     }
-//FIXME cooldown is reset when weapon is switched; bypass cooldown when weapon switched
-    //feature?
-//FIXME creates and switches weapons every frame; one press is many creations and switches
+
+
     
 }
