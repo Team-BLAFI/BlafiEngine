@@ -3,6 +3,8 @@ package window.scenes;
 import component.TileManager;
 import component.UI;
 import entity.enemy.Enemy;
+import weapons.WeaponPickup;
+import weapons.Shotgun;
 
 import entity.player.Player;
 import util.io.KL;
@@ -21,7 +23,8 @@ public class GameScene extends Scene{
     public static Player player = new Player();
     private static GameScene gameScene = null;
 
-
+    public static ArrayList<WeaponPickup> allWeaponPickups = new ArrayList<>();
+    int pickupTest = 1;
     public static ArrayList<Enemy> enemies = new ArrayList<>();
 
     private TileManager tileManager = new TileManager();
@@ -44,6 +47,12 @@ public class GameScene extends Scene{
         if (enemies.isEmpty()){
             enemies.add(new Enemy(player));
         }
+        if (pickupTest == 1) {
+            allWeaponPickups.add(new WeaponPickup(player.transform.getX(), player.transform.getY() + 40, new Shotgun(player), player));
+            pickupTest-=1;
+        }
+
+
         frameRate = (int) (1/deltaTime);
         weaponInfo = player.currWeapon.toString();
         // Displays the INFO to UI
@@ -61,7 +70,11 @@ public class GameScene extends Scene{
 
 
         }
-
+       if (!allWeaponPickups.isEmpty()) {
+            for (int i = 0; i < allWeaponPickups.size(); i++) {
+                allWeaponPickups.get(i).update(deltaTime);
+            }
+        }
         if(KL.getKeyListener().isKeyDown(KeyEvent.VK_ESCAPE)){
             Window.getWindow().changeState(WindowConstants.MENU_SCENE);
         }
@@ -79,6 +92,11 @@ public class GameScene extends Scene{
         player.draw(g);
         for (Enemy e: enemies) {
             e.draw(g);
+        }
+        if (!allWeaponPickups.isEmpty()) {
+            for (int i = 0; i < allWeaponPickups.size(); i++) {
+                allWeaponPickups.get(i).draw(g);
+            }
         }
         //-- UI --
         //FPS

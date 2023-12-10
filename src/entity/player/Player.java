@@ -11,6 +11,7 @@ import util.io.KL;
 import util.io.ML;
 import weapons.Shotgun;
 import weapons.Weapon;
+import weapons.WeaponPickup;
 import weapons.WeaponPresets;
 import window.WindowConstants;
 
@@ -74,6 +75,9 @@ public class Player extends Entity {
         weaponPresets = new WeaponPresets();
         maxInventorySize = 4;
         switchWepCD = 1.5;
+        addNewWeapon(new Weapon(this, 10, 0.3, 0.2, 6, 3));
+       // new WeaponPickup(transform.getX(), transform.getY() + 40, new Shotgun(this), this);
+
     }
 
 
@@ -86,7 +90,7 @@ public class Player extends Entity {
         g.setColor(Color.YELLOW);
 
         health.draw(g);
-        if (currWeapon == null) addNewWeapon();
+
         //currWeapon.draw(g);
         for (int i = 0; i < weaponInventory.size(); i++) {
             weaponInventory.get(i).draw(g);
@@ -110,7 +114,7 @@ public class Player extends Entity {
             currWeapon.reload();
         }
         if (keyListener.isKeyDown(KeyEvent.VK_N)){
-            addNewWeapon();
+            addNewWeapon(new Weapon(this, 10, 0.3, 0.2, 6, 3));
         }
         if (keyListener.isKeyDown(KeyEvent.VK_Z)){
             switchWeapon(-1);
@@ -184,14 +188,14 @@ public class Player extends Entity {
         return movementVector;
     }
 
-    public void addNewWeapon() {
+    public void addNewWeapon(Weapon weapon) {
         System.out.println("intial activation");
         if (weaponInventory.size() >= 4) {
             System.out.println("inventory full!");
             return;
         }
         //weaponInventory.add(weaponPresets.createShotgun(this));
-        weaponInventory.add(new Shotgun(this, 10, 0.3, 0.2, 6, 3, 6));
+        weaponInventory.add(weapon);
         currWeaponIndex = weaponInventory.size() - 1;
         setWeapon();
         System.out.println("player addNewWeapon invoked");

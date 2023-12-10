@@ -13,6 +13,12 @@ public class Shotgun extends  Weapon{
         this.pellets = pellets;
     }
 
+    public Shotgun(Entity owner) {
+        super(owner, 10, 0.3, 0.2, 6, 3);
+        this.pellets = 6;
+
+    }
+
     @Override
     public void shoot(double x, double y) {
         if(activeRC>0){
