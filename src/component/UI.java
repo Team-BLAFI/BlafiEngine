@@ -54,26 +54,17 @@ public class UI {
     public void drawHealth(Graphics g2, Health ph){
         // Read File
         try{
-            BufferedImage healthBarSprite = ImageIO.read(new File("src/assets/health_bar.png"));
-            BufferedImage healthSprite = ImageIO.read(new File("src/assets/health.png"));
+            BufferedImage healthBarSprite = ImageIO.read(new File("src/assets/UIpack2.png"));
+            BufferedImage healthSprite = ImageIO.read(new File("src/assets/UIpack2.png"));
 
-            bar = new ImageIcon(healthBarSprite.getSubimage(1,2,125,11));
-            barFill = new ImageIcon(healthSprite.getSubimage(1,2,119,7));
+            bar = new ImageIcon(healthBarSprite.getSubimage(1,35,46,11));
+            barFill = new ImageIcon(healthSprite.getSubimage(49,21,43,6));
 
         }catch (Exception e) {
             e.printStackTrace();
         }
 
         /* -- Health -- */
-        // bar
-        g2.drawImage(
-                bar.getImage(),
-                (int)unit,
-                (int)unit*3,
-                400,
-                25,
-                null);
-
         // bar fill
         if (ph.getHealth() > 0){
             g2.drawImage(
@@ -81,10 +72,20 @@ public class UI {
                     (int)unit,
                     (int)unit*3,
                     (int)ph.getHealth()*4,
-                    20,
+                    30,
                     null);
 
         }
+        // bar
+        g2.drawImage(
+                bar.getImage(),
+                (int)unit,
+                (int)unit*3,
+                400,
+                35,
+                null);
+
+
 
     }
 
