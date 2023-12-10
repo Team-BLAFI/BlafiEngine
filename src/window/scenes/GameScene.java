@@ -48,10 +48,9 @@ public class GameScene extends Scene{
             enemies.add(new Enemy(player));
         }
         if (pickupTest == 1) {
-            allWeaponPickups.add(new WeaponPickup(player.transform.getX(), player.transform.getY() + 40, new Shotgun(player), player));
+            allWeaponPickups.add(new WeaponPickup(player.transform.getX(), player.transform.getY() + 120, new Shotgun(player), player));
             pickupTest-=1;
         }
-
 
         frameRate = (int) (1/deltaTime);
         weaponInfo = player.currWeapon.toString();
@@ -70,11 +69,23 @@ public class GameScene extends Scene{
 
 
         }
-       if (!allWeaponPickups.isEmpty()) {
+        if (!allWeaponPickups.isEmpty()) {
             for (int i = 0; i < allWeaponPickups.size(); i++) {
+                if (allWeaponPickups.get(i).isPickedUp && player.isWeaponInventoryFull()) {
+
+                } else if (allWeaponPickups.get(i).isPickedUp && !player.isWeaponInventoryFull()) {
+                    allWeaponPickups.get(i).destroy();
+                }
+
+                if (allWeaponPickups.get(i).isToBeDestroy()) {
+                    allWeaponPickups.remove(i);
+                    continue;
+                }
+
                 allWeaponPickups.get(i).update(deltaTime);
             }
         }
+
         if(KL.getKeyListener().isKeyDown(KeyEvent.VK_ESCAPE)){
             Window.getWindow().changeState(WindowConstants.MENU_SCENE);
         }

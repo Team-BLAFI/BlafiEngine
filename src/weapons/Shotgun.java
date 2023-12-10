@@ -4,7 +4,7 @@ import component.Projectile;
 import entity.Entity;
 import util.Vector2D;
 
-public class Shotgun extends  Weapon{
+public class Shotgun extends Weapon{
 
     int pellets;
 

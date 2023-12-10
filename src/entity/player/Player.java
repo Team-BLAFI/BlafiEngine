@@ -29,7 +29,7 @@ public class Player extends Entity {
 //    public Shooting thisShooting;
     public Weapon currWeapon;
 
-    ArrayList<Weapon> weaponInventory = new ArrayList<>();
+    public ArrayList<Weapon> weaponInventory = new ArrayList<>();
     public int currWeaponIndex =  0;
     public double switchWepCD;
 
@@ -188,9 +188,13 @@ public class Player extends Entity {
         return movementVector;
     }
 
+    public boolean isWeaponInventoryFull() {
+        return weaponInventory.size() >= maxInventorySize;
+    }
+
     public void addNewWeapon(Weapon weapon) {
         System.out.println("intial activation");
-        if (weaponInventory.size() >= 4) {
+        if (isWeaponInventoryFull()) {
             System.out.println("inventory full!");
             return;
         }
