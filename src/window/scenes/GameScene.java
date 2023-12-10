@@ -91,12 +91,14 @@ public class GameScene extends Scene{
         }
         //-- UI --
         //FPS
-        ui.draw(g, displayInfo, WindowConstants.SCREEN_WIDTH-(int)WindowConstants.SCREEN_UNIT*20, (int)WindowConstants.SCREEN_UNIT*5);
+        ui.draw(g, displayInfo, WindowConstants.SCREEN_WIDTH-(int)WindowConstants.SCREEN_UNIT*25, (int)WindowConstants.SCREEN_UNIT*5);
         //Health
         ui.drawHealth(g, player.health);
+        ui.drawCore(g);
+
         //Weapon
         ui.drawBullet(g,(int)WindowConstants.SCREEN_UNIT*2, (int)WindowConstants.SCREEN_UNIT*50 );
-        ui.draw(g, weaponInfo, (int)WindowConstants.SCREEN_UNIT*5, ((int)WindowConstants.SCREEN_UNIT ));
+        ui.draw(g, weaponInfo, (int)WindowConstants.SCREEN_UNIT*5, ((int)WindowConstants.SCREEN_UNIT*53));
 
     }
 

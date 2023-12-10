@@ -11,6 +11,8 @@ import window.scenes.Scene;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 //todo: implement chapter 2 of the textbook to add v-sync/full-screen in this window
 
@@ -33,11 +35,13 @@ public class Window extends JFrame implements Runnable {
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         isRunning = true;
-        changeState(WindowConstants.MENU_SCENE);
+        changeState(WindowConstants.GAME_SCENE);
         WindowConstants.INSET_SIZE = getInsets().top;
         addKeyListener(KL.getKeyListener());
         addMouseListener(ML.getMouseListener());
         addMouseMotionListener(ML.getMouseListener());
+
+
 
     }
 
