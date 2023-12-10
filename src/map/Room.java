@@ -1,17 +1,12 @@
-package component;
+package map;
 
-import assets.RoomLayouts;
+import component.Collider;
 import util.Door;
-import util.Rect;
-import util.RoomTile;
 import util.Transform;
 import window.WindowConstants;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Random;
 
 import static window.WindowConstants.SCREEN_UNIT;
@@ -19,8 +14,10 @@ import static window.WindowConstants.SCREEN_UNIT;
 public class Room {
 
     private int roomHeight, roomWidth;
+
     private int[][] roomLayout;
-    private RoomTile[][] tiles;
+    private Tile[][] tiles;
+
     int tileNum;
 
     int screenUnit = (int) SCREEN_UNIT*4;
@@ -43,18 +40,16 @@ public class Room {
         xOffset =  WindowConstants.SCREEN_WIDTH/2 - screenUnit * roomWidth/2;
         yOffset =  WindowConstants.SCREEN_HEIGHT/2 - screenUnit * roomHeight/2;
 
-        tiles = new RoomTile[roomHeight][roomWidth];
+        tiles = new Tile[roomHeight][roomWidth];
 
+//                ImageIcon Img = Texture.textures[i*roomHeight+j].img;
         for(int i = 0; i < roomHeight; i++){
             for(int j = 0; j< roomWidth; j++){
-                ImageIcon Img = RoomManager.tileSprites[roomLayout[i][j]];
-                Transform t = new Transform();
-                t.setX(xOffset + j*screenUnit);
-                t.setY(yOffset + i*screenUnit);
-                t.setWidth(screenUnit);
-                t.setHeight(screenUnit);
+
+                Transform t = new Transform(xOffset + j*screenUnit, yOffset + i*screenUnit,screenUnit,screenUnit);
                 boolean isSolid = RoomLayouts.Solids[roomLayout[i][j]];
-                tiles[i][j] = new RoomTile(Img,t, isSolid);
+
+                tiles[i][j] = new Tile(roomLayout[i][j], t, isSolid);
 
                 if (roomLayout[i][j] == 22 ||
                         roomLayout[i][j] == 38 ||
@@ -68,30 +63,32 @@ public class Room {
     }
 
     public boolean collidesWithTiles(Collider c){
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[i].length; j++) {
+        boolean ret = false;
 
-                if (c.overlaps(tiles[i][j].getCollider()) && tiles[i][j].getIsSolid()){
-                        tileNum = roomLayout[i][j];
-                        return true;
+        for (Tile[] tArray:tiles) {
+            for (Tile tile:tArray) {
+                if(tile.getIsSolid() && tile.getCollider().overlaps(c)){
+                    ret = true;
                 }
             }
         }
-        tileNum = -1;
-        return false;
-    }
 
+        return ret;
+    }
 
     public boolean isInDoor(Collider c){
         return roomDoor.getCollider().overlaps(c);
     }
 
-
-
     public void draw(Graphics g){
         for(int i = 0; i < roomHeight; i++){
             for(int j = 0; j< roomWidth; j++){
-                tiles[i][j].draw(g);
+                try {
+
+                    tiles[i][j].draw(g);
+                }catch (Exception e){
+
+                }
             }
         }
         debugInfo(g);

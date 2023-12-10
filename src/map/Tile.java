@@ -1,11 +1,12 @@
-package util;
+package map;
 
 import component.Collider;
+import util.Transform;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class RoomTile {
+public class Tile {
 
     private Transform transform;
     private ImageIcon image;
@@ -13,8 +14,15 @@ public class RoomTile {
     private boolean solid;
 
 
-    public RoomTile(ImageIcon i, Transform t, boolean s){
-        this.image = i;
+    public Tile(int val, Transform t, boolean s){
+        this.image = Texture.textures[val].img;
+        transform = t;
+        this.collider = transform.getAsCollider();
+        this.solid = s;
+    }
+
+    public Tile(ImageIcon img, Transform t, boolean s){
+        this.image = img;
         transform = t;
         collider = transform.getAsCollider();
         this.solid = s;
@@ -46,13 +54,18 @@ public class RoomTile {
     }
 
     public void draw(Graphics g){
-        g.drawImage(image.getImage(),
-                (int)transform.getX(),
-                (int)transform.getY(),
-                (int)transform.getWidth(),
-                (int)transform.getHeight(),
-                null
-        );
+        try {
+            g.drawImage(image.getImage(),
+                    (int)transform.getX(),
+                    (int)transform.getY(),
+                    (int)transform.getWidth(),
+                    (int)transform.getHeight(),
+                    null
+            );
+        }catch (NullPointerException e){
+            System.out.println("fail to render tile");
+        }
+
     }
 
     public boolean getIsSolid() {

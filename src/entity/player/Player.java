@@ -6,7 +6,7 @@ import component.Health;
 
 import component.Weapon;
 
-import component.RoomManager;
+import map.RoomManager;
 
 import entity.Entity;
 
@@ -22,7 +22,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import static window.WindowConstants.SCREEN_UNIT;
-import static window.WindowConstants.tileSize;
 
 public class Player extends Entity {
 
@@ -40,8 +39,8 @@ public class Player extends Entity {
     private KL keyListener = KL.getKeyListener();
     private ML mouseListener = ML.getMouseListener();
 
-    public Player(){
-
+    public Player(RoomManager rM){
+        this.roomManager = rM;
         double w = WindowConstants.SCREEN_WIDTH;
         double h = WindowConstants.SCREEN_HEIGHT;
 
@@ -53,9 +52,7 @@ public class Player extends Entity {
                 PlayerConstants.PLAYER_WIDTH,
                 PlayerConstants.PLAYER_HEIGHT
         );
-        roomManager = new RoomManager();
 
-//        thisShooting = new Shooting(this);
         weapon = new Weapon(this, 30, 0.1, 2,100,100);
 
 
@@ -105,9 +102,7 @@ public class Player extends Entity {
      * @param deltaTime gets time since last frame to keep speed constant
      */
         private void HandleMovement(double deltaTime){
-            int screenUnit = (int) SCREEN_UNIT*4;
-            int xOffset =  WindowConstants.SCREEN_WIDTH / 2 - screenUnit * RoomManager.roomWidth/2;
-            int yOffset =  WindowConstants.SCREEN_HEIGHT/2 - screenUnit * RoomManager.roomHeight/2;
+//            int screenUnit = (int) SCREEN_UNIT;
             Vector2D movementVector = GetMovementVector();
 
             movementVector.normalize();
@@ -118,7 +113,13 @@ public class Player extends Entity {
 
             newPos.moveXBy(movementVector.getX());
             newPos.moveYBy(movementVector.getY());
-            transform.setPosition(newPos.getPosition());
+
+
+            if (!roomManager.collidesWithTiles(newPos.getAsCollider())){
+                transform.setPosition(newPos.getPosition());
+            }
+//            transform.setPosition(newPos.getPosition());
+
         }
 
     /**

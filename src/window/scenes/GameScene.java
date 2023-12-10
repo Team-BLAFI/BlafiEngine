@@ -1,13 +1,9 @@
 package window.scenes;
 
-import component.Collider;
-
-import component.Hitbox;
-import component.RoomManager;
+import map.RoomManager;
 import entity.enemy.Enemy;
 
 import entity.player.Player;
-import util.Rect;
 import util.io.KL;
 import window.Window;
 import window.WindowConstants;
@@ -15,7 +11,6 @@ import window.WindowConstants;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.security.Key;
 import java.util.ArrayList;
 
 public class GameScene extends Scene{
@@ -23,16 +18,21 @@ public class GameScene extends Scene{
 
     private int frameRate = 0;
     private String displayInfo = "";
-    public static Player player = new Player();
+
+
+    public static Player player;
     private static GameScene gameScene = null;
 
 
     public static ArrayList<Enemy> enemies = new ArrayList<>();
 
-    private RoomManager roomManager= new RoomManager();
+    private RoomManager roomManager;
  
 
     public GameScene(){
+
+        roomManager = new RoomManager();
+        player = new Player(roomManager);
 
     }
 

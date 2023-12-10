@@ -1,5 +1,6 @@
 package window;
 
+import map.Texture;
 import util.Time;
 import util.io.KL;
 import util.io.ML;
@@ -41,6 +42,8 @@ public class Window extends JFrame implements Runnable {
         addKeyListener(KL.getKeyListener());
         addMouseListener(ML.getMouseListener());
         addMouseMotionListener(ML.getMouseListener());
+
+        Texture.loadTileAtlas();
 
         System.setProperty("sun.java2d.opengl", "true");
 
@@ -133,8 +136,6 @@ public class Window extends JFrame implements Runnable {
         window.getGraphics().drawImage(vImg, 0, 0, null);
 
     }
-
-
 
     /**<p>
      * Calls the update method for the current scene and sets up and calls the draw method right after
