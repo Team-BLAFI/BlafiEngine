@@ -6,6 +6,8 @@ import window.WindowConstants;
 
 import java.awt.*;
 
+import static window.WindowConstants.SCREEN_UNIT;
+
 public class Health extends Component{
 
     private Entity owner;
@@ -14,38 +16,49 @@ public class Health extends Component{
     private Rect bar;
     private Rect barFill;
     private Rect barOutline;
-
-    public Health(double h, Entity owner){
-        this(h,1,0,owner);
+    private boolean isPlayer;
+    public Health(double h, Entity owner, boolean isPlayer){
+        this(h,1,0,owner,isPlayer);
     }
 
-    public Health(double h, int xOffset, int yOffset, Entity owner){
-        double unit = WindowConstants.SCREEN_UNIT;
+    public Health(double h, int xOffset, int yOffset, Entity owner, boolean isPlayer){
+        double unit = SCREEN_UNIT;
+        int BarWidth;
+        int BarHeight;
+
+        BarWidth= (int) unit * 6;
+        BarHeight= (int ) unit/2;
+
         int borderUnit = (int) Math.max(1, unit/20);
         health    = h;
         maxHealth = h;
-
         bar     = new Rect(
                 xOffset,
                 yOffset,
-                (int) unit * 6 ,
-                (int) unit/2
+                BarWidth,
+                BarHeight
         );
         barFill = new Rect(
                 xOffset,
                 yOffset,
-                (int) unit * 6,
-                (int) unit/2
+                BarWidth,
+                BarHeight
         );
         barOutline = new Rect(
                 xOffset         - borderUnit,
                 yOffset         - borderUnit,
-                (int) unit * 6  + borderUnit,
-                (int) unit/2    + borderUnit
+                BarWidth,
+                BarHeight
         );
         this.owner = owner;
     }
 
+    public double getHealth(){
+        return health;
+    }
+    public double getMaxHealth(){
+        return maxHealth;
+    }
 
     public void takeDamage(double d){
         health -= d;
@@ -61,12 +74,12 @@ public class Health extends Component{
         double fillPercentage = health / maxHealth;
         barFill.w = (int) (bar.w * fillPercentage);
     }
-
     @Override
     public void draw(Graphics g){
         int x = (int) owner.transform.getX();
         int y = (int) owner.transform.getY();
         if(health >= maxHealth) return;
+
         g.setColor(new Color(0x1F1F1F));
         g.fillRect(
                 x + bar.x,
