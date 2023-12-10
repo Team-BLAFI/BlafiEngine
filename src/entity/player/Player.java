@@ -6,7 +6,7 @@ import component.Health;
 
 import component.Weapon;
 
-import component.TileManager;
+import map.RoomManager;
 
 import entity.Entity;
 
@@ -21,13 +21,15 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import static window.WindowConstants.SCREEN_UNIT;
+
 public class Player extends Entity {
 
     public Weapon weapon;
 
     private double unit = WindowConstants.SCREEN_UNIT;
 
-    private TileManager tileManager;
+    private RoomManager roomManager;
 
     /**<p>
      * Saves a pointer to the singleton instance of the KeyListener class
@@ -36,8 +38,8 @@ public class Player extends Entity {
     private KL keyListener = KL.getKeyListener();
     private ML mouseListener = ML.getMouseListener();
 
-    public Player(){
-
+    public Player(RoomManager rM){
+        this.roomManager = rM;
         double w = WindowConstants.SCREEN_WIDTH;
         double h = WindowConstants.SCREEN_HEIGHT;
 
@@ -49,9 +51,7 @@ public class Player extends Entity {
                 PlayerConstants.PLAYER_WIDTH,
                 PlayerConstants.PLAYER_HEIGHT
         );
-        tileManager = new TileManager();
 
-//        thisShooting = new Shooting(this);
         weapon = new Weapon(this, 30, 0.1, 2,100,100);
 
         health = new Health(
@@ -89,17 +89,6 @@ public class Player extends Entity {
             weapon.reload();
         }
 
-        /**
-         * <p>Checks for collision in the the TileManager class</p>
-         * returns true when player touches tileNum 1 (walls/dirt image)
-         * then stops player's movement and speed when it touches tile
-         */
-        if(tileManager.checkCollisions(collider)){
-            movementVector.multiply(PlayerConstants.PLAYER_SPEED * deltaTime);
-
-            transform.setX(transform.getX() - movementVector.getX());
-            transform.setY(transform.getY() - movementVector.getY());
-        }
      
         weapon.update(deltaTime);
     }
@@ -112,16 +101,26 @@ public class Player extends Entity {
      *</p>
      * @param deltaTime gets time since last frame to keep speed constant
      */
-    private void HandleMovement(double deltaTime){
-        Vector2D movementVector = GetMovementVector();
+        private void HandleMovement(double deltaTime){
+//            int screenUnit = (int) SCREEN_UNIT;
+            Vector2D movementVector = GetMovementVector();
 
-        movementVector.normalize();
+            movementVector.normalize();
 
-        movementVector.multiply(PlayerConstants.PLAYER_SPEED * deltaTime);
-        transform.setX(transform.getX() + movementVector.getX());
-        transform.setY(transform.getY() + movementVector.getY());
+            movementVector.multiply(PlayerConstants.PLAYER_SPEED * deltaTime);
 
-    }
+            Transform newPos = new Transform(transform);
+
+            newPos.moveXBy(movementVector.getX());
+            newPos.moveYBy(movementVector.getY());
+
+
+            if (!roomManager.collidesWithTiles(newPos.getAsCollider())){
+                transform.setPosition(newPos.getPosition());
+            }
+//            transform.setPosition(newPos.getPosition());
+
+        }
 
     /**
      * <p>
@@ -148,4 +147,6 @@ public class Player extends Entity {
 
         return movementVector;
     }
+
 }
+

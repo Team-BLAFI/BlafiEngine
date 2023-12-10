@@ -36,17 +36,12 @@ public class EditorScene extends Scene {
             rectList.push(new Rect( 50, 50,30 ,30));
         }
 
-
-
         for (Rect rect: rectList) {
 
             if (mouseListener.isMouseDragging() && mouseListener.isMouseInsideRect(rect)) {
                rect.moveBy((nx - mx), (ny - my));
             }
         }
-
-
-
 
         mx = nx;
         my = ny;
