@@ -3,6 +3,7 @@ import component.Health;
 import entity.Entity;
 import entity.player.Player;
 import entity.player.PlayerConstants;
+import map.RoomManager;
 import util.Transform;
 import util.Vector2D;
 import util.io.KL;
@@ -24,7 +25,9 @@ public class Enemy extends Entity {
     private double attackActive;
     private Player p;
 
+    private RoomManager roomManager;
     public Enemy(Player p){
+        roomManager = new RoomManager();
         double w = WindowConstants.SCREEN_WIDTH;
         double h = WindowConstants.SCREEN_HEIGHT;
         this.p = p;
@@ -59,11 +62,20 @@ public class Enemy extends Entity {
 
         movementVector.multiply(PlayerConstants.PLAYER_SPEED * dt);
 
-        transform.setX(transform.getX() + movementVector.getX());
-        transform.setY(transform.getY() + movementVector.getY());
+//        transform.setX(transform.getX() + movementVector.getX());
+//        transform.setY(transform.getY() + movementVector.getY());
 
+        /*ADDING COLLISION FOR ENEMY AND TILE*/
+        //*
+        Transform newPos = new Transform(transform);
 
+        newPos.moveXBy(movementVector.getX());
+        newPos.moveYBy(movementVector.getY());
 
+        if (!roomManager.collidesWithTiles(newPos.getAsCollider())){
+            transform.setPosition(newPos.getPosition());
+        }
+        //*/
         Vector2D d = new Vector2D(transform.getCenterX(), transform.getCenterY());
 
         d = d.getVectorToNotNorm(new Vector2D(p.transform.getCenterX(),p.transform.getCenterY()));
