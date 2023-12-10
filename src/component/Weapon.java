@@ -27,8 +27,6 @@ public class Weapon extends Component{
                     currentMag, magSize);
         }
         return "reloading...";
-
-
     }
 
     public Weapon(Entity owner, double dmg, double fireRate, double reloadCooldown, int magSize, double lifeTime) {

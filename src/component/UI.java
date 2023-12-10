@@ -40,12 +40,16 @@ public class UI {
         }
         this.gp = gp;
         this.PlayerHealth = ph;
-        arial_40 = new Font("Arial", Font.BOLD,30);
+        arial_40 = new Font("Arial", Font.BOLD,25);
         arcadeFont = new Font(bitFontName, Font.TRUETYPE_FONT, 30);
 
     }
-    public void draw(Graphics g2 , String Text, int x, int y){
-        g2.setFont(arcadeFont);
+    public void draw(Graphics g2 , String Text, int x, int y,boolean FPS){
+        if(FPS){
+            g2.setFont(arial_40);
+        }else{
+            g2.setFont(arcadeFont);
+        }
         g2.setColor(Color.WHITE);
 
         // Draws the string with coordinates in gamescene
