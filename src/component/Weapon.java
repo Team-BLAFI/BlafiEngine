@@ -22,8 +22,11 @@ public class Weapon extends Component{
 
     @Override
     public String toString() {
-        return String.format("%d/%s",
-                currentMag, magSize);
+        if(activeRC < 0){
+            return String.format("%d/%s",
+                    currentMag, magSize);
+        }
+        return "reloading...";
     }
 
     public Weapon(Entity owner, double dmg, double fireRate, double reloadCooldown, int magSize, double lifeTime) {
