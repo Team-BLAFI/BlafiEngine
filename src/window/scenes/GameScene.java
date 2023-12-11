@@ -34,6 +34,7 @@ public class GameScene extends Scene{
 
    private final UI ui = new UI(this, player.health);
 
+
     public GameScene(){
         roomManager = new RoomManager();
         player = new Player(roomManager);
@@ -99,7 +100,6 @@ public class GameScene extends Scene{
         }
         //-- UI --
         //FPS
-
         ui.draw(g, displayInfo, WindowConstants.SCREEN_WIDTH-(int)WindowConstants.SCREEN_UNIT*15, (int)WindowConstants.SCREEN_UNIT*5,true);
         //Health
         ui.drawHealth(g, player.health);
