@@ -14,7 +14,7 @@ public class WeaponPickup extends Entity {
 
     public Player p;
 
-    public boolean isPickedUp = false;
+    public boolean canBePickedUp = false;
 
     public WeaponPickup(Vector2D location, Weapon weapon, Player p) {
         pickup.setSize(20, 20);
@@ -27,14 +27,16 @@ public class WeaponPickup extends Entity {
         this(new Vector2D(x, y),weapon,p);
     }
 
-    public Weapon giveWeapon() {
+    public Weapon getWeapon() {
         return thisWep;
     }
 
     public void update(double deltaTime) {
         if (collider.overlaps(p.collider)) {
-            p.addNewWeapon(giveWeapon());
-            this.isPickedUp = true;
+//            p.addNewWeapon(giveWeapon());
+            this.canBePickedUp = true;
+        } else {
+            this.canBePickedUp = false;
         }
     }
 
