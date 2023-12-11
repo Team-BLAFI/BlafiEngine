@@ -45,10 +45,8 @@ public class Room {
 //                ImageIcon Img = Texture.textures[i*roomHeight+j].img;
         for(int i = 0; i < roomHeight; i++){
             for(int j = 0; j< roomWidth; j++){
-
                 Transform t = new Transform(xOffset + j*screenUnit, yOffset + i*screenUnit,screenUnit,screenUnit);
                 boolean isSolid = RoomLayouts.Solids[roomLayout[i][j]];
-
                 tiles[i][j] = new Tile(roomLayout[i][j], t, isSolid);
 
                 if (roomLayout[i][j] == 22 ||

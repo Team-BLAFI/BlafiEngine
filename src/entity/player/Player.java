@@ -1,12 +1,11 @@
 package entity.player;
 
 import component.Collider;
-
 import component.Health;
 
-import component.Weapon;
-
 import map.RoomManager;
+
+
 
 import entity.Entity;
 
@@ -15,21 +14,39 @@ import util.Transform;
 import util.Vector2D;
 import util.io.KL;
 import util.io.ML;
+import weapons.*;
 import window.WindowConstants;
 
 import java.awt.*;
+import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import static window.WindowConstants.SCREEN_UNIT;
 
 public class Player extends Entity {
 
-    public Weapon weapon;
+    //private static final BulletType Standard = null;
+    private ArrayList<Component> components = new ArrayList<>();
+    public Vector2D mousePos = new Vector2D();
+//    public Shooting thisShooting;
+    public Weapon currWeapon;
+    public int maxInventorySize = 3;
 
+    public Weapon[] weaponInventory = new Weapon[maxInventorySize];
+    public int currWeaponIndex =  0;
+    public int currInventorySize = 0;
+    public double switchWepCD;
+
+
+    public WeaponPresets weaponPresets;
     private double unit = WindowConstants.SCREEN_UNIT;
 
     private RoomManager roomManager;
+
+    public boolean isInteracting = false;
+
 
     /**<p>
      * Saves a pointer to the singleton instance of the KeyListener class
@@ -53,8 +70,6 @@ public class Player extends Entity {
         );
 
 //        thisShooting = new Shooting(this);
-        weapon = new Weapon(this, 30, 0.1, 3,50,100);
-
 
         health = new Health(
                 100.0,
@@ -63,7 +78,13 @@ public class Player extends Entity {
                 this,
                 true
         );
+        weaponPresets = new WeaponPresets();
+        switchWepCD = 1.5;
+        addNewWeapon(new Pistol(this, 10, 0.3, 0.2, 6, 3));
+       // new WeaponPickup(transform.getX(), transform.getY() + 40, new Shotgun(this), this);
+
     }
+
 
     public void draw(Graphics g){
         g.setColor(PlayerConstants.characterColor);
@@ -74,25 +95,47 @@ public class Player extends Entity {
         g.setColor(Color.YELLOW);
 
         health.draw(g);
-        weapon.draw(g);
 
+        //currWeapon.draw(g);
+        for (int i = 0; i < currInventorySize; i++) {
+            weaponInventory[i].draw(g);
+        }
     }
+
+
 
     public void update(double deltaTime){
         HandleMovement(deltaTime);
+
         Vector2D movementVector = GetMovementVector();
         collider.Bounds.setPos((int) transform.getX(), (int) transform.getY());
 
 
+
         if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
-            weapon.shoot(mouseListener.getX(), mouseListener.getY());
-        }
-        if (keyListener.isKeyDown(KeyEvent.VK_R)){
-            weapon.reload();
+            currWeapon.shoot(mouseListener.getX(), mouseListener.getY());
         }
 
-     
-        weapon.update(deltaTime);
+        isInteracting = keyListener.isKeyDown(KeyEvent.VK_E);
+
+        if (keyListener.isKeyDown(KeyEvent.VK_R)){
+            currWeapon.reload();
+        }
+        if (keyListener.isKeyDown(KeyEvent.VK_N)){
+            addNewWeapon(new Pistol(this, 10, 0.3, 0.2, 6, 3));
+        }
+        if (keyListener.isKeyDown(KeyEvent.VK_Z)){
+            switchWeapon(-1);
+        }
+        if (keyListener.isKeyDown(KeyEvent.VK_X)){
+            switchWeapon(1);
+        }
+
+        for (int i = 0; i < currInventorySize; i++) {
+            weaponInventory[i].update(deltaTime);
+        }
+        switchWepCD -= deltaTime;
+
     }
 
     /**
@@ -150,5 +193,48 @@ public class Player extends Entity {
         return movementVector;
     }
 
-}
+    public boolean isWeaponInventoryFull() {
+        return currInventorySize >= maxInventorySize;
+    }
 
+    public void addNewWeapon(Weapon weapon) {
+        System.out.println("initial activation");
+        if (isWeaponInventoryFull()) {
+            System.out.println("inventory full!");
+            return;
+        }
+        //weaponInventory.add(weaponPresets.createShotgun(this));
+        weaponInventory[currInventorySize] = weapon;
+        currInventorySize++;
+        currWeaponIndex = currInventorySize-1;
+
+        setWeapon();
+        System.out.println("player addNewWeapon invoked");
+//        currWeapon.setRandomFireRateTest();
+    }
+
+    public void setWeapon() {
+        currWeapon = weaponInventory[currWeaponIndex];
+        System.out.println("setting weapon" + currWeaponIndex);
+    }
+
+    //FIXME Seems to cause bugs
+    public void switchWeapon(int addIndex) {
+        if (switchWepCD > 0){
+            System.out.println("switch cd");
+            return;
+        }
+        currWeaponIndex += addIndex;
+        if (currWeaponIndex >= weaponInventory.length) {
+            currWeaponIndex = 0;
+        }
+        if (currWeaponIndex < 0) {
+            currWeaponIndex = weaponInventory.length - 1;
+        }
+        currWeapon = weaponInventory[currWeaponIndex];
+        System.out.println("switched weapon!" + currWeaponIndex);
+        switchWepCD = 1.5;
+    }
+
+    
+}

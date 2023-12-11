@@ -49,7 +49,7 @@ public class Window extends JFrame implements Runnable {
         addMouseMotionListener(ML.getMouseListener());
 
 
-        Texture.loadTileAtlas();
+
 
         System.setProperty("sun.java2d.opengl", "true");
 
