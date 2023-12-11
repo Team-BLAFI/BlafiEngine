@@ -23,8 +23,12 @@ public class Transform {
         size.setX(w);
         size.setY(h);
     }
-
-
+    public Transform(Transform transform) {
+        position.setX(transform.getX());
+        position.setY(transform.getY());
+        size.setX(transform.getWidth());
+        size.setY(transform.getHeight());
+    }
     public double getX(){
         return position.getX();
     }
@@ -121,7 +125,6 @@ public class Transform {
         this.centerPoint.setX(this.getX() + this.getWidth()/2);
         this.centerPoint.setY(this.getY() + this.getHeight()/2);
     }
-
 
 
 }

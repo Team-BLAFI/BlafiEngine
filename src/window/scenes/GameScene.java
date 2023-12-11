@@ -1,15 +1,15 @@
 package window.scenes;
 
+import map.RoomManager;
 import component.Collider;
 
 import component.Hitbox;
-import component.TileManager;
 import component.UI;
 import component.Weapon;
+
 import entity.enemy.Enemy;
 
 import entity.player.Player;
-import util.Rect;
 import util.io.KL;
 import window.Window;
 import window.WindowConstants;
@@ -23,17 +23,21 @@ public class GameScene extends Scene{
     private int frameRate = 0;
     private String weaponInfo = "";
     private String displayInfo = "";
-    public static Player player = new Player();
+
+
+    public static Player player;
     private static GameScene gameScene = null;
 
 
     public static ArrayList<Enemy> enemies = new ArrayList<>();
+    private RoomManager roomManager;
 
-    private TileManager tileManager = new TileManager();
     private final UI ui = new UI(this, player.health);
 
-
     public GameScene(){
+
+        roomManager = new RoomManager();
+        player = new Player(roomManager);
 
     }
 
@@ -61,16 +65,21 @@ public class GameScene extends Scene{
                 enemies.remove(i);
                 continue;
             }
-
             enemies.get(i).update(deltaTime);
-
-
         }
 
+        roomManager.getCurrentRoom().collidesWithTiles(player.transform.getAsCollider());
+        roomManager.debugNewRoom(player);
 
         if(KL.getKeyListener().isKeyDown(KeyEvent.VK_ESCAPE)){
             Window.getWindow().changeState(WindowConstants.MENU_SCENE);
         }
+
+        if(KL.getKeyListener().isKeyDown(KeyEvent.VK_K)){
+            roomManager.makeNewRoom();
+        }
+
+
 
 
 
@@ -81,7 +90,7 @@ public class GameScene extends Scene{
         //Sets color to dark gray
         g.setColor(Color.decode("#23272a"));
         g.fillRect(0,0, WindowConstants.SCREEN_WIDTH, WindowConstants.SCREEN_HEIGHT);
-        tileManager.draw(g);
+        roomManager.draw(g);
         g.setColor(Color.GREEN);
 
         // Player
