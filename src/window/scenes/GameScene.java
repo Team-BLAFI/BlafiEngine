@@ -26,7 +26,8 @@ public class GameScene extends Scene{
     public static Player player = new Player();
 
     private static GameScene gameScene = null;
-
+    private boolean isMute = false;
+    private double muteCD= 0.0;
 //    private Sound sound = new Sound();
     public static ArrayList<Enemy> enemies = new ArrayList<>();
 
@@ -34,7 +35,8 @@ public class GameScene extends Scene{
  
 
     public GameScene(){
-        Sound.playMusic(Sound.TRACK_2.getClip());
+        Sound.playMusic(Sound.TRACK_1.getClip());
+        Sound.setVolume(0.0f, Sound.TRACK_1);
     }
 
     public static GameScene getGameScene(){
@@ -47,7 +49,7 @@ public class GameScene extends Scene{
 
     @Override
     public void update(double deltaTime) {
-
+        muteCD -= deltaTime;
         if (enemies.isEmpty()){
             enemies.add(new Enemy(player));
         }
@@ -68,31 +70,28 @@ public class GameScene extends Scene{
         }
 
         if (KL.getKeyListener().isKeyDown(KeyEvent.VK_1)){
-            Sound.setVolume(0.1f, Sound.TRACK_2);
+            Sound.VolumeUp(Sound.TRACK_1, deltaTime);
+            System.out.println(Sound.getVolume(Sound.TRACK_1));
         }
         if (KL.getKeyListener().isKeyDown(KeyEvent.VK_2)){
-            Sound.setVolume(0.2f, Sound.TRACK_2);
-        }
-        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_3)){
-            Sound.setVolume(0.3f, Sound.TRACK_2);
-        }
-        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_4)){
-            Sound.setVolume(0.4f, Sound.TRACK_2);
-        }
-        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_5)){
-            Sound.setVolume(0.5f, Sound.TRACK_2);
-        }
-        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_6)){
-            Sound.setVolume(0.6f, Sound.TRACK_2);
-        }
-        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_7)){
-            Sound.setVolume(0.7f, Sound.TRACK_2);
+            Sound.VolumeDown(Sound.TRACK_1, deltaTime);
+            System.out.println(Sound.getVolume(Sound.TRACK_1));
         }
 
-        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_M)){
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_M) && muteCD < 0){
+            muteCD = 0.2;
+            if(isMute){
+                isMute = false;
+                Sound.setVolume(0.0f, Sound.TRACK_1);
+            }else{
+                isMute = true;
+                Sound.setMute(Sound.TRACK_1);
+            }
+        }
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_J)){
             Sound.playMusic(Sound.TRACK_2.getClip());
         }
-        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_N)){
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_K)){
             Sound.playMusic(Sound.TRACK_1.getClip());
         }
 

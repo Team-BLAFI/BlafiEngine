@@ -17,7 +17,7 @@ public class Sound {
 
     private final AudioFormat format;
     private final byte[] bytes;
-
+    private static float currVolume = 0;
     private float volumeF;
 
     public Sound(String path) {
@@ -75,15 +75,49 @@ public class Sound {
         musicClip[0].loop(Clip.LOOP_CONTINUOUSLY);
     }
     public static void setVolume(float f, Sound sound){
-
         for (Clip c: sound.clips){
-
             FloatControl volume = (FloatControl) c.getControl(FloatControl.Type.MASTER_GAIN);
             volume.setValue(f);
         }
+    }
+    public static void VolumeUp(Sound sound ,double deltaTime){
+        for (Clip c: sound.clips){
+            FloatControl volume = (FloatControl) c.getControl(FloatControl.Type.MASTER_GAIN);
+//            Volume-Up logic
+            currVolume += 1.0f * deltaTime;
+            currVolume = clamp(currVolume,-100f,5f);
 
+//
+            volume.setValue(currVolume);
+        }
+    }
 
+    public static void VolumeDown(Sound sound, double deltaTime){
+        for (Clip c: sound.clips){
+            FloatControl volume = (FloatControl) c.getControl(FloatControl.Type.MASTER_GAIN);
+            //Volume-Down logic
+            currVolume -= 1.0f * deltaTime;
+            currVolume = clamp(currVolume,-100f,5f);
 
+            volume.setValue(currVolume);
+        }
+    }
+    public static float clamp(float value, float min, float max) {
+        return Math.max(min, Math.min(max, value));
+    }
+    public static void setMute(Sound sound){
+        for (Clip c: sound.clips){
+            FloatControl volume = (FloatControl) c.getControl(FloatControl.Type.MASTER_GAIN);
+            volume.setValue(-40f);
+        }
+    }
+    public static float getVolume(Sound sound){
+        float currentVal = 0;
+        for (Clip c: sound.clips){
+            FloatControl volume = (FloatControl) c.getControl(FloatControl.Type.MASTER_GAIN);
+            currentVal = volume.getValue();
+        }
+        return currentVal;
     }
 
     public Clip getClip(){
