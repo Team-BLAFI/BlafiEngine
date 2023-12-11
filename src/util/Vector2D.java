@@ -46,7 +46,30 @@ public class Vector2D{
         y *= s;
         return this;
     }
+    public void rotate(double angle, double rotationX, double rotationY){
+        double RadiantsAngle = (double) Math.toRadians(angle);
 
+        //place vector at origin
+        setX(this.x - rotationX);
+        setY(this.y - rotationY);
+
+        //rotate
+        //x` = xcos(θ)−ysin(θ)
+        //y` = xsin(θ)+ycos(θ)
+        double Ox = getX();
+        double Oy = getY();
+
+        setX((double) (Ox * Math.cos(RadiantsAngle) - Oy * Math.sin(RadiantsAngle)));
+        setY((double) (Ox * Math.sin(RadiantsAngle) + Oy * Math.cos(RadiantsAngle)));
+
+        //setVectorBackToLocation
+
+        setX(this.x + rotationX);
+        setY(this.y + rotationY);
+    }
+    public void rotate(double angle, Vector2D rotationPoint){
+        rotate(angle, rotationPoint.x, rotationPoint.y);
+    }
 
     public Vector2D getVectorTo(Vector2D v){
         Vector2D ret = new Vector2D(v.x - x, v.y - y);
