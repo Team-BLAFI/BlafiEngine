@@ -32,7 +32,7 @@ public class GameScene extends Scene{
     public static ArrayList<Enemy> enemies = new ArrayList<>();
     private RoomManager roomManager;
 
-//    private final UI ui = new UI(this, player.health);
+    private final UI ui = new UI(this, player.health);
 
     public GameScene(){
         roomManager = new RoomManager();
@@ -99,12 +99,12 @@ public class GameScene extends Scene{
         }
         //-- UI --
         //FPS
-//        ui.draw(g, displayInfo, WindowConstants.SCREEN_WIDTH-(int)WindowConstants.SCREEN_UNIT*20, (int)WindowConstants.SCREEN_UNIT*5);
-//        //Health
-//        ui.drawHealth(g, player.health);
-//        //Weapon
-//        ui.drawBullet(g,(int)WindowConstants.SCREEN_UNIT*2, (int)WindowConstants.SCREEN_UNIT*7 );
-//        ui.draw(g, weaponInfo, (int)WindowConstants.SCREEN_UNIT*5, (WindowConstants.INSET_SIZE*5));
+        ui.draw(g, displayInfo, WindowConstants.SCREEN_WIDTH-(int)WindowConstants.SCREEN_UNIT*20, (int)WindowConstants.SCREEN_UNIT*5);
+        //Health
+        ui.drawHealth(g, player.health);
+        //Weapon
+        ui.drawBullet(g,(int)WindowConstants.SCREEN_UNIT*2, (int)WindowConstants.SCREEN_UNIT*7 );
+        ui.draw(g, weaponInfo, (int)WindowConstants.SCREEN_UNIT*5, (WindowConstants.INSET_SIZE*5));
 
     }
 
