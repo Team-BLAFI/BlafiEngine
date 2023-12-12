@@ -1,6 +1,11 @@
 package entity.player;
 
-import component.*;
+import component.Collider;
+import component.Health;
+
+import map.RoomManager;
+
+
 
 import entity.Entity;
 
@@ -9,10 +14,7 @@ import util.Transform;
 import util.Vector2D;
 import util.io.KL;
 import util.io.ML;
-import weapons.Shotgun;
-import weapons.Weapon;
-import weapons.WeaponPickup;
-import weapons.WeaponPresets;
+import weapons.*;
 import window.WindowConstants;
 
 import java.awt.*;
@@ -21,6 +23,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+import static window.WindowConstants.SCREEN_UNIT;
+
 public class Player extends Entity {
 
     //private static final BulletType Standard = null;
@@ -28,16 +32,20 @@ public class Player extends Entity {
     public Vector2D mousePos = new Vector2D();
 //    public Shooting thisShooting;
     public Weapon currWeapon;
+    public int maxInventorySize = 3;
 
-    public ArrayList<Weapon> weaponInventory = new ArrayList<>();
+    public Weapon[] weaponInventory = new Weapon[maxInventorySize];
     public int currWeaponIndex =  0;
+    public int currInventorySize = 0;
     public double switchWepCD;
 
-    public int maxInventorySize;
+
     public WeaponPresets weaponPresets;
     private double unit = WindowConstants.SCREEN_UNIT;
 
-    private TileManager tileManager;
+    private RoomManager roomManager;
+
+    public boolean isInteracting = false;
 
 
     /**<p>
@@ -47,8 +55,8 @@ public class Player extends Entity {
     private KL keyListener = KL.getKeyListener();
     private ML mouseListener = ML.getMouseListener();
 
-    public Player(){
-
+    public Player(RoomManager rM){
+        this.roomManager = rM;
         double w = WindowConstants.SCREEN_WIDTH;
         double h = WindowConstants.SCREEN_HEIGHT;
 
@@ -60,10 +68,8 @@ public class Player extends Entity {
                 PlayerConstants.PLAYER_WIDTH,
                 PlayerConstants.PLAYER_HEIGHT
         );
-        tileManager = new TileManager();
 
 //        thisShooting = new Shooting(this);
-        //weapon = new Weapon(this, 30, 0.1, 2,100,100);
 
         health = new Health(
                 100.0,
@@ -73,9 +79,8 @@ public class Player extends Entity {
                 true
         );
         weaponPresets = new WeaponPresets();
-        maxInventorySize = 4;
         switchWepCD = 1.5;
-        addNewWeapon(new Weapon(this, 10, 0.3, 0.2, 6, 3));
+        addNewWeapon(new Pistol(this, 10, 0.3, 0.2, 6, 3));
        // new WeaponPickup(transform.getX(), transform.getY() + 40, new Shotgun(this), this);
 
     }
@@ -92,8 +97,8 @@ public class Player extends Entity {
         health.draw(g);
 
         //currWeapon.draw(g);
-        for (int i = 0; i < weaponInventory.size(); i++) {
-            weaponInventory.get(i).draw(g);
+        for (int i = 0; i < currInventorySize; i++) {
+            weaponInventory[i].draw(g);
         }
     }
 
@@ -110,11 +115,14 @@ public class Player extends Entity {
         if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
             currWeapon.shoot(mouseListener.getX(), mouseListener.getY());
         }
+
+        isInteracting = keyListener.isKeyDown(KeyEvent.VK_E);
+
         if (keyListener.isKeyDown(KeyEvent.VK_R)){
             currWeapon.reload();
         }
         if (keyListener.isKeyDown(KeyEvent.VK_N)){
-            addNewWeapon(new Weapon(this, 10, 0.3, 0.2, 6, 3));
+            addNewWeapon(new Pistol(this, 10, 0.3, 0.2, 6, 3));
         }
         if (keyListener.isKeyDown(KeyEvent.VK_Z)){
             switchWeapon(-1);
@@ -123,24 +131,11 @@ public class Player extends Entity {
             switchWeapon(1);
         }
 
-
-        /**
-         * <p>Checks for collision in the the TileManager class</p>
-         * returns true when player touches tileNum 1 (walls/dirt image)
-         * then stops player's movement and speed when it touches tile
-         */
-        if(tileManager.checkCollisions(collider)){
-
-            movementVector.multiply(PlayerConstants.PLAYER_SPEED * deltaTime);
-
-            transform.setX(transform.getX() - movementVector.getX());
-            transform.setY(transform.getY() - movementVector.getY());
-        }
-
-        for (int i = 0; i < weaponInventory.size(); i++) {
-            weaponInventory.get(i).update(deltaTime);
+        for (int i = 0; i < currInventorySize; i++) {
+            weaponInventory[i].update(deltaTime);
         }
         switchWepCD -= deltaTime;
+
     }
 
     /**
@@ -151,16 +146,26 @@ public class Player extends Entity {
      *</p>
      * @param deltaTime gets time since last frame to keep speed constant
      */
-    private void HandleMovement(double deltaTime){
-        Vector2D movementVector = GetMovementVector();
+        private void HandleMovement(double deltaTime){
+//            int screenUnit = (int) SCREEN_UNIT;
+            Vector2D movementVector = GetMovementVector();
 
-        movementVector.normalize();
+            movementVector.normalize();
 
-        movementVector.multiply(PlayerConstants.PLAYER_SPEED * deltaTime);
-        transform.setX(transform.getX() + movementVector.getX());
-        transform.setY(transform.getY() + movementVector.getY());
+            movementVector.multiply(PlayerConstants.PLAYER_SPEED * deltaTime);
 
-    }
+            Transform newPos = new Transform(transform);
+
+            newPos.moveXBy(movementVector.getX());
+            newPos.moveYBy(movementVector.getY());
+
+
+            if (!roomManager.collidesWithTiles(newPos.getAsCollider())){
+                transform.setPosition(newPos.getPosition());
+            }
+//            transform.setPosition(newPos.getPosition());
+
+        }
 
     /**
      * <p>
@@ -189,44 +194,47 @@ public class Player extends Entity {
     }
 
     public boolean isWeaponInventoryFull() {
-        return weaponInventory.size() >= maxInventorySize;
+        return currInventorySize >= maxInventorySize;
     }
 
     public void addNewWeapon(Weapon weapon) {
-        System.out.println("intial activation");
+        System.out.println("initial activation");
         if (isWeaponInventoryFull()) {
             System.out.println("inventory full!");
             return;
         }
         //weaponInventory.add(weaponPresets.createShotgun(this));
-        weaponInventory.add(weapon);
-        currWeaponIndex = weaponInventory.size() - 1;
+        weaponInventory[currInventorySize] = weapon;
+        currInventorySize++;
+        currWeaponIndex = currInventorySize-1;
+
         setWeapon();
         System.out.println("player addNewWeapon invoked");
-        currWeapon.setRandomFireRateTest();
+//        currWeapon.setRandomFireRateTest();
     }
 
     public void setWeapon() {
-        currWeapon = weaponInventory.get(currWeaponIndex);
+        currWeapon = weaponInventory[currWeaponIndex];
         System.out.println("setting weapon" + currWeaponIndex);
     }
+
+    //FIXME Seems to cause bugs
     public void switchWeapon(int addIndex) {
         if (switchWepCD > 0){
             System.out.println("switch cd");
             return;
         }
         currWeaponIndex += addIndex;
-        if (currWeaponIndex >= weaponInventory.size()) {
+        if (currWeaponIndex >= weaponInventory.length) {
             currWeaponIndex = 0;
         }
         if (currWeaponIndex < 0) {
-            currWeaponIndex = weaponInventory.size() - 1;
+            currWeaponIndex = weaponInventory.length - 1;
         }
-        currWeapon = weaponInventory.get(currWeaponIndex);
+        currWeapon = weaponInventory[currWeaponIndex];
         System.out.println("switched weapon!" + currWeaponIndex);
         switchWepCD = 1.5;
     }
-
 
     
 }

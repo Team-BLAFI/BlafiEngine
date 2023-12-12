@@ -4,13 +4,12 @@ import component.Component;
 import component.Projectile;
 import entity.Entity;
 import util.Vector2D;
-import weapons.WeaponPresets;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Weapon extends Component {
+public abstract class Weapon extends Component {
     Entity owner;
 
     public WeaponPresets weaponPresets;
@@ -28,9 +27,14 @@ public class Weapon extends Component {
 
     @Override
     public String toString() {
-        return String.format("%d/%s",
-                currentMag, magSize);
+        if(activeRC < 0){
+            return String.format("%d/%s",
+                    currentMag, magSize);
+        }
+        return "reloading...";
     }
+
+
 
     public Weapon(Entity owner, double dmg, double fireRate, double reloadCooldown, int magSize, double lifeTime) {
         this.owner = owner;
@@ -40,6 +44,10 @@ public class Weapon extends Component {
         this.magSize = magSize;
         this.currentMag = magSize;
         this.lifeTime = lifeTime;
+    }
+
+    public Weapon(Weapon w) {
+        this(w.owner,w.getDmg(),w.getFireRate(),w.getReloadCooldown(),w.getMagSize(),w.getLifeTime());
     }
 
     public void setRandomFireRateTest() {
@@ -89,7 +97,26 @@ public class Weapon extends Component {
         activeRC = reloadCooldown;
         currentMag = magSize;
     }
-    
+
+    public double getDmg() {
+        return dmg;
+    }
+
+    public double getFireRate() {
+        return fireRate;
+    }
+
+    public double getReloadCooldown() {
+        return reloadCooldown;
+    }
+
+    public int getMagSize() {
+        return magSize;
+    }
+
+    public double getLifeTime() {
+        return lifeTime;
+    }
 
     @Override
     public void update(double deltaTime) {

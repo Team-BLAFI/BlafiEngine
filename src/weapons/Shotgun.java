@@ -4,7 +4,7 @@ import component.Projectile;
 import entity.Entity;
 import util.Vector2D;
 
-public class Shotgun extends Weapon{
+public class Shotgun extends Weapon {
 
     int pellets;
 
@@ -14,7 +14,7 @@ public class Shotgun extends Weapon{
     }
 
     public Shotgun(Entity owner) {
-        super(owner, 10, 0.3, 0.2, 6, 3);
+        super(owner, 10, 0.3, 0.2, 4, 3);
         this.pellets = 6;
 
     }
