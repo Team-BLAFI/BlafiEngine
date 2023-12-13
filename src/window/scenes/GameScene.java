@@ -73,6 +73,7 @@ public class GameScene extends Scene{
             weaponInfo = "";
         }
         // Displays the INFO to UI
+
         displayInfo = String.format("%d FPS (%.3f)", frameRate,deltaTime);
 
         player.update(deltaTime);
