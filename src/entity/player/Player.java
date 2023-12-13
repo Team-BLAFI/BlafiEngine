@@ -3,6 +3,7 @@ package entity.player;
 import component.Collider;
 import component.Health;
 
+import component.Projectile;
 import map.RoomManager;
 
 
@@ -40,7 +41,6 @@ public class Player extends Entity {
     public double switchWepCD;
 
 
-    public WeaponPresets weaponPresets;
     private double unit = WindowConstants.SCREEN_UNIT;
 
     private RoomManager roomManager;
@@ -78,7 +78,6 @@ public class Player extends Entity {
                 this,
                 true
         );
-        weaponPresets = new WeaponPresets();
         switchWepCD = 1.5;
         addNewWeapon(new Pistol(this, 10, 0.3, 0.2, 6, 3));
        // new WeaponPickup(transform.getX(), transform.getY() + 40, new Shotgun(this), this);
@@ -162,6 +161,21 @@ public class Player extends Entity {
 
             if (!roomManager.collidesWithTiles(newPos.getAsCollider())){
                 transform.setPosition(newPos.getPosition());
+                for (int i = 0; i < currInventorySize; i++) {
+                    for (int j = 0; j < weaponInventory[i].getLiveProjectiles().size(); j++) {
+                        if (weaponInventory[i].getLiveProjectiles().get(j).chrono == Projectile.Chrono.ResumeOnWall) {
+                            weaponInventory[i].getLiveProjectiles().get(j).setIsActive(false);
+                        }
+                    }
+                }
+            }
+            else { for (int i = 0; i < currInventorySize; i++) {
+                for (int j = 0; j < weaponInventory[i].getLiveProjectiles().size(); j++) {
+                    if (weaponInventory[i].getLiveProjectiles().get(j).chrono == Projectile.Chrono.ResumeOnWall) {
+                        weaponInventory[i].getLiveProjectiles().get(j).setIsActive(true);
+                    }
+                    }
+                }
             }
 //            transform.setPosition(newPos.getPosition());
 

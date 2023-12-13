@@ -3,6 +3,8 @@ package weapons;
 import component.Component;
 import component.Projectile;
 import entity.Entity;
+import map.Room;
+import map.RoomManager;
 import util.Vector2D;
 
 import java.awt.*;
@@ -12,7 +14,6 @@ import java.util.Random;
 public abstract class Weapon extends Component {
     Entity owner;
 
-    public WeaponPresets weaponPresets;
     Projectile bullet;
 
     double dmg;
@@ -24,6 +25,7 @@ public abstract class Weapon extends Component {
     int currentMag;
     ArrayList<Projectile> liveProjectiles = new ArrayList<>();
     double lifeTime;
+    public RoomManager roomManager;
 
     @Override
     public String toString() {
@@ -117,8 +119,10 @@ public abstract class Weapon extends Component {
     public double getLifeTime() {
         return lifeTime;
     }
+    public ArrayList<Projectile> getLiveProjectiles() {return liveProjectiles;}
 
-    @Override
+    public RoomManager getRoomManager() { return roomManager; }
+    //@Override
     public void update(double deltaTime) {
         fireCD -= deltaTime;
         activeRC -= deltaTime;
