@@ -16,6 +16,7 @@ import java.awt.event.KeyEvent;
 
 import static entity.enemy.EnemyConstants.*;
 
+
 public class Enemy extends Entity {
 
     private final double damagePerSecond = 30.0;
@@ -56,7 +57,8 @@ public class Enemy extends Entity {
                 100.0,
                 (int) (unit * -.5),
                 (int) - unit,
-                this
+                this,
+                false
         );
     }
 
@@ -123,13 +125,7 @@ public class Enemy extends Entity {
         }
     }
 
-    private void handleAI(double deltaTime) {
-        Vector2D v = getVectorToPlayer();
-        if (v.getMagnitude() <= reach){
-        }else{
-            chasePlayer(deltaTime);
-        }
-    }
+
 
     private void handleCD(double dt){
         recoveryTime -= dt;
