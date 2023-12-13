@@ -22,8 +22,6 @@ public class Collider extends Component{
     	this.owner = owner;
     }
 
-
-
     public void update(double deltaTime) {
 
     }

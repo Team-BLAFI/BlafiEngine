@@ -1,13 +1,20 @@
-package component;
+package weapons;
 
+import component.Component;
+import component.Projectile;
+import component.Sound;
 import entity.Entity;
 import util.Vector2D;
+import weapons.WeaponPresets;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Random;
 
-public class Weapon extends Component{
+public abstract class Weapon extends Component {
     Entity owner;
+
+    public WeaponPresets weaponPresets;
     Projectile bullet;
 
     double dmg;
@@ -20,8 +27,13 @@ public class Weapon extends Component{
     ArrayList<Projectile> liveProjectiles = new ArrayList<>();
     double lifeTime;
 
-    public int getCurrentMag(){
-        return currentMag;
+    @Override
+    public String toString() {
+        if(activeRC < 0){
+            return String.format("%d/%s",
+                    currentMag, magSize);
+        }
+        return "reloading...";
     }
 
     public Weapon(Entity owner, double dmg, double fireRate, double reloadCooldown, int magSize, double lifeTime) {
@@ -32,6 +44,16 @@ public class Weapon extends Component{
         this.magSize = magSize;
         this.currentMag = magSize;
         this.lifeTime = lifeTime;
+    }
+
+    public Weapon(Weapon w) {
+        this(w.owner,w.getDmg(),w.getFireRate(),w.getReloadCooldown(),w.getMagSize(),w.getLifeTime());
+    }
+
+    public void setRandomFireRateTest() {
+        Random rand = new Random();
+        this.fireRate = rand.nextInt(4);
+        System.out.println("random fire rate" + this.fireRate);
     }
 
     public void shoot(double x, double y) {
@@ -45,9 +67,10 @@ public class Weapon extends Component{
             Vector2D origin = new Vector2D(owner.transform.getCenterX(),owner.transform.getCenterY());
             Vector2D destination = new Vector2D(x,y);
 
-            Vector2D bulletTravelDirection = origin.getVectorTo(destination);
+            Vector2D bulletTravelDirection = origin.getVectorToNorm(destination);
 
 
+            //createProjectile(travelDirection);
             liveProjectiles.add(new Projectile(
                     (int) (origin.getX()),
                     (int) (origin.getY()),
@@ -60,14 +83,41 @@ public class Weapon extends Component{
             reload();
         }
     }
+    public void createProjectile(Vector2D travelDirection) {
+        liveProjectiles.add(new Projectile(
+                (int) (owner.transform.getX() + owner.transform.getSize().getX()/2),
+                (int) (owner.transform.getY() + owner.transform.getSize().getY()/2),
+                travelDirection,
+                this.lifeTime)
+        );
+
+    }
 
     public void reload() {
         // Put weapon into cooldown state
         activeRC = reloadCooldown;
         currentMag = magSize;
     }
-    
-    
+
+    public double getDmg() {
+        return dmg;
+    }
+
+    public double getFireRate() {
+        return fireRate;
+    }
+
+    public double getReloadCooldown() {
+        return reloadCooldown;
+    }
+
+    public int getMagSize() {
+        return magSize;
+    }
+
+    public double getLifeTime() {
+        return lifeTime;
+    }
 
     @Override
     public void update(double deltaTime) {
