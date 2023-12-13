@@ -80,29 +80,32 @@ public class Health extends Component{
         int y = (int) owner.transform.getY();
         if(health >= maxHealth) return;
 
-        g.setColor(new Color(0x1F1F1F));
-        g.fillRect(
-                x + bar.x,
-                y + bar.y,
-                bar.w,
-                bar.h
-        );
+        if(!isPlayer){
+            g.setColor(new Color(0x1F1F1F));
+            g.fillRect(
+                    x + bar.x,
+                    y + bar.y,
+                    bar.w,
+                    bar.h
+            );
 
-        g.setColor(new Color(0xE23131));
-        g.fillRect(
-                x + barFill.x,
-                y + barFill.y,
-                barFill.w,
-                barFill.h
-        );
+            g.setColor(new Color(0xE23131));
+            g.fillRect(
+                    x + barFill.x,
+                    y + barFill.y,
+                    barFill.w,
+                    barFill.h
+            );
 
-        g.setColor(new Color(0xFFFBFB));
-        g.drawRect(
-                x + barOutline.x,
-                y + barOutline.y,
-                barOutline.w,
-                barOutline.h
-        );
+            g.setColor(new Color(0xFFFBFB));
+            g.drawRect(
+                    x + barOutline.x,
+                    y + barOutline.y,
+                    barOutline.w,
+                    barOutline.h
+            );
+        }
+
 
     }
 

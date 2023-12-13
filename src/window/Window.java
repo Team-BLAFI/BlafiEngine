@@ -1,5 +1,6 @@
 package window;
 
+import map.Texture;
 import util.Time;
 import util.io.KL;
 import util.io.ML;
@@ -12,6 +13,12 @@ import window.scenes.Scene;
 import javax.swing.*;
 import java.awt.*;
 
+import java.io.File;
+import java.io.IOException;
+
+import java.awt.image.VolatileImage;
+
+
 //todo: implement chapter 2 of the textbook to add v-sync/full-screen in this window
 
 public class Window extends JFrame implements Runnable {
@@ -23,6 +30,8 @@ public class Window extends JFrame implements Runnable {
     private Scene currentScene = new MenuScene();
 
     private double windowsChangeCoolDown = 0.f;
+    GraphicsEnvironment ge;
+    GraphicsConfiguration gc;
 
 
 
@@ -34,11 +43,21 @@ public class Window extends JFrame implements Runnable {
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         isRunning = true;
-        changeState(WindowConstants.MENU_SCENE);
+        changeState(WindowConstants.GAME_SCENE);
         WindowConstants.INSET_SIZE = getInsets().top;
         addKeyListener(KL.getKeyListener());
         addMouseListener(ML.getMouseListener());
         addMouseMotionListener(ML.getMouseListener());
+
+
+
+
+        System.setProperty("sun.java2d.opengl", "true");
+
+
+        ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
+
 
     }
 
@@ -89,6 +108,40 @@ public class Window extends JFrame implements Runnable {
      public Scene getCurrentScene(){
          return currentScene;
      }
+
+
+    private void nonVolatileImageRender() {
+        Image Img = window.createImage(window.getWidth(),window.getHeight());
+        Graphics g = Img.getGraphics();
+
+        this.draw(g);
+
+        window.getGraphics().drawImage(Img, 0, 0, null);
+    }
+
+    private void volatileImageRender() {
+        VolatileImage vImg =  window.gc.createCompatibleVolatileImage(window.getWidth(),window.getHeight());
+
+        do {
+            if (vImg.validate(window.gc) ==
+                    VolatileImage.IMAGE_INCOMPATIBLE)
+            {
+                // old vImg doesn't work with new GraphicsConfig; re-create it
+                vImg = window.gc.createCompatibleVolatileImage(window.getWidth(),window.getHeight());
+            }
+            Graphics2D g = vImg.createGraphics();
+
+
+            draw(g);
+
+            g.dispose();
+        } while (vImg.contentsLost());
+
+        window.getGraphics().drawImage(vImg, 0, 0, null);
+
+    }
+
+
     /**<p>
      * Calls the update method for the current scene and sets up and calls the draw method right after
      * <br>
@@ -101,12 +154,8 @@ public class Window extends JFrame implements Runnable {
         currentScene.update(deltaTime);
 
 
-        Image dbImage = createImage(getWidth(),getHeight());
-        Graphics dbg = dbImage.getGraphics();
-
-        this.draw(dbg);
-
-        getGraphics().drawImage(dbImage,0,0,this );
+//        volatileImageRender();
+        nonVolatileImageRender();
 
 
 

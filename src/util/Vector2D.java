@@ -61,7 +61,6 @@ public class Vector2D{
         return this;
     }
 
-
     public Vector2D getVectorToNorm(Vector2D v){
         Vector2D ret = new Vector2D(v.x - x, v.y - y);
         ret.normalize();
