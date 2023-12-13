@@ -47,7 +47,7 @@ public class GameScene extends Scene{
         if (enemies.isEmpty()){
             enemies.add(new Enemy(player));
         }
-        frameRate = (int) (1/deltaTime);
+        frameRate = (int) (1d/deltaTime);
         displayInfo = String.format("%d FPS (%.3f)", frameRate,deltaTime);
 
         player.update(deltaTime);

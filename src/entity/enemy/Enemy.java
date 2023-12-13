@@ -1,8 +1,10 @@
 package entity.enemy;
+import component.Animator;
 import component.Health;
 import entity.Entity;
 import entity.player.Player;
 import entity.player.PlayerConstants;
+import util.Animation;
 import util.Transform;
 import util.Vector2D;
 import util.io.KL;
@@ -12,23 +14,44 @@ import window.scenes.GameScene;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
+import static entity.enemy.EnemyConstants.*;
+
 public class Enemy extends Entity {
 
     private final double damagePerSecond = 30.0;
+    Animator animator = new Animator();
 
-
+    private double stateLock = 0;
+    private State stateIdle = new Idle();
+    private State stateMoving = new Moving();
+    private State stateAttacking = new Attacking();
+    private State currentState;
     private double unit = WindowConstants.SCREEN_UNIT;
     private final double moveSpeed = 17.5 * unit;
     private final double reach = 4 * unit;
     private final double attackSpeed = 1.0;
-    private double attackActive;
     private Player p;
+    boolean facingLeft = false;
+    boolean isMoving = false;
+    double recoveryTime = 0, windUp = 0;
+
+
 
     public Enemy(Player p){
+        setState(stateIdle);
+
         double w = WindowConstants.SCREEN_WIDTH;
         double h = WindowConstants.SCREEN_HEIGHT;
         this.p = p;
-        this.transform = new Transform( w/3, h/2,EnemyConstants.ENEMY_WIDTH, EnemyConstants.ENEMY_HEIGHT);
+        this.transform = new Transform( w/3, h/2,ENEMY_WIDTH, ENEMY_HEIGHT);
+
+        animator = new Animator();
+        animator.addAnimation(IDLE_ANIMATION, IDLE_A_ID);
+        animator.addAnimation(ATTACK_ANIMATION, ATTACK_A_ID);
+        animator.addAnimation(WALKING_ANIMATION, WALKING_A_ID);
+
+
+
         health = new Health(
                 100.0,
                 (int) (unit * -.5),
@@ -38,6 +61,15 @@ public class Enemy extends Entity {
     }
 
 
+    /*
+
+        HandleCooldowns();
+        HandleAI(){;
+            HandleMovement()
+            Attack();
+        }
+
+    */
 
     public void controlEnemy(double dt){
         Vector2D movementVector = new Vector2D();
@@ -64,7 +96,6 @@ public class Enemy extends Entity {
 
     }
 
-
     public void aroundPLayer(double dt){
         Vector2D mv = new Vector2D(transform.getPosition());
         mv.rotate( dt * PlayerConstants.PLAYER_SPEED/10 ,p.transform.getCenterX(),p.transform.getCenterY());
@@ -75,17 +106,16 @@ public class Enemy extends Entity {
 
     public void chasePlayer(double dt){
 
+        isMoving = true;
         Vector2D v = getVectorToPlayer();
-        if (v.getMagnitude() > reach){
-            v.normalize();
-            transform.movePositionBy(v.multiply(moveSpeed * dt));
-        }
+        v.normalize();
+        transform.movePositionBy(v.multiply(moveSpeed * dt));
+
     }
 
     private Vector2D getVectorToPlayer() {
         return new Vector2D(transform.getCenterPoint().getVectorTo(p.transform.getCenterPoint()));
     }
-
 
     public void dealDamage(double dt){
         if(getVectorToPlayer().getMagnitude()<=reach){
@@ -93,54 +123,12 @@ public class Enemy extends Entity {
         }
     }
 
-    public void stateMachine(double deltaTime) {
-        if (nextState != null && stateLock <= 0){
-            state = nextState;
-            nextState = null;
-        }
-
-        switch (state) {
-            case Idle:
-            case Moving:
-                determineMovingDir(deltaTime);
-                handleAI(deltaTime);
-            case Attacking:
-                handleAttack(deltaTime);
-            case Recovering:
-                handleRecovery(deltaTime);
-                break;
-            default:
-                break;
-        }
-    }
-
-    //TODO animations
-    private void determineMovingDir(double deltaTime) {
-
-    }
     private void handleAI(double deltaTime) {
         Vector2D v = getVectorToPlayer();
         if (v.getMagnitude() <= reach){
-            nextState = State.Attacking;
         }else{
             chasePlayer(deltaTime);
         }
-
-    }
-    double recoveryTime = 0, windUp = 0;
-    private void handleAttack(double deltaTime) {
-        if (stateLock<=0){
-            stateLock = 1;
-            nextState = State.Idle;
-            windUp = 0.5;
-        }else if (windUp <= 0) {
-            System.out.println("ATTACK");
-        }
-
-    }
-
-    private void handleRecovery(double dt){
-
     }
 
     private void handleCD(double dt){
@@ -151,10 +139,15 @@ public class Enemy extends Entity {
 
     @Override
     public void update(double dt) {
-//        aroundPLayer(dt);
-        chasePlayer(dt);
-        aroundPLayer(dt);
-        dealDamage(dt);
+        facingLeft = !(transform.getCenterX() < p.transform.getCenterX());
+        handleCD(dt);
+        currentState.stateUpdate(dt);
+        animator.update(dt);
+    }
+
+    private void setState(State s){
+        currentState = s;
+        currentState.enterState();
     }
 
     @Override
@@ -162,12 +155,12 @@ public class Enemy extends Entity {
         Vector2D s = WindowConstants.MID_SCREENPOINT;
 
 
-        g.fillRect(
-                (int) this.transform.getX(),
-                (int) this.transform.getY(),
-                (int) this.transform.getWidth(),
-                (int) this.transform.getHeight()
-        );
+//        g.fillRect(
+//                (int) this.transform.getX(),
+//                (int) this.transform.getY(),
+//                (int) this.transform.getWidth(),
+//                (int) this.transform.getHeight()
+//        );
         health.draw(g);
 
         int x = (int) (transform.getCenterX());
@@ -176,14 +169,69 @@ public class Enemy extends Entity {
         g.setColor(Color.GREEN);
         g.drawLine(x, y, (int) (x+4*unit),y);
         g.drawLine(x, y, x, (int) (y-4*unit));
-//        g.drawLine((int) s.getX(), (int) s.getY(), (int) (s.getX() + unit), (int) s.getY());
+
+        if (facingLeft){
+            animator.RenderCurrentSpriteFlipVer(g,(int)transform.getX(),(int)transform.getY());
+
+        }else{
+
+            animator.RenderCurrentSprite(g,(int)transform.getX(),(int)transform.getY());
+        }
 
 
         g.drawOval(
-                (int) (transform.getCenterX() - 4*unit),
-                (int) (transform.getCenterY() - 4*unit),
+                (int) (x - 4*unit),
+                (int) (y- 4*unit),
                 (int) (8*unit),
                 (int) (8*unit)
         );
+    }
+
+    public class Attacking implements entity.enemy.State{
+
+        @Override
+        public void enterState() {
+            animator.changeAnimationTo(ATTACK_A_ID);
+            stateLock = 1d;
+            recoveryTime = .5d;
+        }
+
+        @Override
+        public void stateUpdate(double dt) {
+            if (recoveryTime <= 0){
+                setState(stateIdle);
+            }
+
+        }
+    }
+    public class Idle implements entity.enemy.State{
+        @Override
+        public void enterState() {
+            animator.changeAnimationTo(IDLE_A_ID);
+        }
+        @Override
+        public void stateUpdate(double dt) {
+            if (stateLock <= 0){
+                setState(stateMoving);
+            }
+        }
+    }
+    public class Moving implements entity.enemy.State{
+
+        @Override
+        public void enterState() {
+            animator.changeAnimationTo(WALKING_A_ID);
+
+        }
+
+        @Override
+        public void stateUpdate(double dt) {
+            if (getVectorToPlayer().getMagnitude()<=reach){
+                setState(stateAttacking);
+            }else{
+                chasePlayer(dt);
+            }
+
+        }
     }
 }
