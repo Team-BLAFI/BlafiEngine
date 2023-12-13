@@ -35,6 +35,7 @@ public class Window extends JFrame implements Runnable {
 
 
 
+
     private Window(int width, int height, String title){
         setSize(width,height);
         setTitle(title);
@@ -74,9 +75,6 @@ public class Window extends JFrame implements Runnable {
     }
 
 
-
-
-
     /**
      * <p>
      * Changes the current scene
@@ -107,7 +105,6 @@ public class Window extends JFrame implements Runnable {
 
          }
      }
-
      public Scene getCurrentScene(){
          return currentScene;
      }
@@ -144,6 +141,7 @@ public class Window extends JFrame implements Runnable {
 
     }
 
+
     /**<p>
      * Calls the update method for the current scene and sets up and calls the draw method right after
      * <br>
@@ -152,13 +150,13 @@ public class Window extends JFrame implements Runnable {
      * </p>
      * */
     private void update(double deltaTime) {
+        windowsChangeCoolDown -= deltaTime;
         currentScene.update(deltaTime);
 
 
 //        volatileImageRender();
         nonVolatileImageRender();
 
-        windowsChangeCoolDown = windowsChangeCoolDown - deltaTime;
 
 
     }
@@ -194,9 +192,7 @@ public class Window extends JFrame implements Runnable {
                 double deltaTime = time - lastFrameTime;
                 lastFrameTime = time;
 
-
                 update(deltaTime);
-
             }
 
         }catch(Exception e){

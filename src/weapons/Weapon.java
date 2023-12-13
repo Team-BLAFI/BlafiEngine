@@ -67,7 +67,7 @@ public abstract class Weapon extends Component {
             Vector2D origin = new Vector2D(owner.transform.getCenterX(),owner.transform.getCenterY());
             Vector2D destination = new Vector2D(x,y);
 
-            Vector2D bulletTravelDirection = origin.getVectorTo(destination);
+            Vector2D bulletTravelDirection = origin.getVectorToNorm(destination);
 
 
             //createProjectile(travelDirection);
