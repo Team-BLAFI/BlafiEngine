@@ -37,6 +37,7 @@ public class Shotgun extends Weapon {
             for (int pNumber = 0; pNumber < pellets; pNumber++){
 
                 Vector2D bulletTravelDirection = origin.getVectorTo(destination);
+                bulletTravelDirection.normalize();
 
                 liveProjectiles.add(new Projectile(
                         (int) (origin.getX()),
