@@ -28,7 +28,7 @@ public class Enemy extends Entity {
     private State stateAttacking = new Attacking();
     private State currentState;
     private double unit = WindowConstants.SCREEN_UNIT;
-    private final double moveSpeed = 17.5 * unit;
+    private final double moveSpeed = 20 * unit;
     private final double reach = 4 * unit;
     private final double attackSpeed = 1.0;
     private Player p;
@@ -188,12 +188,18 @@ public class Enemy extends Entity {
         @Override
         public void enterState() {
             animator.changeAnimationTo(ATTACK_A_ID);
-            stateLock = 1d;
-            recoveryTime = .5d;
+            stateLock = attackSpeed;
+            windUp = attackSpeed * 0.1d;
+            recoveryTime = attackSpeed * 0.7d;
         }
 
         @Override
         public void stateUpdate(double dt) {
+            if (windUp<=0){
+                if (getVectorToPlayer().getMagnitude() <= reach){
+                    p.health.takeDamage(30 * dt);
+                }
+            }
             if (recoveryTime <= 0){
                 setState(stateIdle);
             }
