@@ -10,9 +10,12 @@ import java.util.Set;
 import javax.sound.sampled.*;
 
 public class Sound {
-    public static final Sound WEAPON_SHOOT_0 = new Sound("/assets/SingleTap.wav");
-    public static final Sound TRACK_1 = new Sound("/assets/sakura_stage.wav");
-    public static final Sound TRACK_2 = new Sound("/assets/versus.wav");
+    public static final Sound SHOOT_SINGLE = new Sound("/assets/audio/wpn_cis_pistol_fire.wav");
+    public static final Sound RELOAD_SINGLE = new Sound("/assets/audio/LaserReload.wav");
+    public static final Sound EQUIP_WEP = new Sound("/assets/audio/wpn_cis_medEquip.wav");
+    public static final Sound WALK_ENEMY = new Sound("/assets/audio/mvt_Small_run_Metal_R02.wav");
+    public static final Sound TRACK_1 = new Sound("/assets/audio/sakura_stage.wav");
+    public static final Sound TRACK_2 = new Sound("/assets/audio/versus.wav");
     public final Set<Clip> clips = Collections.synchronizedSet(new HashSet<>());
 
     private final AudioFormat format;
@@ -23,9 +26,7 @@ public class Sound {
     public Sound(String path) {
         volumeF =  1f;
         try {
-            AudioInputStream stream = AudioSystem.getAudioInputStream(
-                    new BufferedInputStream(Window.class.getResourceAsStream(path)));
-
+            AudioInputStream stream = AudioSystem.getAudioInputStream(new BufferedInputStream(Window.class.getResourceAsStream(path)));
             this.format = stream.getFormat();
             this.bytes = stream.readAllBytes();
 
@@ -105,12 +106,13 @@ public class Sound {
     public static float clamp(float value, float min, float max) {
         return Math.max(min, Math.min(max, value));
     }
-    public static void setMute(Sound sound){
+    public static void setMute( Sound sound){
         for (Clip c: sound.clips){
             FloatControl volume = (FloatControl) c.getControl(FloatControl.Type.MASTER_GAIN);
-            volume.setValue(-40f);
+            volume.setValue(-100f);
         }
     }
+
     public static float getVolume(Sound sound){
         float currentVal = 0;
         for (Clip c: sound.clips){

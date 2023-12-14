@@ -28,7 +28,6 @@ public class Player extends Entity {
 //    public Shooting thisShooting;
     public Weapon currWeapon;
     public int maxInventorySize = 3;
-
     public Weapon[] weaponInventory = new Weapon[maxInventorySize];
     public int currWeaponIndex =  0;
     public int currInventorySize = 0;
@@ -124,6 +123,7 @@ public class Player extends Entity {
         }
         if (keyListener.isKeyDown(KeyEvent.VK_X)){
             switchWeapon(1);
+
         }
 
         for (int i = 0; i < currInventorySize; i++) {
@@ -229,6 +229,8 @@ public class Player extends Entity {
         currWeapon = weaponInventory[currWeaponIndex];
         System.out.println("switched weapon!" + currWeaponIndex);
         switchWepCD = 1.5;
+        Sound.EQUIP_WEP.play();
+
     }
 
     

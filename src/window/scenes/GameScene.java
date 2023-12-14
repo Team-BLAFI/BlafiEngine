@@ -44,9 +44,8 @@ public class GameScene extends Scene{
     private UI ui;
 
     public GameScene(){
-
+        Sound.setVolume(-15f, Sound.TRACK_1);
         Sound.playMusic(Sound.TRACK_1.getClip());
-        Sound.setVolume(0.0f, Sound.TRACK_1);
 
         roomManager = new RoomManager();
         player = new Player(roomManager);
@@ -111,10 +110,11 @@ public class GameScene extends Scene{
             muteCD = 0.2;
             if(isMute){
                 isMute = false;
-                Sound.setVolume(0.0f, Sound.TRACK_1);
+                Sound.setVolume(-15f,Sound.TRACK_1);
+
             }else{
                 isMute = true;
-                Sound.setMute(Sound.TRACK_1);
+                Sound.setVolume(-80f,Sound.TRACK_1);
             }
         }
         if (KL.getKeyListener().isKeyDown(KeyEvent.VK_U)){

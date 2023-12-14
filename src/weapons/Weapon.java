@@ -5,7 +5,6 @@ import component.Projectile;
 import component.Sound;
 import entity.Entity;
 import util.Vector2D;
-import weapons.WeaponPresets;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -62,8 +61,8 @@ public abstract class Weapon extends Component {
         }
         if (fireCD <=0 && currentMag > 0) {
             // shoot bullet
-
-            Sound.WEAPON_SHOOT_0.play();
+            Sound.setVolume(-20f,Sound.SHOOT_SINGLE);
+            Sound.SHOOT_SINGLE.play();
             Vector2D origin = new Vector2D(owner.transform.getCenterX(),owner.transform.getCenterY());
             Vector2D destination = new Vector2D(x,y);
 
@@ -81,6 +80,8 @@ public abstract class Weapon extends Component {
             currentMag--;
         } else if (currentMag == 0){
             reload();
+            Sound.RELOAD_SINGLE.play();
+
         }
     }
     public void createProjectile(Vector2D travelDirection) {
