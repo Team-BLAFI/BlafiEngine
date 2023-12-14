@@ -17,6 +17,7 @@ import util.io.KL;
 import util.io.ML;
 import weapons.*;
 import window.WindowConstants;
+import window.scenes.GameScene;
 
 import java.awt.*;
 import java.awt.Component;
@@ -46,6 +47,7 @@ public class Player extends Entity {
     private RoomManager roomManager;
 
     public boolean isInteracting = false;
+    public boolean isDead = false;
 
 
     /**<p>
@@ -81,7 +83,7 @@ public class Player extends Entity {
         switchWepCD = 1.5;
         addNewWeapon(new Pistol(this, 10, 0.3, 0.2, 6, 3));
        // new WeaponPickup(transform.getX(), transform.getY() + 40, new Shotgun(this), this);
-
+        this.currWeapon.reload();
     }
 
 
@@ -104,12 +106,14 @@ public class Player extends Entity {
 
 
     public void update(double deltaTime){
+        if (this.health.getHealth() <= 0) {
+            isDead = true;
+        }
+
         HandleMovement(deltaTime);
 
         Vector2D movementVector = GetMovementVector();
         collider.Bounds.setPos((int) transform.getX(), (int) transform.getY());
-
-
 
         if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
             currWeapon.shoot(mouseListener.getX(), mouseListener.getY());

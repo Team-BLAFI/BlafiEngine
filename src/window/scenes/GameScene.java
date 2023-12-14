@@ -30,9 +30,9 @@ public class GameScene extends Scene{
     public static Player player;
     private static GameScene gameScene = null;
 
-    public static ArrayList<WeaponPickup> allWeaponPickups = new ArrayList<>();
+    public static ArrayList<WeaponPickup> allWeaponPickups;
     int pickupTest = 1;
-    public static ArrayList<Enemy> enemies = new ArrayList<>();
+    public static ArrayList<Enemy> enemies;
     private RoomManager roomManager;
 
 
@@ -41,6 +41,10 @@ public class GameScene extends Scene{
     public GameScene(){
         roomManager = new RoomManager();
         player = new Player(roomManager);
+        enemies = new ArrayList<>();
+
+        allWeaponPickups = new ArrayList<>();
+
         ui = new UI(this, player.health);
     }
 
@@ -53,6 +57,10 @@ public class GameScene extends Scene{
 
     @Override
     public void update(double deltaTime) {
+        if (player.isDead) {
+            window.Window.getWindow().changeState(WindowConstants.GAMEOVER_SCENE);
+        }
+
         if (enemies.isEmpty()){
             enemies.add(new Enemy(player));
         }
@@ -138,7 +146,7 @@ public class GameScene extends Scene{
             for (int i = 0; i < allWeaponPickups.size(); i++) {
                 if (player.isInteracting && allWeaponPickups.get(i).canBePickedUp && player.isWeaponInventoryFull()) {
 
-                    WeaponPickup temp = new WeaponPickup(player.transform.getX()+80, player.transform.getY(), player.weaponInventory[player.currWeaponIndex], player);
+                    WeaponPickup temp = new WeaponPickup(player.transform.getCenterX(), player.transform.getCenterY(), player.weaponInventory[player.currWeaponIndex], player);
 
                     player.weaponInventory[player.currWeaponIndex] = allWeaponPickups.get(i).getWeapon();
                     allWeaponPickups.set(i, temp);
