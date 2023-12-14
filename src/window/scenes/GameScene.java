@@ -35,10 +35,10 @@ public class GameScene extends Scene{
     public static ArrayList<Enemy> enemies = new ArrayList<>();
     private RoomManager roomManager;
 
+
     private UI ui;
 
     public GameScene(){
-
         roomManager = new RoomManager();
         player = new Player(roomManager);
         ui = new UI(this, player.health);
@@ -73,6 +73,7 @@ public class GameScene extends Scene{
             weaponInfo = "";
         }
         // Displays the INFO to UI
+
         displayInfo = String.format("%d FPS (%.3f)", frameRate,deltaTime);
 
         player.update(deltaTime);
@@ -166,6 +167,7 @@ public class GameScene extends Scene{
         g.setFont(myFont);
 
         g.drawString(String.format("Curr/Max WepInv: %d/%d", player.currWeaponIndex+1, player.maxInventorySize),WindowConstants.SCREEN_WIDTH-300, (int) (WindowConstants.INSET_SIZE*3.5));
+
     }
 
 }
