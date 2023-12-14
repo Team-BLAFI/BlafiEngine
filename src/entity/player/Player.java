@@ -63,7 +63,6 @@ public class Player extends Entity {
 
     }
 
-
     public void draw(Graphics g, Vector2D camera) {
 
         int x = (int)(transform.getX() - camera.getX());
@@ -85,7 +84,6 @@ public class Player extends Entity {
 
     public void update(double deltaTime) {
         HandleMovement(deltaTime);
-
 
         if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
             currWeapon.shoot(mouseListener.getX(), mouseListener.getY());
@@ -110,7 +108,6 @@ public class Player extends Entity {
             weaponInventory[i].update(deltaTime);
         }
         switchWepCD -= deltaTime;
-
     }
 
     /**
@@ -135,9 +132,7 @@ public class Player extends Entity {
         newPos.moveXBy(movementVector.getX());
         newPos.moveYBy(movementVector.getY());
 
-
         transform.setPosition(newPos.getPosition());
-
     }
 
     /**

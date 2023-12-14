@@ -41,6 +41,7 @@ public class Window extends JFrame implements Runnable {
         setTitle(title);
         setResizable(false);
         setVisible(true);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         isRunning = true;
         changeState(WindowConstants.GAME_SCENE);
