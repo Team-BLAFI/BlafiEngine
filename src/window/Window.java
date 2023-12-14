@@ -6,10 +6,7 @@ import map.Texture;
 import util.Time;
 import util.io.KL;
 import util.io.ML;
-import window.scenes.EditorScene;
-import window.scenes.GameScene;
-import window.scenes.MenuScene;
-import window.scenes.Scene;
+import window.scenes.*;
 
 
 import javax.swing.*;
@@ -31,7 +28,7 @@ public class Window extends JFrame implements Runnable {
 
     private Scene currentScene = new MenuScene();
 
-    private double windowsChangeCoolDown = 0.f;
+    public static double windowsChangeCoolDown = 0.f;
     GraphicsEnvironment ge;
     GraphicsConfiguration gc;
 
@@ -97,6 +94,9 @@ public class Window extends JFrame implements Runnable {
                      break;
                  case 2:
                      currentScene = new EditorScene();
+                     break;
+                 case 69:
+                     currentScene = new GameOverScene();
                      break;
                  default:
                      System.out.println("Unknown window.scenes.Scene");

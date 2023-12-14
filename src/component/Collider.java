@@ -9,6 +9,8 @@ public class Collider extends Component{
 
     public Rect Bounds;
     public Entity owner;
+
+    public Projectile bullet;
     
     public Collider(Rect rect){
         this.Bounds = rect;
@@ -32,6 +34,9 @@ public class Collider extends Component{
 
     public void init() {
 
+    }
+    public Projectile getBullet() {
+        return bullet;
     }
 
     public boolean overlaps(Collider collider){

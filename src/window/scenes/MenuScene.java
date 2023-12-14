@@ -83,7 +83,6 @@ public class MenuScene extends Scene{
 
     @Override
     public void update(double deltaTime) {
-
         if(KL.getKeyListener().isKeyDown(KeyEvent.VK_F1)){
             Window.getWindow().changeState(WindowConstants.EDITOR_SCENE);
         }
@@ -99,7 +98,7 @@ public class MenuScene extends Scene{
             Window.getWindow().changeState(WindowConstants.GAME_SCENE);
         }
 
-        if(isMouseInsideQuit && mouseListener.isPressed(MouseEvent.BUTTON1)){
+        if(isMouseInsideQuit && mouseListener.isPressed(MouseEvent.BUTTON1) && Window.windowsChangeCoolDown <= 0.f){
             Window.getWindow().CloseWindow();
         }
 

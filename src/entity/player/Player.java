@@ -11,6 +11,7 @@ import util.io.KL;
 import util.io.ML;
 import weapons.*;
 import window.WindowConstants;
+import window.scenes.GameScene;
 
 import java.awt.*;
 import java.awt.Component;
@@ -34,12 +35,12 @@ public class Player extends Entity {
     public double switchWepCD;
 
 
-    public WeaponPresets weaponPresets;
     private double unit = WindowConstants.SCREEN_UNIT;
 
     private RoomManager roomManager;
 
     public boolean isInteracting = false;
+    public boolean isDead = false;
 
 
     /**<p>
@@ -63,8 +64,6 @@ public class Player extends Entity {
                 PlayerConstants.PLAYER_HEIGHT
         );
 
-//        thisShooting = new Shooting(this);
-
         health = new Health(
                 100.0,
                 (int) (unit * 0.4),
@@ -72,11 +71,9 @@ public class Player extends Entity {
                 this,
                 true
         );
-        weaponPresets = new WeaponPresets();
         switchWepCD = 1.5;
         addNewWeapon(new Pistol(this, 10, 0.3, 0.2, 6, 3));
-       // new WeaponPickup(transform.getX(), transform.getY() + 40, new Shotgun(this), this);
-
+        this.currWeapon.reload();
     }
 
     public void draw(Graphics g){
@@ -98,12 +95,14 @@ public class Player extends Entity {
 
 
     public void update(double deltaTime){
+        if (this.health.getHealth() <= 0) {
+            isDead = true;
+        }
+
         HandleMovement(deltaTime);
 
         Vector2D movementVector = GetMovementVector();
         collider.Bounds.setPos((int) transform.getX(), (int) transform.getY());
-
-
 
         if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
 
@@ -157,6 +156,21 @@ public class Player extends Entity {
 
             if (!roomManager.collidesWithTiles(newPos.getAsCollider())){
                 transform.setPosition(newPos.getPosition());
+                for (int i = 0; i < currInventorySize; i++) {
+                    for (int j = 0; j < weaponInventory[i].getLiveProjectiles().size(); j++) {
+                        if (weaponInventory[i].getLiveProjectiles().get(j).chrono == Projectile.Chrono.ResumeOnWall) {
+                            weaponInventory[i].getLiveProjectiles().get(j).setIsActive(false);
+                        }
+                    }
+                }
+            }
+            else { for (int i = 0; i < currInventorySize; i++) {
+                for (int j = 0; j < weaponInventory[i].getLiveProjectiles().size(); j++) {
+                        if (weaponInventory[i].getLiveProjectiles().get(j).chrono == Projectile.Chrono.ResumeOnWall) {
+                            weaponInventory[i].getLiveProjectiles().get(j).setIsActive(true);
+                        }
+                    }
+                }
             }
 //            transform.setPosition(newPos.getPosition());
 

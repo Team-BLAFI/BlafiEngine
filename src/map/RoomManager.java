@@ -17,7 +17,7 @@ public class RoomManager {
     private ArrayList<Room> rooms = new ArrayList<>();
     private Room currentRoom;
 
-
+    public Collider overlappedCollider;
 
     public RoomManager(){
         currentRoom = new Room();
@@ -28,7 +28,6 @@ public class RoomManager {
     public boolean collidesWithTiles(Collider c){
         return currentRoom.collidesWithTiles(c);
     }
-
 
     public void makeNewRoom(){
         currentRoom = new Room();

@@ -4,6 +4,7 @@ import component.Collider;
 import util.Door;
 import util.Transform;
 import window.WindowConstants;
+import component.Projectile;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,6 +25,8 @@ public class Room {
     int xOffset;
     int yOffset;
     private Door roomDoor;
+
+    public Collider overlappedCollider;
 
     public Room(){
         loadMap();
@@ -67,12 +70,19 @@ public class Room {
             for (Tile tile:tArray) {
                 if(tile.getIsSolid() && tile.getCollider().overlaps(c)){
                     ret = true;
+                    overlappedCollider = tile.getCollider();
+                    if (c.bullet != null) {
+                        Projectile bullet = c.getBullet();
+                        bullet.setOverlappedTile(overlappedCollider);
+                    }
+                    overlappedCollider = null;
                 }
             }
         }
 
         return ret;
     }
+
 
     public boolean isInDoor(Collider c){
         return roomDoor.getCollider().overlaps(c);
