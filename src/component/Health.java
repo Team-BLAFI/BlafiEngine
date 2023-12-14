@@ -77,8 +77,8 @@ public class Health extends Component{
     }
     @Override
     public void draw(Graphics g, Vector2D camera){
-        int x = (int) owner.transform.getX();
-        int y = (int) owner.transform.getY();
+        int x = (int) (owner.transform.getX() - camera.getX());
+        int y = (int) (owner.transform.getY() - camera.getY());
         if(health >= maxHealth) return;
 
         if(!isPlayer){

@@ -176,26 +176,11 @@ public class Enemy extends Entity {
 
         health.draw(g, camera);
 
-        int centerX = (int) (transform.getCenterX());
-        int centerY = (int) (transform.getCenterY());
-
-        g.setColor(Color.GREEN);
-        g.drawLine(centerX, centerY, (int) (centerX+4*unit),centerY);
-        g.drawLine(centerX, centerY, centerX, (int) (centerY-4*unit));
-
         if (facingLeft){
             animator.RenderCurrentSpriteFlipVer(g,x,y);
         }else{
             animator.RenderCurrentSprite(g,x,y);
         }
-
-
-        g.drawOval(
-                (int) (centerX - 4*unit),
-                (int) (centerY- 4*unit),
-                (int) (8*unit),
-                (int) (8*unit)
-        );
     }
 
     public class Attacking implements entity.enemy.State{
