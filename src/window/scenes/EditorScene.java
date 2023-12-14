@@ -3,6 +3,7 @@ package window.scenes;
 import map.Texture;
 import map2.Room;
 import util.Rect;
+import util.Vector2D;
 import util.io.KL;
 import util.io.ML;
 import window.Window;
@@ -30,7 +31,7 @@ public class EditorScene extends Scene {
 
     Rect r_layout = new Rect((int) unit * 3, (int) unit * 3, (int) unit * 6, (int) unit * 2);
     Rect r_floor = new Rect((int) (unit * 3 + unit * 7), (int) (unit * 3), (int) unit * 6, (int) unit * 2);
-    Rect r_ceiling = new Rect((int) (unit * 3 + unit * 14), (int) (unit * 3), (int) unit * 6, (int) unit * 2);
+    Rect r_props = new Rect((int) (unit * 3 + unit * 14), (int) (unit * 3), (int) unit * 6, (int) unit * 2);
     Rect r_doors = new Rect((int) (unit * 3 + unit * 21), (int) (unit * 3), (int) unit * 6, (int) unit * 2);
     Rect r_enemySpawns = new Rect((int) (unit * 3 + unit * 28), (int) (unit * 3), (int) unit * 6, (int) unit * 2);
     Rect[][] r_texSelect;
@@ -48,6 +49,9 @@ public class EditorScene extends Scene {
     int currentSelection;
     int texSelMaxRow = 10;
     int texSelMaxCol = 10;
+
+    Vector2D pos1 = new Vector2D();
+    Vector2D pos2 = new Vector2D();
 
     public EditorScene() {
         currentSelection = 0;
@@ -100,7 +104,7 @@ public class EditorScene extends Scene {
         g.fillRect(r_floor.x, r_floor.y, r_floor.w, r_floor.h);
 
         g.setColor(c_props);
-        g.fillRect(r_ceiling.x, r_ceiling.y, r_ceiling.w, r_ceiling.h);
+        g.fillRect(r_props.x, r_props.y, r_props.w, r_props.h);
 
         g.setColor(c_doors);
         g.fillRect(r_doors.x, r_doors.y, r_doors.w, r_doors.h);
@@ -117,7 +121,11 @@ public class EditorScene extends Scene {
 
         g.drawString("Floor", r_floor.x + 20, r_floor.y + 20);
 
-        g.drawString("Props", r_ceiling.x + 20, r_ceiling.y + 20);
+        g.drawString("Props", r_props.x + 20, r_props.y + 20);
+
+        g.drawString("doors", r_doors.x + 20, r_doors.y + 20);
+
+        g.drawString("enemies", r_enemySpawns.x + 20, r_enemySpawns.y + 20);
 
         g.drawString("Save", r_save.x + 20, r_save.y + 20);
 
@@ -183,48 +191,89 @@ public class EditorScene extends Scene {
         g.setColor(Color.black);
     }
 
-    private void drawDebugInfo(Graphics g){
+    private void drawDebugInfo(Graphics g) {
         g.setColor(Color.black);
-        Font myFont = new Font ("Courier New", 1, 17);
+        Font myFont = new Font("Courier New", 1, 17);
         g.setFont(myFont);
         String s = String.format("Current selection %d", currentSelection);
 
         g.drawString(s,
-                WindowConstants.SCREEN_WIDTH-300,
-                (int) (WindowConstants.INSET_SIZE*1.5)
+                WindowConstants.SCREEN_WIDTH - 300,
+                (int) (WindowConstants.INSET_SIZE * 1.5)
         );
     }
+
     @Override
     public void update(double deltaTime) {
-        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_ESCAPE)) {
+        if (kl.isKeyDown(KeyEvent.VK_ESCAPE)) {
             Window.getWindow().changeState(WindowConstants.MENU_SCENE);
         }
-        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_F1)) {
+
+        if (kl.isKeyDown(KeyEvent.VK_F1)) {
             Window.getWindow().changeState(WindowConstants.GAME_SCENE);
+        }
+
+        if (kl.isKeyDown(KeyEvent.VK_SHIFT) && ml.isPressed(MouseEvent.BUTTON1)) {
+            for (int y = 0; y < currentEdit.length; y++) {
+                for (int x = 0; x < currentEdit[y].length; x++) {
+                    if (ml.isMouseInsideRect(r_mapTiles[y][x])) {
+                        pos1.setX(x);
+                        pos1.setY(y);
+                        return;
+                    }
+                }
+            }
+        }
+
+        if (kl.isKeyDown(KeyEvent.VK_SHIFT) && ml.isPressed(MouseEvent.BUTTON3)) {
+            for (int y = 0; y < currentEdit.length; y++) {
+                for (int x = 0; x < currentEdit[y].length; x++) {
+                    if (ml.isMouseInsideRect(r_mapTiles[y][x])) {
+                        pos2.setX(x);
+                        pos2.setY(y);
+
+                        return;
+                    }
+                }
+            }
         }
 
         if (ml.isPressed(MouseEvent.BUTTON1)) {
             if (ml.isMouseInsideRect(r_layout)) {
                 currentSection = 0;
                 currentEdit = currentRoom.roomData[currentSection];
-
+                return;
             }
 
             if (ml.isMouseInsideRect(r_floor)) {
                 currentSection = 1;
                 currentEdit = currentRoom.roomData[currentSection];
+                return;
             }
 
-            if (ml.isMouseInsideRect(r_ceiling)) {
+            if (ml.isMouseInsideRect(r_props)) {
                 currentSection = 2;
                 currentEdit = currentRoom.roomData[currentSection];
+                return;
+            }
+
+            if (ml.isMouseInsideRect(r_doors)) {
+                currentSection = 3;
+                currentEdit = currentRoom.roomData[currentSection];
+                return;
+            }
+
+            if (ml.isMouseInsideRect(r_enemySpawns)) {
+                currentSection = 4;
+                currentEdit = currentRoom.roomData[currentSection];
+                return;
             }
 
             for (int y = 0; y < currentEdit.length; y++) {
                 for (int x = 0; x < currentEdit[y].length; x++) {
                     if (ml.isMouseInsideRect(r_mapTiles[y][x])) {
                         currentEdit[y][x] = currentSelection;
-                        break;
+                        return;
                     }
                 }
             }
@@ -232,25 +281,52 @@ public class EditorScene extends Scene {
             for (int y = 0; y < texSelMaxRow; y++) {
                 for (int x = 0; x < texSelMaxCol; x++) {
                     if (ml.isMouseInsideRect(r_texSelect[y][x])) {
-
                         currentSelection = y * texSelMaxCol + x;
-                        break;
+                        return;
                     }
                 }
             }
 
-            if (ml.isMouseInsideRect(r_save)) {
-                try {
-                    String save = String.format("src/assets/levels/Elevel%d.dat", 0);
+        }
 
-                    FileOutputStream fos = new FileOutputStream(save);
-                    ObjectOutputStream oos = new ObjectOutputStream(fos);
-                    oos.writeObject(currentRoom.roomData);
 
-                } catch (Exception e) {
 
+        if (ml.isMouseInsideRect(r_save)) {
+            try {
+                String save = String.format("src/assets/levels/Elevel%d.dat", 0);
+
+                FileOutputStream fos = new FileOutputStream(save);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(currentRoom.roomData);
+
+            } catch (Exception e) {
+                System.out.println("fail to load");
+            }
+            return;
+
+        }
+
+
+        if (ml.isPressed(MouseEvent.BUTTON2)) {
+            for (int y = 0; y < currentEdit.length; y++) {
+                for (int x = 0; x < currentEdit[y].length; x++) {
+                    if (ml.isMouseInsideRect(r_mapTiles[y][x])) {
+                        currentSelection = currentEdit[y][x];
+                        return;
+                    }
                 }
+            }
+        }
 
+
+        if (ml.isPressed(MouseEvent.BUTTON3)) {
+            for (int y = 0; y < currentEdit.length; y++) {
+                for (int x = 0; x < currentEdit[y].length; x++) {
+                    if (ml.isMouseInsideRect(r_mapTiles[y][x])) {
+                        currentEdit[y][x] = 0;
+                        return;
+                    }
+                }
             }
         }
 
@@ -258,6 +334,7 @@ public class EditorScene extends Scene {
             for (int y = 0; y < currentEdit.length; y++) {
                 for (int x = 0; x < currentEdit[y].length; x++) {
                     currentEdit[y][x] = currentSelection;
+                    return;
                 }
             }
         }
@@ -266,6 +343,7 @@ public class EditorScene extends Scene {
             for (int y = 1; y < currentEdit.length - 1; y++) {
                 for (int x = 1; x < currentEdit[y].length - 1; x++) {
                     currentEdit[y][x] = currentSelection;
+                    return;
                 }
             }
         }
@@ -274,13 +352,32 @@ public class EditorScene extends Scene {
                 for (int x = 0; x < currentEdit[y].length; x++) {
                     if (y == 0 || x == 0 || y == currentEdit.length - 1 || x == currentEdit[y].length - 1) {
                         currentEdit[y][x] = currentSelection;
+                        return;
                     }
                 }
             }
         }
-
+        if (kl.isKeyDown(KeyEvent.VK_F)) {
+            if (pos1.getX() > pos2.getX()) {
+                double temp = pos1.getX();
+                pos1.setX(pos2.getX());
+                pos2.setX(temp);
+            }
+            if (pos1.getY() > pos2.getY()) {
+                double temp = pos1.getY();
+                pos1.setY(pos2.getY());
+                pos2.setY(temp);
+            }
+            for (int y = (int) pos1.getY(); y < (int) pos2.getY(); y++) {
+                for (int x = (int) pos1.getX(); x < (int) pos2.getX(); x++) {
+                    currentEdit[y][x] = currentSelection;
+                    return;
+                }
+            }
+        }
 
     }
+
     @Override
     public void draw(Graphics g) {
         drawCurrentEdit(g);

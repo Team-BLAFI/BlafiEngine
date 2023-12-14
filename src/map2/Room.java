@@ -1,5 +1,6 @@
 package map2;
 
+import component.Collider;
 import map.Texture;
 import util.Vector2D;
 import window.Window;
@@ -9,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.util.Random;
 
 public class Room {
     public double unit = WindowConstants.SCREEN_UNIT;
@@ -20,11 +22,13 @@ public class Room {
     public int[][] props;
     public int[][] enemySpawns;
     public int[][] doors;
-    Color c_ligther = new Color(0x45FFFFFF, true);
+    Color c_ligther = new Color(0x6BBBBBBB, true);
 
 
     public Room(){
         try {
+            Random ran = new Random();
+//            int randomd
             String path = "src/assets/levels/Elevel0.dat";
             FileInputStream fis = new FileInputStream(path);
             ObjectInputStream iis = new ObjectInputStream(fis);
@@ -37,6 +41,28 @@ public class Room {
         props = roomData[2];
         enemySpawns = roomData[3];
         doors = roomData[4];
+    }
+
+    public boolean isColliding(Collider c){
+        Collider wc;
+        for (int y = 0; y < walls.length; y++) {
+            for (int x = 0; x < walls[y].length; x++){
+                if(walls[y][x]!=0){
+                    wc = new Collider((int) (x*tileSize),
+                            (int) (y*tileSize),
+                            (int) tileSize,
+                            (int) tileSize
+                    );
+                    if (wc.overlaps(c)){
+                        return true;
+                    }
+                }
+
+            }
+
+        }
+
+        return false;
     }
 
     public void draw(Graphics g, Vector2D camera){

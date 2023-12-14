@@ -9,6 +9,7 @@ import map.RoomManager;
 import entity.Entity;
 
 //import util.Shooting;
+import map2.Room;
 import util.Transform;
 import util.Vector2D;
 import util.io.KL;
@@ -47,8 +48,10 @@ public class Player extends Entity {
      */
     private KL keyListener = KL.getKeyListener();
     private ML mouseListener = ML.getMouseListener();
+    Room currentRoom;
 
-    public Player() {
+    public Player(Room currentRoom) {
+        this.currentRoom = currentRoom;
 
         double w = WindowConstants.SCREEN_WIDTH;
         double h = WindowConstants.SCREEN_HEIGHT;
@@ -65,13 +68,13 @@ public class Player extends Entity {
 
     public void draw(Graphics g, Vector2D camera) {
 
-        int x = (int)(transform.getX() - camera.getX());
-        int y = (int)(transform.getY() - camera.getY());
+        int x = (int) (transform.getX() - camera.getX());
+        int y = (int) (transform.getY() - camera.getY());
 
         g.setColor(PlayerConstants.characterColor);
         g.fillRect(x, y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
         g.setColor(Color.RED);
-        g.drawRect(x, y, (int)transform.getWidth(),(int) transform.getHeight());
+        g.drawRect(x, y, (int) transform.getWidth(), (int) transform.getHeight());
 
         g.setColor(Color.YELLOW);
 
@@ -87,7 +90,7 @@ public class Player extends Entity {
 
         if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
             Vector2D v = new Vector2D(mouseListener.getX(), mouseListener.getY());
-            v.subtract(new Vector2D(WindowConstants.SCREEN_WIDTH/2,WindowConstants.SCREEN_HEIGHT/2));
+            v.subtract(new Vector2D(WindowConstants.SCREEN_WIDTH / 2, WindowConstants.SCREEN_HEIGHT / 2));
             v.normalize();
             currWeapon.shootT(v);
         }
@@ -135,7 +138,10 @@ public class Player extends Entity {
         newPos.moveXBy(movementVector.getX());
         newPos.moveYBy(movementVector.getY());
 
-        transform.setPosition(newPos.getPosition());
+        //if it's not colliding set current position to new position
+        if (!currentRoom.isColliding(newPos.getAsCollider())){
+            transform.setPosition(newPos.getPosition());
+        }
     }
 
     /**
@@ -182,7 +188,6 @@ public class Player extends Entity {
 
         setWeapon();
         System.out.println("player addNewWeapon invoked");
-//        currWeapon.setRandomFireRateTest();
     }
 
     public void setWeapon() {
