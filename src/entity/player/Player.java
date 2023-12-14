@@ -1,13 +1,7 @@
 package entity.player;
 
-import component.Collider;
-import component.Health;
-
-import component.Projectile;
+import component.*;
 import map.RoomManager;
-
-
-
 import entity.Entity;
 
 //import util.Shooting;
@@ -35,7 +29,6 @@ public class Player extends Entity {
 //    public Shooting thisShooting;
     public Weapon currWeapon;
     public int maxInventorySize = 3;
-
     public Weapon[] weaponInventory = new Weapon[maxInventorySize];
     public int currWeaponIndex =  0;
     public int currInventorySize = 0;
@@ -83,7 +76,6 @@ public class Player extends Entity {
         this.currWeapon.reload();
     }
 
-
     public void draw(Graphics g){
         g.setColor(PlayerConstants.characterColor);
         g.fillRect((int) transform.getX(), (int) transform.getY(), PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
@@ -113,6 +105,7 @@ public class Player extends Entity {
         collider.Bounds.setPos((int) transform.getX(), (int) transform.getY());
 
         if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
+
             currWeapon.shoot(mouseListener.getX(), mouseListener.getY());
         }
 
@@ -129,6 +122,7 @@ public class Player extends Entity {
         }
         if (keyListener.isKeyDown(KeyEvent.VK_X)){
             switchWeapon(1);
+
         }
 
         for (int i = 0; i < currInventorySize; i++) {
@@ -249,6 +243,8 @@ public class Player extends Entity {
         currWeapon = weaponInventory[currWeaponIndex];
         System.out.println("switched weapon!" + currWeaponIndex);
         switchWepCD = 1.5;
+        Sound.EQUIP_WEP.play();
+
     }
 
     
