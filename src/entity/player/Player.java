@@ -6,7 +6,6 @@ import component.Health;
 import map.RoomManager;
 
 
-
 import entity.Entity;
 
 //import util.Shooting;
@@ -23,93 +22,69 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import static window.WindowConstants.SCREEN_UNIT;
-
 public class Player extends Entity {
 
-    //private static final BulletType Standard = null;
     private ArrayList<Component> components = new ArrayList<>();
     public Vector2D mousePos = new Vector2D();
-//    public Shooting thisShooting;
     public Weapon currWeapon;
     public int maxInventorySize = 3;
 
     public Weapon[] weaponInventory = new Weapon[maxInventorySize];
-    public int currWeaponIndex =  0;
+    public int currWeaponIndex = 0;
     public int currInventorySize = 0;
     public double switchWepCD;
-
 
     public WeaponPresets weaponPresets;
     private double unit = WindowConstants.SCREEN_UNIT;
 
-    private RoomManager roomManager;
-
     public boolean isInteracting = false;
 
 
-    /**<p>
+    /**
+     * <p>
      * Saves a pointer to the singleton instance of the KeyListener class
-     *</p>
+     * </p>
      */
     private KL keyListener = KL.getKeyListener();
     private ML mouseListener = ML.getMouseListener();
 
-    public Player(RoomManager rM){
-        this.roomManager = rM;
+    public Player() {
+
         double w = WindowConstants.SCREEN_WIDTH;
         double h = WindowConstants.SCREEN_HEIGHT;
 
-        transform = new Transform(w/2.0,h/2, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
+        transform = new Transform(w / 2.0, h / 2, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
 
-        collider = new Collider(
-                (int) transform.getX(),
-                (int) transform.getY(),
-                PlayerConstants.PLAYER_WIDTH,
-                PlayerConstants.PLAYER_HEIGHT
-        );
 
-//        thisShooting = new Shooting(this);
-
-        health = new Health(
-                100.0,
-                (int) (unit * 0.4),
-                (int) - unit,
-                this,
-                true
-        );
+        health = new Health(100.0, (int) (unit * 0.4), (int) -unit, this, true);
         weaponPresets = new WeaponPresets();
         switchWepCD = 1.5;
         addNewWeapon(new Pistol(this, 10, 0.3, 0.2, 6, 3));
-       // new WeaponPickup(transform.getX(), transform.getY() + 40, new Shotgun(this), this);
 
     }
 
 
-    public void draw(Graphics g){
+    public void draw(Graphics g, Vector2D camera) {
+
+        int x = (int)(transform.getX() - camera.getX());
+        int y = (int)(transform.getY() - camera.getY());
+
         g.setColor(PlayerConstants.characterColor);
-        g.fillRect((int) transform.getX(), (int) transform.getY(), PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
+        g.fillRect(x, y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
         g.setColor(Color.RED);
-        g.drawRect(collider.Bounds.x,collider.Bounds.y,collider.Bounds.w,collider.Bounds.h);
+        g.drawRect(x, y, (int)transform.getWidth(),(int) transform.getHeight());
 
         g.setColor(Color.YELLOW);
 
-        health.draw(g);
+        health.draw(g, camera);
 
-        //currWeapon.draw(g);
         for (int i = 0; i < currInventorySize; i++) {
-            weaponInventory[i].draw(g);
+            weaponInventory[i].draw(g, camera);
         }
     }
 
-
-
-    public void update(double deltaTime){
+    public void update(double deltaTime) {
         HandleMovement(deltaTime);
-
-        Vector2D movementVector = GetMovementVector();
-        collider.Bounds.setPos((int) transform.getX(), (int) transform.getY());
-
 
 
         if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
@@ -118,16 +93,16 @@ public class Player extends Entity {
 
         isInteracting = keyListener.isKeyDown(KeyEvent.VK_E);
 
-        if (keyListener.isKeyDown(KeyEvent.VK_R)){
+        if (keyListener.isKeyDown(KeyEvent.VK_R)) {
             currWeapon.reload();
         }
-        if (keyListener.isKeyDown(KeyEvent.VK_N)){
+        if (keyListener.isKeyDown(KeyEvent.VK_N)) {
             addNewWeapon(new Pistol(this, 10, 0.3, 0.2, 6, 3));
         }
-        if (keyListener.isKeyDown(KeyEvent.VK_Z)){
+        if (keyListener.isKeyDown(KeyEvent.VK_Z)) {
             switchWeapon(-1);
         }
-        if (keyListener.isKeyDown(KeyEvent.VK_X)){
+        if (keyListener.isKeyDown(KeyEvent.VK_X)) {
             switchWeapon(1);
         }
 
@@ -143,34 +118,33 @@ public class Player extends Entity {
      * Uses the GetMovementVector() function to get information on how to move the player
      * <br>
      * Then normalizes that vector and moves the character by the unit vector multiplied by delta time and the player speed
-     *</p>
+     * </p>
+     *
      * @param deltaTime gets time since last frame to keep speed constant
      */
-        private void HandleMovement(double deltaTime){
+    private void HandleMovement(double deltaTime) {
 //            int screenUnit = (int) SCREEN_UNIT;
-            Vector2D movementVector = GetMovementVector();
+        Vector2D movementVector = GetMovementVector();
 
-            movementVector.normalize();
+        movementVector.normalize();
 
-            movementVector.multiply(PlayerConstants.PLAYER_SPEED * deltaTime);
+        movementVector.multiply(PlayerConstants.PLAYER_SPEED * deltaTime);
 
-            Transform newPos = new Transform(transform);
+        Transform newPos = new Transform(transform);
 
-            newPos.moveXBy(movementVector.getX());
-            newPos.moveYBy(movementVector.getY());
+        newPos.moveXBy(movementVector.getX());
+        newPos.moveYBy(movementVector.getY());
 
 
-            if (!roomManager.collidesWithTiles(newPos.getAsCollider())){
-                transform.setPosition(newPos.getPosition());
-            }
-//            transform.setPosition(newPos.getPosition());
+        transform.setPosition(newPos.getPosition());
 
-        }
+    }
 
     /**
      * <p>
      * Uses the KeyListener to get the information of how to move the player
-     *</p>
+     * </p>
+     *
      * @return Point2D.Double returns the movement keys pressed as a vector to move the player by
      */
     private Vector2D GetMovementVector() {
@@ -206,7 +180,7 @@ public class Player extends Entity {
         //weaponInventory.add(weaponPresets.createShotgun(this));
         weaponInventory[currInventorySize] = weapon;
         currInventorySize++;
-        currWeaponIndex = currInventorySize-1;
+        currWeaponIndex = currInventorySize - 1;
 
         setWeapon();
         System.out.println("player addNewWeapon invoked");
@@ -220,7 +194,7 @@ public class Player extends Entity {
 
     //FIXME Seems to cause bugs
     public void switchWeapon(int addIndex) {
-        if (switchWepCD > 0){
+        if (switchWepCD > 0) {
             System.out.println("switch cd");
             return;
         }
@@ -236,5 +210,5 @@ public class Player extends Entity {
         switchWepCD = 1.5;
     }
 
-    
+
 }

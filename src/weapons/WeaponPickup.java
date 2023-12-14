@@ -8,7 +8,6 @@ import java.awt.*;
 
 
 public class WeaponPickup extends Entity {
-    public Transform pickup = new Transform();
 
     public Weapon thisWep;
 
@@ -17,9 +16,9 @@ public class WeaponPickup extends Entity {
     public boolean canBePickedUp = false;
 
     public WeaponPickup(Vector2D location, Weapon weapon, Player p) {
-        pickup.setSize(20, 20);
-        pickup.setPosition(location);
-        collider = pickup.getAsCollider();
+        transform = new Transform();
+        transform.setSize(20, 20);
+        transform.setPosition(location);
         thisWep = weapon;
         this.p = p;
     }
@@ -32,26 +31,23 @@ public class WeaponPickup extends Entity {
     }
 
     public void update(double deltaTime) {
-        if (collider.overlaps(p.collider)) {
-//            p.addNewWeapon(giveWeapon());
+        if (transform.getAsCollider().overlaps(p.transform.getAsCollider())) {
+
             this.canBePickedUp = true;
         } else {
             this.canBePickedUp = false;
         }
     }
 
-    public void draw(Graphics g) {
+    public void draw(Graphics g, Vector2D camera) {
+        int x = (int)(transform.getX() - camera.getX());
+        int y = (int)(transform.getY() - camera.getY());
+
         g.setColor(Color.blue);
-        g.fillRect((int) pickup.getX(), (int) pickup.getY(), (int) pickup.getWidth(), (int) pickup.getHeight());
+        g.fillRect((int) x, (int) y, (int) transform.getWidth(), (int) transform.getHeight());
         g.setColor(Color.RED);
-        g.drawRect(collider.Bounds.x,collider.Bounds.y,collider.Bounds.w,collider.Bounds.h);
+        g.drawRect(x,y,(int)transform.getWidth(),(int)transform.getHeight());
+
     }
-
-
-
-
-
-
-
 
 }

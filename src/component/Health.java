@@ -2,6 +2,7 @@ package component;
 
 import entity.Entity;
 import util.Rect;
+import util.Vector2D;
 import window.WindowConstants;
 
 import java.awt.*;
@@ -75,7 +76,7 @@ public class Health extends Component{
         barFill.w = (int) (bar.w * fillPercentage);
     }
     @Override
-    public void draw(Graphics g){
+    public void draw(Graphics g, Vector2D camera){
         int x = (int) owner.transform.getX();
         int y = (int) owner.transform.getY();
         if(health >= maxHealth) return;

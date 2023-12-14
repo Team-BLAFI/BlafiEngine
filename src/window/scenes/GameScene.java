@@ -7,6 +7,7 @@ import component.Hitbox;
 import component.UI;
 
 import entity.enemy.Enemy;
+import map2.Camera;
 import weapons.Pistol;
 import weapons.WeaponPickup;
 import weapons.Shotgun;
@@ -33,14 +34,15 @@ public class GameScene extends Scene{
     public static ArrayList<WeaponPickup> allWeaponPickups = new ArrayList<>();
     int pickupTest = 1;
     public static ArrayList<Enemy> enemies = new ArrayList<>();
-    private RoomManager roomManager;
+    Camera mainCam;
 
 
     private UI ui;
 
     public GameScene(){
-        roomManager = new RoomManager();
-        player = new Player(roomManager);
+
+        player = new Player();
+        mainCam = new Camera(player);
         ui = new UI(this, player.health);
     }
 
@@ -53,6 +55,12 @@ public class GameScene extends Scene{
 
     @Override
     public void update(double deltaTime) {
+        mainCam.update(deltaTime);
+        for (Enemy e: enemies){
+            if (e.health.getHealth() <= 0){
+                allWeaponPickups.add(new WeaponPickup(e.transform.getX(), e.transform.getY(), new Shotgun(player, 69, 0.069, 0.69, 69, 1,69), player));
+            }
+        }
         if (enemies.isEmpty()){
             enemies.add(new Enemy(player));
         }
@@ -86,8 +94,6 @@ public class GameScene extends Scene{
             enemies.get(i).update(deltaTime);
         }
 
-        roomManager.getCurrentRoom().collidesWithTiles(player.transform.getAsCollider());
-        roomManager.debugNewRoom(player);
 
         handleWeaponPickups(deltaTime);
 
@@ -95,9 +101,6 @@ public class GameScene extends Scene{
             Window.getWindow().changeState(WindowConstants.MENU_SCENE);
         }
 
-        if(KL.getKeyListener().isKeyDown(KeyEvent.VK_K)){
-            roomManager.makeNewRoom();
-        }
 
     }
 
@@ -106,17 +109,16 @@ public class GameScene extends Scene{
         //Sets color to dark gray
         g.setColor(Color.decode("#23272a"));
         g.fillRect(0,0, WindowConstants.SCREEN_WIDTH, WindowConstants.SCREEN_HEIGHT);
-        roomManager.draw(g);
         g.setColor(Color.GREEN);
 
         // Player
-        player.draw(g);
+        player.draw(g,mainCam.transform.getPosition());
         for (Enemy e: enemies) {
-            e.draw(g);
+            e.draw(g,mainCam.transform.getPosition());
         }
         if (!allWeaponPickups.isEmpty()) {
             for (int i = 0; i < allWeaponPickups.size(); i++) {
-                allWeaponPickups.get(i).draw(g);
+                allWeaponPickups.get(i).draw(g,mainCam.transform.getPosition());
             }
         }
         //-- UI --
@@ -127,7 +129,7 @@ public class GameScene extends Scene{
         ui.drawCore(g);
 
         //Weapon
-        ui.drawBullet(g,(int)WindowConstants.SCREEN_UNIT*2, (int)WindowConstants.SCREEN_UNIT*50 );
+        ui.drawBullet(g);
         ui.draw(g, weaponInfo, (int)WindowConstants.SCREEN_UNIT*5, ((int)WindowConstants.SCREEN_UNIT*53),false);
 
         debugWepInfo(g);

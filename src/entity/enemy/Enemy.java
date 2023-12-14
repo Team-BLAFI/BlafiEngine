@@ -170,37 +170,29 @@ public class Enemy extends Entity {
     }
 
     @Override
-    public void draw(Graphics g) {
-        Vector2D s = WindowConstants.MID_SCREENPOINT;
+    public void draw(Graphics g, Vector2D camera) {
+        int x = (int)(transform.getX() - camera.getX());
+        int y = (int)(transform.getY() - camera.getY());
 
+        health.draw(g, camera);
 
-//        g.fillRect(
-//                (int) this.transform.getX(),
-//                (int) this.transform.getY(),
-//                (int) this.transform.getWidth(),
-//                (int) this.transform.getHeight()
-//        );
-        health.draw(g);
-
-        int x = (int) (transform.getCenterX());
-        int y = (int) (transform.getCenterY());
+        int centerX = (int) (transform.getCenterX());
+        int centerY = (int) (transform.getCenterY());
 
         g.setColor(Color.GREEN);
-        g.drawLine(x, y, (int) (x+4*unit),y);
-        g.drawLine(x, y, x, (int) (y-4*unit));
+        g.drawLine(centerX, centerY, (int) (centerX+4*unit),centerY);
+        g.drawLine(centerX, centerY, centerX, (int) (centerY-4*unit));
 
         if (facingLeft){
-            animator.RenderCurrentSpriteFlipVer(g,(int)transform.getX(),(int)transform.getY());
-
+            animator.RenderCurrentSpriteFlipVer(g,x,y);
         }else{
-
-            animator.RenderCurrentSprite(g,(int)transform.getX(),(int)transform.getY());
+            animator.RenderCurrentSprite(g,x,y);
         }
 
 
         g.drawOval(
-                (int) (x - 4*unit),
-                (int) (y- 4*unit),
+                (int) (centerX - 4*unit),
+                (int) (centerY- 4*unit),
                 (int) (8*unit),
                 (int) (8*unit)
         );

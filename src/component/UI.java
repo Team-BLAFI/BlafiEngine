@@ -44,34 +44,34 @@ public class UI {
         arcadeFont = new Font(bitFontName, Font.TRUETYPE_FONT, 30);
 
     }
-    public void draw(Graphics g2 , String Text, int x, int y,boolean FPS){
+    public void draw(Graphics g , String Text, int x, int y,boolean FPS){
         if(FPS){
-            g2.setFont(arial_40);
+            g.setFont(arial_40);
         }else{
-            g2.setFont(arcadeFont);
+            g.setFont(arcadeFont);
         }
-        g2.setColor(Color.WHITE);
+        g.setColor(Color.WHITE);
 
         // Draws the string with coordinates in gamescene
-        g2.drawString(Text,x,y);
+        g.drawString(Text,x,y);
 
     }
-    public void drawBullet(Graphics g2, int x, int y){
+    public void drawBullet(Graphics g){
         try{
             BufferedImage bulletSprite = ImageIO.read(new File("src/assets/bullet.png"));
             bullet = new ImageIcon(bulletSprite.getSubimage(10,0,11,31));
         }catch (Exception e) {
             e.printStackTrace();
         }
-        g2.drawImage(
+        g.drawImage(
                 bullet.getImage(),
-                x,
-                y,
+                (int)unit*4,
+                (int)unit*53,
                 25,
                 62,
                 null);
     }
-    public void drawCore(Graphics g2){
+    public void drawCore(Graphics g){
         File greenCoreFile = new File("src/assets/blaffiGreenCore2.png");
         try{
             BufferedImage greenCoreSprite = ImageIO.read(greenCoreFile);
@@ -79,7 +79,7 @@ public class UI {
         }catch (Exception e) {
             e.printStackTrace();
         }
-        g2.drawImage(
+        g.drawImage(
                 greenCore.getImage(),
                 (int)unit-5,
                 (int)unit*3-5,

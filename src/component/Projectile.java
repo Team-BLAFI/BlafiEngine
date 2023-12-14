@@ -133,11 +133,15 @@ public class Projectile extends Component{
 
 	}
 
-	public void draw(Graphics g) {
+	public void draw(Graphics g, Vector2D camera) {
+
+		int x = (int)(transform.getX() - camera.getX());
+		int y = (int)(transform.getY() - camera.getY());
+
 		g.setColor(Color.RED);
 		g.fillRect(
-				(int) transform.getX(),
-				(int) transform.getY(),
+				x,
+				y,
 				(int) transform.getWidth(),
 				(int) transform.getHeight()
 		);

@@ -35,8 +35,6 @@ public abstract class Weapon extends Component {
         return "reloading...";
     }
 
-
-
     public Weapon(Entity owner, double dmg, double fireRate, double reloadCooldown, int magSize, double lifeTime) {
         this.owner = owner;
         this.dmg = dmg;
@@ -83,6 +81,7 @@ public abstract class Weapon extends Component {
             reload();
         }
     }
+
     public void createProjectile(Vector2D travelDirection) {
         liveProjectiles.add(new Projectile(
                 (int) (owner.transform.getX() + owner.transform.getSize().getX()/2),
@@ -139,9 +138,9 @@ public abstract class Weapon extends Component {
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void draw(Graphics g, Vector2D camera) {
         for (Projectile p:liveProjectiles) {
-            p.draw(g);
+            p.draw(g, camera);
         }
     }
 

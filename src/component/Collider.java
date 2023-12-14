@@ -2,6 +2,7 @@ package component;
 
 import util.Rect;
 import entity.*;
+import util.Vector2D;
 
 import java.awt.*;
 
@@ -26,7 +27,7 @@ public class Collider extends Component{
 
     }
 
-    public void draw(Graphics g) {
+    public void draw(Graphics g, Vector2D camera) {
 
     }
 
