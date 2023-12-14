@@ -41,9 +41,11 @@ public class GameScene extends Scene{
     public static ArrayList<Enemy> enemies = new ArrayList<>();
     private RoomManager roomManager;
 
+
     private UI ui;
 
     public GameScene(){
+
         Sound.setVolume(-15f, Sound.TRACK_1);
         Sound.playMusic(Sound.TRACK_1.getClip());
 
@@ -206,6 +208,7 @@ public class GameScene extends Scene{
         g.setFont(myFont);
 
         g.drawString(String.format("Curr/Max WepInv: %d/%d", player.currWeaponIndex+1, player.maxInventorySize),WindowConstants.SCREEN_WIDTH-300, (int) (WindowConstants.INSET_SIZE*3.5));
+
     }
 
 }

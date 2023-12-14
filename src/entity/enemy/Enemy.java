@@ -5,7 +5,11 @@ import component.Sound;
 import entity.Entity;
 import entity.player.Player;
 import entity.player.PlayerConstants;
+
+import map.RoomManager;
+
 import util.Animation;
+
 import util.Transform;
 import util.Vector2D;
 import util.io.KL;
@@ -39,7 +43,11 @@ public class Enemy extends Entity {
 
 
 
+    private RoomManager roomManager;
     public Enemy(Player p){
+
+        roomManager = new RoomManager();
+
         setState(stateIdle);
 
         double w = WindowConstants.SCREEN_WIDTH;
@@ -96,8 +104,22 @@ public class Enemy extends Entity {
 
         movementVector.multiply(moveSpeed * dt);
 
-        transform.setX(transform.getX() + movementVector.getX());
-        transform.setY(transform.getY() + movementVector.getY());
+//        transform.setX(transform.getX() + movementVector.getX());
+//        transform.setY(transform.getY() + movementVector.getY());
+
+
+        /*ADDING COLLISION FOR ENEMY AND TILE*/
+        //*
+        Transform newPos = new Transform(transform);
+
+        newPos.moveXBy(movementVector.getX());
+        newPos.moveYBy(movementVector.getY());
+
+        if (!roomManager.collidesWithTiles(newPos.getAsCollider())){
+            transform.setPosition(newPos.getPosition());
+        }
+        //*/
+        Vector2D d = new Vector2D(transform.getCenterX(), transform.getCenterY());
 
     }
 
@@ -106,6 +128,7 @@ public class Enemy extends Entity {
         mv.rotate( dt * PlayerConstants.PLAYER_SPEED/10 ,p.transform.getCenterX(),p.transform.getCenterY());
 
         transform.setPosition(mv);
+
 
     }
 
