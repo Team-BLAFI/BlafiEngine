@@ -209,7 +209,7 @@ public class Projectile extends Component{
 			timeInactive += deltaTime;
 			return;
 		}
-		baseDamage *= timeInactive *.5;
+//		baseDamage *= timeInactive *.5;
 		//the longer inactive, the more damage
 		timeInactive = 0;
 

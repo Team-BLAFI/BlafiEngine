@@ -71,8 +71,6 @@ public class Player extends Entity {
                 PlayerConstants.PLAYER_HEIGHT
         );
 
-//        thisShooting = new Shooting(this);
-
         health = new Health(
                 100.0,
                 (int) (unit * 0.4),
@@ -82,7 +80,6 @@ public class Player extends Entity {
         );
         switchWepCD = 1.5;
         addNewWeapon(new Pistol(this, 10, 0.3, 0.2, 6, 3));
-       // new WeaponPickup(transform.getX(), transform.getY() + 40, new Shotgun(this), this);
         this.currWeapon.reload();
     }
 
@@ -175,9 +172,9 @@ public class Player extends Entity {
             }
             else { for (int i = 0; i < currInventorySize; i++) {
                 for (int j = 0; j < weaponInventory[i].getLiveProjectiles().size(); j++) {
-                    if (weaponInventory[i].getLiveProjectiles().get(j).chrono == Projectile.Chrono.ResumeOnWall) {
-                        weaponInventory[i].getLiveProjectiles().get(j).setIsActive(true);
-                    }
+                        if (weaponInventory[i].getLiveProjectiles().get(j).chrono == Projectile.Chrono.ResumeOnWall) {
+                            weaponInventory[i].getLiveProjectiles().get(j).setIsActive(true);
+                        }
                     }
                 }
             }
