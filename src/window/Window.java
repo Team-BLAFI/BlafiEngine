@@ -1,5 +1,7 @@
 package window;
 
+
+import component.Sound;
 import map.Texture;
 import util.Time;
 import util.io.KL;
@@ -200,6 +202,7 @@ public class Window extends JFrame implements Runnable {
         }
 
         this.dispose();
+
     }
 
     public void CloseWindow() {

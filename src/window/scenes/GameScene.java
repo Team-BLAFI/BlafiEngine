@@ -1,9 +1,12 @@
-package window.scenes;
+                                                                                                                                                                                                                                               package window.scenes;
 
 import map.RoomManager;
 import component.Collider;
 
 import component.Hitbox;
+
+import component.Sound;
+
 import component.UI;
 
 import entity.enemy.Enemy;
@@ -21,17 +24,20 @@ import java.util.ArrayList;
 
 public class GameScene extends Scene{
 
-
     private int frameRate = 0;
     private String weaponInfo = "";
     private String displayInfo = "";
 
+    private boolean isMute = false;
+    private double muteCD= 0.0;
+//    private Sound sound = new Sound();
 
     public static Player player;
     private static GameScene gameScene = null;
 
     public static ArrayList<WeaponPickup> allWeaponPickups = new ArrayList<>();
     int pickupTest = 1;
+
     public static ArrayList<Enemy> enemies = new ArrayList<>();
     private RoomManager roomManager;
 
@@ -39,20 +45,27 @@ public class GameScene extends Scene{
     private UI ui;
 
     public GameScene(){
+
+        Sound.setVolume(-15f, Sound.TRACK_1);
+        Sound.playMusic(Sound.TRACK_1.getClip());
+
         roomManager = new RoomManager();
         player = new Player(roomManager);
         ui = new UI(this, player.health);
+
     }
 
     public static GameScene getGameScene(){
         if(GameScene.gameScene == null){
             GameScene.gameScene = new GameScene();
+
         }
         return GameScene.gameScene;
     }
 
     @Override
     public void update(double deltaTime) {
+        muteCD -= deltaTime;
         if (enemies.isEmpty()){
             enemies.add(new Enemy(player));
         }
@@ -86,6 +99,33 @@ public class GameScene extends Scene{
             enemies.get(i).update(deltaTime);
         }
 
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_1)){
+            Sound.VolumeUp(Sound.TRACK_1, deltaTime);
+            System.out.println(Sound.getVolume(Sound.TRACK_1));
+        }
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_2)){
+            Sound.VolumeDown(Sound.TRACK_1, deltaTime);
+            System.out.println(Sound.getVolume(Sound.TRACK_1));
+        }
+
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_M) && muteCD < 0){
+            muteCD = 0.2;
+            if(isMute){
+                isMute = false;
+                Sound.setVolume(-15f,Sound.TRACK_1);
+
+            }else{
+                isMute = true;
+                Sound.setVolume(-80f,Sound.TRACK_1);
+            }
+        }
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_U)){
+            Sound.playMusic(Sound.TRACK_2.getClip());
+        }
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_I)){
+            Sound.playMusic(Sound.TRACK_1.getClip());
+        }
+
         roomManager.getCurrentRoom().collidesWithTiles(player.transform.getAsCollider());
         roomManager.debugNewRoom(player);
 
@@ -100,7 +140,6 @@ public class GameScene extends Scene{
         }
 
     }
-
     @Override
     public void draw(Graphics g) {
         //Sets color to dark gray
@@ -125,6 +164,8 @@ public class GameScene extends Scene{
         //Health
         ui.drawHealth(g, player.health);
         ui.drawCore(g);
+
+        //Sound
 
         //Weapon
         ui.drawBullet(g,(int)WindowConstants.SCREEN_UNIT*2, (int)WindowConstants.SCREEN_UNIT*50 );
