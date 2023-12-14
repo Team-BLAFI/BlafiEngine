@@ -103,10 +103,10 @@ public class EditorScene extends Scene {
         g.fillRect(r_ceiling.x, r_ceiling.y, r_ceiling.w, r_ceiling.h);
 
         g.setColor(c_doors);
-        g.fillRect(r_save.x, r_save.y, r_save.w, r_save.h);
+        g.fillRect(r_doors.x, r_doors.y, r_doors.w, r_doors.h);
 
         g.setColor(c_enemySpawns);
-        g.fillRect(r_save.x, r_save.y, r_save.w, r_save.h);
+        g.fillRect(r_enemySpawns.x, r_enemySpawns.y, r_enemySpawns.w, r_enemySpawns.h);
 
         g.setColor(c_save);
         g.fillRect(r_save.x, r_save.y, r_save.w, r_save.h);

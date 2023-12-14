@@ -56,7 +56,7 @@ public class Shotgun extends Weapon {
         }
     }
 
-    public void shootT(Vector2D travelDirection) {
+        public void shootT(Vector2D travelDirection) {
         if(activeRC>0){
             return;
         }

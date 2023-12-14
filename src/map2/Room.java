@@ -18,6 +18,8 @@ public class Room {
     public int[][] walls;
     public int[][] floor;
     public int[][] props;
+    public int[][] enemySpawns;
+    public int[][] doors;
     Color c_ligther = new Color(0x45FFFFFF, true);
 
 
@@ -33,6 +35,8 @@ public class Room {
         walls = roomData[0];
         floor = roomData[1];
         props = roomData[2];
+        enemySpawns = roomData[3];
+        doors = roomData[4];
     }
 
     public void draw(Graphics g, Vector2D camera){
