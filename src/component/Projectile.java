@@ -23,7 +23,7 @@ public class Projectile extends Component{
 	
 	public double baseCooldown;
 	public double baseFlightSpeed;
-	public double baseDamage;
+	public double baseDamage = 10;
 	public double maxFlightTime;  
 	public double currentFlightTime;
 	
