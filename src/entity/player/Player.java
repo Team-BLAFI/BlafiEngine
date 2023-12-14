@@ -86,7 +86,10 @@ public class Player extends Entity {
         HandleMovement(deltaTime);
 
         if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
-            currWeapon.shoot(mouseListener.getX(), mouseListener.getY());
+            Vector2D v = new Vector2D(mouseListener.getX(), mouseListener.getY());
+            v.subtract(new Vector2D(WindowConstants.SCREEN_WIDTH/2,WindowConstants.SCREEN_HEIGHT/2));
+            v.normalize();
+            currWeapon.shootT(v);
         }
 
         isInteracting = keyListener.isKeyDown(KeyEvent.VK_E);
@@ -120,7 +123,7 @@ public class Player extends Entity {
      * @param deltaTime gets time since last frame to keep speed constant
      */
     private void HandleMovement(double deltaTime) {
-//            int screenUnit = (int) SCREEN_UNIT;
+
         Vector2D movementVector = GetMovementVector();
 
         movementVector.normalize();

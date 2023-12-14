@@ -8,6 +8,7 @@ import component.UI;
 
 import entity.enemy.Enemy;
 import map2.Camera;
+import map2.Room;
 import weapons.Pistol;
 import weapons.WeaponPickup;
 import weapons.Shotgun;
@@ -35,12 +36,13 @@ public class GameScene extends Scene{
     int pickupTest = 1;
     public static ArrayList<Enemy> enemies = new ArrayList<>();
     Camera mainCam;
+    Room room;
 
 
     private UI ui;
 
     public GameScene(){
-
+        room = new Room();
         player = new Player();
         mainCam = new Camera(player);
         ui = new UI(this, player.health);
@@ -111,6 +113,9 @@ public class GameScene extends Scene{
         g.fillRect(0,0, WindowConstants.SCREEN_WIDTH, WindowConstants.SCREEN_HEIGHT);
         g.setColor(Color.GREEN);
 
+        room.draw(g,mainCam.transform.getPosition());
+        debugWepInfo(g);
+
         // Player
         player.draw(g,mainCam.transform.getPosition());
         for (Enemy e: enemies) {
@@ -132,7 +137,8 @@ public class GameScene extends Scene{
         ui.drawBullet(g);
         ui.draw(g, weaponInfo, (int)WindowConstants.SCREEN_UNIT*5, ((int)WindowConstants.SCREEN_UNIT*53),false);
 
-        debugWepInfo(g);
+
+
     }
 
     public void handleWeaponPickups(double deltaTime) {

@@ -186,6 +186,8 @@ public class Window extends JFrame implements Runnable {
     public void run() {
         this.requestFocus();
         double lastFrameTime = 0.0;
+        Texture.loadNewTiles();
+
         try{
 //          main game loop happens here & delta time gets calculated at the start of the frame
             while(isRunning){

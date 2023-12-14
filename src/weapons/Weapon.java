@@ -144,6 +144,24 @@ public abstract class Weapon extends Component {
         }
     }
 
+    public void shootT(Vector2D travelDirection) {
+        if(activeRC>0){
+            return;
+        }
+        if (fireCD <=0 && currentMag > 0) {
+
+            liveProjectiles.add(new Projectile(
+                    (int) (owner.transform.getCenterX()),
+                    (int) (owner.transform.getCenterY()),
+                    travelDirection,
+                    this.lifeTime)
+            );
+            fireCD = fireRate;
+            currentMag--;
+        } else if (currentMag == 0){
+            reload();
+        }
+    }
 }
 
 //specific fire rates based on bullet(add weapon entity for projectile class, to edit weapon properties on projectile creation?)
