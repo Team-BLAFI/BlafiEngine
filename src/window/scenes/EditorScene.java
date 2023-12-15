@@ -203,6 +203,35 @@ public class EditorScene extends Scene {
         );
     }
 
+    private void drawShortcutInfo(Graphics g) {
+        g.setColor(Color.black);
+        Font myFont = new Font("Courier New", 1, 17);
+        g.setFont(myFont);
+        String heading = String.format("Shortcut keys:");
+        String shortcut_c = String.format("c = fill everything with current selection");
+        String shortcut_v = String.format("v = fill everything but outer edge with current selection");
+        String shortcut_w = String.format("w = fill outer layer with current selection");
+
+        int insetOffset = 18;
+
+        g.drawString(heading,
+                WindowConstants.SCREEN_WIDTH - 650,
+                (int) (WindowConstants.INSET_SIZE * 20.5)
+        );
+        g.drawString(shortcut_c,
+                WindowConstants.SCREEN_WIDTH - 625,
+                (int) (WindowConstants.INSET_SIZE * 20.5 + insetOffset)
+        );
+        g.drawString(shortcut_v,
+                WindowConstants.SCREEN_WIDTH - 625,
+                (int) (WindowConstants.INSET_SIZE * 20.5 + (insetOffset*2))
+        );
+        g.drawString(shortcut_w,
+                WindowConstants.SCREEN_WIDTH - 625,
+                (int) (WindowConstants.INSET_SIZE * 20.5 + (insetOffset * 3))
+        );
+    }
+
     @Override
     public void update(double deltaTime) {
         if (kl.isKeyDown(KeyEvent.VK_ESCAPE)) {
@@ -380,6 +409,7 @@ public class EditorScene extends Scene {
         drawTextureSelection(g);
         drawButtons(g);
         drawDebugInfo(g);
+        drawShortcutInfo(g);
     }
 
 }
