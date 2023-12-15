@@ -219,7 +219,6 @@ public class EditorScene extends Scene {
                     if (ml.isMouseInsideRect(r_mapTiles[y][x])) {
                         pos1.setX(x);
                         pos1.setY(y);
-                        return;
                     }
                 }
             }
@@ -231,8 +230,6 @@ public class EditorScene extends Scene {
                     if (ml.isMouseInsideRect(r_mapTiles[y][x])) {
                         pos2.setX(x);
                         pos2.setY(y);
-
-                        return;
                     }
                 }
             }
@@ -242,38 +239,37 @@ public class EditorScene extends Scene {
             if (ml.isMouseInsideRect(r_layout)) {
                 currentSection = 0;
                 currentEdit = currentRoom.roomData[currentSection];
-                return;
+                
             }
 
             if (ml.isMouseInsideRect(r_floor)) {
                 currentSection = 1;
                 currentEdit = currentRoom.roomData[currentSection];
-                return;
+                
             }
 
             if (ml.isMouseInsideRect(r_props)) {
                 currentSection = 2;
                 currentEdit = currentRoom.roomData[currentSection];
-                return;
+                
             }
 
             if (ml.isMouseInsideRect(r_doors)) {
                 currentSection = 3;
                 currentEdit = currentRoom.roomData[currentSection];
-                return;
+                
             }
 
             if (ml.isMouseInsideRect(r_enemySpawns)) {
                 currentSection = 4;
                 currentEdit = currentRoom.roomData[currentSection];
-                return;
+                
             }
 
             for (int y = 0; y < currentEdit.length; y++) {
                 for (int x = 0; x < currentEdit[y].length; x++) {
                     if (ml.isMouseInsideRect(r_mapTiles[y][x])) {
                         currentEdit[y][x] = currentSelection;
-                        return;
                     }
                 }
             }
@@ -282,7 +278,7 @@ public class EditorScene extends Scene {
                 for (int x = 0; x < texSelMaxCol; x++) {
                     if (ml.isMouseInsideRect(r_texSelect[y][x])) {
                         currentSelection = y * texSelMaxCol + x;
-                        return;
+                        
                     }
                 }
             }
@@ -302,7 +298,7 @@ public class EditorScene extends Scene {
             } catch (Exception e) {
                 System.out.println("fail to load");
             }
-            return;
+            
 
         }
 
@@ -312,7 +308,7 @@ public class EditorScene extends Scene {
                 for (int x = 0; x < currentEdit[y].length; x++) {
                     if (ml.isMouseInsideRect(r_mapTiles[y][x])) {
                         currentSelection = currentEdit[y][x];
-                        return;
+                        
                     }
                 }
             }
@@ -324,7 +320,7 @@ public class EditorScene extends Scene {
                 for (int x = 0; x < currentEdit[y].length; x++) {
                     if (ml.isMouseInsideRect(r_mapTiles[y][x])) {
                         currentEdit[y][x] = 0;
-                        return;
+                        
                     }
                 }
             }
@@ -334,7 +330,7 @@ public class EditorScene extends Scene {
             for (int y = 0; y < currentEdit.length; y++) {
                 for (int x = 0; x < currentEdit[y].length; x++) {
                     currentEdit[y][x] = currentSelection;
-                    return;
+                    
                 }
             }
         }
@@ -343,7 +339,7 @@ public class EditorScene extends Scene {
             for (int y = 1; y < currentEdit.length - 1; y++) {
                 for (int x = 1; x < currentEdit[y].length - 1; x++) {
                     currentEdit[y][x] = currentSelection;
-                    return;
+                    
                 }
             }
         }
@@ -352,7 +348,7 @@ public class EditorScene extends Scene {
                 for (int x = 0; x < currentEdit[y].length; x++) {
                     if (y == 0 || x == 0 || y == currentEdit.length - 1 || x == currentEdit[y].length - 1) {
                         currentEdit[y][x] = currentSelection;
-                        return;
+                        
                     }
                 }
             }
@@ -371,7 +367,7 @@ public class EditorScene extends Scene {
             for (int y = (int) pos1.getY(); y < (int) pos2.getY(); y++) {
                 for (int x = (int) pos1.getX(); x < (int) pos2.getX(); x++) {
                     currentEdit[y][x] = currentSelection;
-                    return;
+                    
                 }
             }
         }

@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class Room {
     public double unit = WindowConstants.SCREEN_UNIT;
-    public double tileSize = 4*unit;
+    public double tileSize = 7*unit;
 
     public int[][][] roomData;
     public int[][] walls;
@@ -28,8 +28,8 @@ public class Room {
     public Room(){
         try {
             Random ran = new Random();
-//            int randomd
-            String path = "src/assets/levels/Elevel0.dat";
+            int rNum = ran.nextInt(10);
+            String path = String.format("src/assets/levels/Elevel%d.dat",rNum);
             FileInputStream fis = new FileInputStream(path);
             ObjectInputStream iis = new ObjectInputStream(fis);
             roomData = (int[][][]) iis.readObject();
