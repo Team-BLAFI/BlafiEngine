@@ -130,10 +130,19 @@ public class Enemy extends Entity {
         isMoving = true;
         Vector2D v = getVectorToPlayer();
         v.normalize();
+        v.multiply(moveSpeed * dt);
+
         Transform newPos = new Transform(transform);
 
-        newPos.movePositionBy(v.multiply(moveSpeed * dt));
 
+
+        newPos.moveXBy(v.getX());
+        if (!currentRoom.isColliding(newPos.getAsCollider())){
+            transform.setPosition(newPos.getPosition());
+        }
+
+        newPos = new Transform(transform);
+        newPos.moveYBy(v.getY());
         if (!currentRoom.isColliding(newPos.getAsCollider())){
             transform.setPosition(newPos.getPosition());
         }
@@ -150,8 +159,6 @@ public class Enemy extends Entity {
             GameScene.player.health.takeDamage(damagePerSecond *dt);
         }
     }
-
-
 
     private void handleCD(double dt){
         recoveryTime -= dt;

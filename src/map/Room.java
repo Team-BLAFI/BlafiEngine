@@ -23,14 +23,15 @@ public class Room {
     public int[][] props;
     public int[][] enemySpawns;
     public int[][] doors;
+    boolean isLock = true;
     Color c_ligther = new Color(0x6BBBBBBB, true);
 
 
     public Room(){
         try {
             Random ran = new Random();
-            int rNum = ran.nextInt(10);
-            String path = String.format("src/assets/levels/Elevel%d.dat",0);
+            int rNum = ran.nextInt(6);
+            String path = String.format("src/assets/levels/Level%d.dat",rNum);
             FileInputStream fis = new FileInputStream(path);
             ObjectInputStream iis = new ObjectInputStream(fis);
             roomData = (int[][][]) iis.readObject();
@@ -44,6 +45,20 @@ public class Room {
         enemySpawns = roomData[4];
     }
 
+    public Room(String path){
+        try {
+            FileInputStream fis = new FileInputStream(path);
+            ObjectInputStream iis = new ObjectInputStream(fis);
+            roomData = (int[][][]) iis.readObject();
+        }catch (Exception e){
+            roomData = Rooms.room1;
+        }
+        walls = roomData[0];
+        floor = roomData[1];
+        props = roomData[2];
+        doors = roomData[3];
+        enemySpawns = roomData[4];
+    }
     public ArrayList<Transform> spawnEnemies(){
         ArrayList<Transform> e = new ArrayList<>();
 
@@ -81,14 +96,12 @@ public class Room {
 
         return false;
     }
-
     public void draw(Graphics g, Vector2D camera){
 
         drawFloors(g, camera);
         drawProps(g, camera);
         drawWalls(g, camera);
     }
-
     private void drawFloors(Graphics g, Vector2D camera) {
         int screenx = -(int) camera.getX();
         int screeny = -(int) camera.getY();

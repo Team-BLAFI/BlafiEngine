@@ -25,32 +25,28 @@ public class GameScene extends Scene {
     private int frameRate = 0;
     private String weaponInfo = "";
     private String displayInfo = "";
-
-
     public static Player player;
-    private static GameScene gameScene = null;
-
     public static ArrayList<WeaponPickup> allWeaponPickups = new ArrayList<>();
     int pickupTest = 1;
     public static ArrayList<Enemy> enemies = new ArrayList<>();
     Camera mainCam;
     Room room;
 
-
     private UI ui;
+    public static int getEnemyCount(){
+        try {
+            return enemies.size();
+        }catch (Exception e){
+            return 0;
+        }
+    }
 
     public GameScene() {
         room = new Room();
         player = new Player(room);
         mainCam = new Camera(player);
         ui = new UI(this, player.health);
-    }
-
-    public static GameScene getGameScene() {
-        if (GameScene.gameScene == null) {
-            GameScene.gameScene = new GameScene();
-        }
-        return GameScene.gameScene;
+        generateEnemies();
     }
 
     @Override
@@ -59,16 +55,6 @@ public class GameScene extends Scene {
         for (Enemy e : enemies) {
             if (e.health.getHealth() <= 0) {
                 allWeaponPickups.add(new WeaponPickup(e.transform.getX(), e.transform.getY(), new Shotgun(player, 69, 0.069, 0.69, 69, 1, 69), player));
-            }
-        }
-        if (enemies.isEmpty()) {
-            ArrayList<Transform> e;
-
-            e = room.spawnEnemies();
-            for (Transform t: e){
-                Enemy ne = new Enemy(player, room);
-                ne.transform = t;
-                enemies.add(ne);
             }
         }
 
@@ -80,7 +66,6 @@ public class GameScene extends Scene {
 
             pickupTest -= 1;
         }
-
         frameRate = (int) (1 / deltaTime);
         try {
             weaponInfo = player.currWeapon.toString();
@@ -111,6 +96,17 @@ public class GameScene extends Scene {
 
     }
 
+    private void generateEnemies() {
+        ArrayList<Transform> e;
+
+        e = room.spawnEnemies();
+        for (Transform t: e){
+            Enemy ne = new Enemy(player, room);
+            ne.transform = t;
+            enemies.add(ne);
+        }
+    }
+
     @Override
     public void draw(Graphics g) {
         //Sets color to dark gray
@@ -137,6 +133,7 @@ public class GameScene extends Scene {
         //Health
         ui.drawHealth(g, player.health);
         ui.drawCore(g);
+        ui.drawRemainingEnemies(g);
 
         //Weapon
         ui.drawBullet(g);

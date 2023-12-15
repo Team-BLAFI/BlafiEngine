@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import entity.player.Player;
 import util.Rect;
 import window.Window;
+import window.scenes.GameScene;
 import window.scenes.Scene;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -71,6 +72,7 @@ public class UI {
                 62,
                 null);
     }
+
     public void drawCore(Graphics g){
         File greenCoreFile = new File("src/assets/blaffiGreenCore2.png");
         try{
@@ -85,7 +87,14 @@ public class UI {
                 (int)unit*3-5,
                 135,
                 129,
-                null);
+                null
+        );
+    }
+
+    public void drawRemainingEnemies(Graphics g){
+       g.setColor(Color.WHITE);
+       g.setFont(arcadeFont);
+       g.drawString(String.format("%d",GameScene.getEnemyCount()),(int)unit * 50, (int) (unit * 5));
     }
     public void drawHealth(Graphics g2, Health ph){
         // Read File
@@ -125,7 +134,4 @@ public class UI {
 
 
     }
-
-
-
 }

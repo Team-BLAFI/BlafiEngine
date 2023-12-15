@@ -27,6 +27,8 @@ public class EditorScene extends Scene {
     Color c_enemySpawns = new Color(0xEEAAAA);
     Color c_save = new Color(0x48BB4A);
     Color c_shade = new Color(0x45000000, true);
+    Color c_levels = new Color(0xB49E9E);
+
     Color c_ligther = new Color(0x45FFFFFF, true);
 
     Rect r_layout = new Rect((int) unit * 3, (int) unit * 3, (int) unit * 6, (int) unit * 2);
@@ -37,6 +39,8 @@ public class EditorScene extends Scene {
     Rect[][] r_texSelect;
     Rect[][] r_mapTiles;
     Rect r_save;
+    Rect[] r_levels;
+
     Room currentRoom;
     int[][] currentEdit;
     int currentSection;
@@ -49,7 +53,6 @@ public class EditorScene extends Scene {
     int currentSelection;
     int texSelMaxRow = 10;
     int texSelMaxCol = 10;
-
     Vector2D pos1 = new Vector2D();
     Vector2D pos2 = new Vector2D();
 
@@ -94,6 +97,16 @@ public class EditorScene extends Scene {
                 (int) unit * 2
         );
 
+        r_levels = new Rect[10];
+        for (int i = 0; i < 10; i++) {
+            r_levels[i] = new Rect(
+                    (int) (unit * 52),
+                    (int) (unit * 3) * i + (int) (unit * 5),
+                    (int) unit * 6,
+                    (int) unit * 2
+            );
+        }
+
     }
 
     private void drawButtons(Graphics g) {
@@ -115,6 +128,12 @@ public class EditorScene extends Scene {
         g.setColor(c_save);
         g.fillRect(r_save.x, r_save.y, r_save.w, r_save.h);
 
+        for (int i = 0; i < r_levels.length; i++) {
+            g.setColor(c_levels);
+            g.fillRect(r_levels[i].x, r_levels[i].y, r_levels[i].w, r_levels[i].h);
+            g.setColor(Color.BLACK);
+            g.drawString(String.format("Level %d", i), r_levels[i].x, r_levels[i].y + r_levels[i].h / 2);
+        }
 
         g.setColor(Color.black);
         g.drawString("Walls", r_layout.x + 20, r_layout.y + 20);
@@ -146,15 +165,13 @@ public class EditorScene extends Scene {
                                 (int) tileEditorSize,
                                 (int) tileEditorSize
                         );
+                    }
+                    // If drawing something other than the walls editor add shades to know where walls are
 
-                        // If drawing something other than the walls editor add shades to know where walls are
-
-                        if (currentSection != 0) {
-                            g.setColor(c_shade);
-                            if (currentRoom.walls[y][x] != 0) {
-                                g.fillRect(r_mapTiles[y][x].x, r_mapTiles[y][x].y, (int) tileEditorSize, (int) tileEditorSize);
-                            }
-
+                    if (currentSection != 0) {
+                        g.setColor(c_shade);
+                        if (currentRoom.walls[y][x] != 0) {
+                            g.fillRect(r_mapTiles[y][x].x, r_mapTiles[y][x].y, (int) tileEditorSize, (int) tileEditorSize);
                         }
                     }
                     g.setColor(Color.BLACK);
@@ -177,14 +194,16 @@ public class EditorScene extends Scene {
 
                         // If drawing something other than the walls editor add shades to know where walls are
 
-                        if (currentSection != 0) {
-                            g.setColor(c_shade);
-                            if (currentRoom.walls[y][x] != 0) {
-                                g.fillRect(r_mapTiles[y][x].x, r_mapTiles[y][x].y, (int) tileEditorSize, (int) tileEditorSize);
-                            }
 
-                        }
                     }
+                    if (currentSection != 0) {
+                        if (currentRoom.walls[y][x] != 0) {
+                            g.setColor(c_shade);
+                            g.fillRect(r_mapTiles[y][x].x, r_mapTiles[y][x].y, (int) tileEditorSize, (int) tileEditorSize);
+                        }
+
+                    }
+
                     g.setColor(Color.BLACK);
                     g.drawRect(r_mapTiles[y][x].x, r_mapTiles[y][x].y, (int) tileEditorSize, (int) tileEditorSize);
                 }
@@ -255,7 +274,7 @@ public class EditorScene extends Scene {
         );
         g.drawString(shortcut_v,
                 WindowConstants.SCREEN_WIDTH - 625,
-                (int) (WindowConstants.INSET_SIZE * 20.5 + (insetOffset*2))
+                (int) (WindowConstants.INSET_SIZE * 20.5 + (insetOffset * 2))
         );
         g.drawString(shortcut_w,
                 WindowConstants.SCREEN_WIDTH - 625,
@@ -318,6 +337,14 @@ public class EditorScene extends Scene {
                 currentSection = 3;
                 currentEdit = currentRoom.roomData[currentSection];
 
+            }
+
+            for (int i = 0; i<10; i++){
+                if (ml.isMouseInsideRect(r_levels[i])){
+                    System.out.println(String.format("Attempting to load level%d.dat",i));
+                    currentRoom = new Room(String.format("src/assets/levels/Level%d.dat",i));
+                    currentEdit = currentRoom.roomData[currentSection];
+                }
             }
 
             if (ml.isMouseInsideRect(r_enemySpawns)) {

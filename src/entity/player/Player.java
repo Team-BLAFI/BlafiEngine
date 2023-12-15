@@ -45,7 +45,7 @@ public class Player extends Entity {
      */
     private KL keyListener = KL.getKeyListener();
     private ML mouseListener = ML.getMouseListener();
-    Room currentRoom;
+    public Room currentRoom;
 
     public Player(Room currentRoom) {
         this.currentRoom = currentRoom;
@@ -133,9 +133,12 @@ public class Player extends Entity {
         Transform newPos = new Transform(transform);
 
         newPos.moveXBy(movementVector.getX());
-        newPos.moveYBy(movementVector.getY());
+        if (!currentRoom.isColliding(newPos.getAsCollider())){
+            transform.setPosition(newPos.getPosition());
+        }
 
-        //if it's not colliding set current position to new position
+        newPos = new Transform(transform);
+        newPos.moveYBy(movementVector.getY());
         if (!currentRoom.isColliding(newPos.getAsCollider())){
             transform.setPosition(newPos.getPosition());
         }

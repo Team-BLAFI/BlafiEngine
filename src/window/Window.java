@@ -44,7 +44,7 @@ public class Window extends JFrame implements Runnable {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         isRunning = true;
-        changeState(WindowConstants.EDITOR_SCENE);
+        changeState(WindowConstants.GAME_SCENE);
         WindowConstants.INSET_SIZE = getInsets().top;
         addKeyListener(KL.getKeyListener());
         addMouseListener(ML.getMouseListener());
@@ -86,7 +86,7 @@ public class Window extends JFrame implements Runnable {
      */
      public void changeState(int newState) {
          if (windowsChangeCoolDown <= 0.f) {
-             windowsChangeCoolDown = 1.0;
+             windowsChangeCoolDown = 0.2;
              switch (newState) {
                  case 0:
                      currentScene = new MenuScene();
@@ -109,8 +109,6 @@ public class Window extends JFrame implements Runnable {
      public Scene getCurrentScene(){
          return currentScene;
      }
-
-
     private void nonVolatileImageRender() {
         Image Img = window.createImage(window.getWidth(),window.getHeight());
         Graphics g = Img.getGraphics();
@@ -119,7 +117,6 @@ public class Window extends JFrame implements Runnable {
 
         window.getGraphics().drawImage(Img, 0, 0, null);
     }
-
     private void volatileImageRender() {
         VolatileImage vImg =  window.gc.createCompatibleVolatileImage(window.getWidth(),window.getHeight());
 
@@ -141,8 +138,6 @@ public class Window extends JFrame implements Runnable {
         window.getGraphics().drawImage(vImg, 0, 0, null);
 
     }
-
-
     /**<p>
      * Calls the update method for the current scene and sets up and calls the draw method right after
      * <br>
@@ -161,7 +156,6 @@ public class Window extends JFrame implements Runnable {
 
 
     }
-
     /**<p>
      * Calls the draw method for the current scene.
      * <br>
