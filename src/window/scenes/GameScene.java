@@ -1,14 +1,11 @@
 package window.scenes;
 
-import map.RoomManager;
-import component.Collider;
-
-import component.Hitbox;
 import component.UI;
 
 import entity.enemy.Enemy;
-import map2.Camera;
-import map2.Room;
+import map.Camera;
+import map.Room;
+import util.Transform;
 import weapons.Pistol;
 import weapons.WeaponPickup;
 import weapons.Shotgun;
@@ -65,7 +62,14 @@ public class GameScene extends Scene {
             }
         }
         if (enemies.isEmpty()) {
-//            enemies.add(new Enemy(player));
+            ArrayList<Transform> e;
+
+            e = room.spawnEnemies();
+            for (Transform t: e){
+                Enemy ne = new Enemy(player, room);
+                ne.transform = t;
+                enemies.add(ne);
+            }
         }
 
         //FIXME Need to figure out logic for properly spawning weaponpickups in different spots

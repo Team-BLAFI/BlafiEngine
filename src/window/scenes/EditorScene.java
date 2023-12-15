@@ -1,7 +1,7 @@
 package window.scenes;
 
 import map.Texture;
-import map2.Room;
+import map.Room;
 import util.Rect;
 import util.Vector2D;
 import util.io.KL;
@@ -134,33 +134,63 @@ public class EditorScene extends Scene {
 
     private void drawCurrentEdit(Graphics g) {
 
-        for (int y = 0; y < currentEdit.length; y++) {
-            for (int x = 0; x < currentEdit[y].length; x++) {
+        if (currentSection == 4) {
+            for (int y = 0; y < currentEdit.length; y++) {
+                for (int x = 0; x < currentEdit[y].length; x++) {
 
-                if (currentEdit[y][x] != 0) {
-                    g.drawImage(
-                            Texture.textures2[currentEdit[y][x]].img.getImage(),
-                            r_mapTiles[y][x].x,
-                            r_mapTiles[y][x].y,
-                            (int) tileEditorSize,
-                            (int) tileEditorSize,
-                            null
-                    );
+                    if (currentEdit[y][x] != 0) {
+                        g.setColor(Color.red);
+                        g.fillRect(
+                                r_mapTiles[y][x].x,
+                                r_mapTiles[y][x].y,
+                                (int) tileEditorSize,
+                                (int) tileEditorSize
+                        );
 
-                    // If drawing something other than the walls editor add shades to know where walls are
+                        // If drawing something other than the walls editor add shades to know where walls are
 
-                    if (currentSection != 0) {
-                        g.setColor(c_shade);
-                        if (currentRoom.walls[y][x] != 0) {
-                            g.fillRect(r_mapTiles[y][x].x, r_mapTiles[y][x].y, (int) tileEditorSize, (int) tileEditorSize);
+                        if (currentSection != 0) {
+                            g.setColor(c_shade);
+                            if (currentRoom.walls[y][x] != 0) {
+                                g.fillRect(r_mapTiles[y][x].x, r_mapTiles[y][x].y, (int) tileEditorSize, (int) tileEditorSize);
+                            }
+
                         }
-
                     }
+                    g.setColor(Color.BLACK);
+                    g.drawRect(r_mapTiles[y][x].x, r_mapTiles[y][x].y, (int) tileEditorSize, (int) tileEditorSize);
                 }
-                g.setColor(Color.BLACK);
-                g.drawRect(r_mapTiles[y][x].x, r_mapTiles[y][x].y, (int) tileEditorSize, (int) tileEditorSize);
+            }
+        } else {
+            for (int y = 0; y < currentEdit.length; y++) {
+                for (int x = 0; x < currentEdit[y].length; x++) {
+
+                    if (currentEdit[y][x] != 0) {
+                        g.drawImage(
+                                Texture.textures2[currentEdit[y][x]].img.getImage(),
+                                r_mapTiles[y][x].x,
+                                r_mapTiles[y][x].y,
+                                (int) tileEditorSize,
+                                (int) tileEditorSize,
+                                null
+                        );
+
+                        // If drawing something other than the walls editor add shades to know where walls are
+
+                        if (currentSection != 0) {
+                            g.setColor(c_shade);
+                            if (currentRoom.walls[y][x] != 0) {
+                                g.fillRect(r_mapTiles[y][x].x, r_mapTiles[y][x].y, (int) tileEditorSize, (int) tileEditorSize);
+                            }
+
+                        }
+                    }
+                    g.setColor(Color.BLACK);
+                    g.drawRect(r_mapTiles[y][x].x, r_mapTiles[y][x].y, (int) tileEditorSize, (int) tileEditorSize);
+                }
             }
         }
+
     }
 
     private void drawTextureSelection(Graphics g) {
@@ -196,6 +226,7 @@ public class EditorScene extends Scene {
         Font myFont = new Font("Courier New", 1, 17);
         g.setFont(myFont);
         String s = String.format("Current selection %d", currentSelection);
+
 
         g.drawString(s,
                 WindowConstants.SCREEN_WIDTH - 300,
@@ -268,31 +299,31 @@ public class EditorScene extends Scene {
             if (ml.isMouseInsideRect(r_layout)) {
                 currentSection = 0;
                 currentEdit = currentRoom.roomData[currentSection];
-                
+
             }
 
             if (ml.isMouseInsideRect(r_floor)) {
                 currentSection = 1;
                 currentEdit = currentRoom.roomData[currentSection];
-                
+
             }
 
             if (ml.isMouseInsideRect(r_props)) {
                 currentSection = 2;
                 currentEdit = currentRoom.roomData[currentSection];
-                
+
             }
 
             if (ml.isMouseInsideRect(r_doors)) {
                 currentSection = 3;
                 currentEdit = currentRoom.roomData[currentSection];
-                
+
             }
 
             if (ml.isMouseInsideRect(r_enemySpawns)) {
                 currentSection = 4;
                 currentEdit = currentRoom.roomData[currentSection];
-                
+
             }
 
             for (int y = 0; y < currentEdit.length; y++) {
@@ -307,14 +338,12 @@ public class EditorScene extends Scene {
                 for (int x = 0; x < texSelMaxCol; x++) {
                     if (ml.isMouseInsideRect(r_texSelect[y][x])) {
                         currentSelection = y * texSelMaxCol + x;
-                        
+
                     }
                 }
             }
 
         }
-
-
 
         if (ml.isMouseInsideRect(r_save)) {
             try {
@@ -327,7 +356,7 @@ public class EditorScene extends Scene {
             } catch (Exception e) {
                 System.out.println("fail to load");
             }
-            
+
 
         }
 
@@ -337,7 +366,7 @@ public class EditorScene extends Scene {
                 for (int x = 0; x < currentEdit[y].length; x++) {
                     if (ml.isMouseInsideRect(r_mapTiles[y][x])) {
                         currentSelection = currentEdit[y][x];
-                        
+
                     }
                 }
             }
@@ -349,7 +378,7 @@ public class EditorScene extends Scene {
                 for (int x = 0; x < currentEdit[y].length; x++) {
                     if (ml.isMouseInsideRect(r_mapTiles[y][x])) {
                         currentEdit[y][x] = 0;
-                        
+
                     }
                 }
             }
@@ -359,7 +388,7 @@ public class EditorScene extends Scene {
             for (int y = 0; y < currentEdit.length; y++) {
                 for (int x = 0; x < currentEdit[y].length; x++) {
                     currentEdit[y][x] = currentSelection;
-                    
+
                 }
             }
         }
@@ -368,7 +397,7 @@ public class EditorScene extends Scene {
             for (int y = 1; y < currentEdit.length - 1; y++) {
                 for (int x = 1; x < currentEdit[y].length - 1; x++) {
                     currentEdit[y][x] = currentSelection;
-                    
+
                 }
             }
         }
@@ -377,7 +406,7 @@ public class EditorScene extends Scene {
                 for (int x = 0; x < currentEdit[y].length; x++) {
                     if (y == 0 || x == 0 || y == currentEdit.length - 1 || x == currentEdit[y].length - 1) {
                         currentEdit[y][x] = currentSelection;
-                        
+
                     }
                 }
             }
@@ -396,7 +425,7 @@ public class EditorScene extends Scene {
             for (int y = (int) pos1.getY(); y < (int) pos2.getY(); y++) {
                 for (int x = (int) pos1.getX(); x < (int) pos2.getX(); x++) {
                     currentEdit[y][x] = currentSelection;
-                    
+
                 }
             }
         }

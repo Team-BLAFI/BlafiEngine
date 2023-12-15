@@ -5,10 +5,7 @@ import entity.Entity;
 import entity.player.Player;
 import entity.player.PlayerConstants;
 
-import map.RoomManager;
-
-import util.Animation;
-
+import map.Room;
 import util.Transform;
 import util.Vector2D;
 import util.io.KL;
@@ -42,17 +39,17 @@ public class Enemy extends Entity {
 
 
 
-    private RoomManager roomManager;
-    public Enemy(Player p){
+    private Room currentRoom;
+    public Enemy(Player p,Room currentRoom){
 
-        roomManager = new RoomManager();
+        this.currentRoom = currentRoom;
 
         setState(stateIdle);
 
         double w = WindowConstants.SCREEN_WIDTH;
         double h = WindowConstants.SCREEN_HEIGHT;
         this.p = p;
-        this.transform = new Transform( w/3, h/2,ENEMY_WIDTH, ENEMY_HEIGHT);
+        this.transform = new Transform( w/2, h/2,ENEMY_WIDTH, ENEMY_HEIGHT);
 
         animator = new Animator();
         animator.addAnimation(IDLE_ANIMATION, IDLE_A_ID);
@@ -112,11 +109,10 @@ public class Enemy extends Entity {
         newPos.moveXBy(movementVector.getX());
         newPos.moveYBy(movementVector.getY());
 
-        if (!roomManager.collidesWithTiles(newPos.getAsCollider())){
+        if (!currentRoom.isColliding(newPos.getAsCollider())){
             transform.setPosition(newPos.getPosition());
         }
-        //*/
-        Vector2D d = new Vector2D(transform.getCenterX(), transform.getCenterY());
+
 
     }
 
@@ -134,7 +130,14 @@ public class Enemy extends Entity {
         isMoving = true;
         Vector2D v = getVectorToPlayer();
         v.normalize();
-        transform.movePositionBy(v.multiply(moveSpeed * dt));
+        Transform newPos = new Transform(transform);
+
+        newPos.movePositionBy(v.multiply(moveSpeed * dt));
+
+        if (!currentRoom.isColliding(newPos.getAsCollider())){
+            transform.setPosition(newPos.getPosition());
+        }
+
 
     }
 

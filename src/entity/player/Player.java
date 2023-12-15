@@ -1,15 +1,12 @@
 package entity.player;
 
-import component.Collider;
 import component.Health;
-
-import map.RoomManager;
 
 
 import entity.Entity;
 
 //import util.Shooting;
-import map2.Room;
+import map.Room;
 import util.Transform;
 import util.Vector2D;
 import util.io.KL;

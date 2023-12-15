@@ -1,4 +1,4 @@
-package map2;
+package map;
 
 import component.Collider;
 import entity.Entity;
