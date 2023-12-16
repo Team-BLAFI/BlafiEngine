@@ -192,6 +192,9 @@ public class Player extends Entity {
         currWeapon = weaponInventory[currWeaponIndex];
     }
     public void switchWeapon(int addIndex) {
+        if (currInventorySize <= 1) {
+            return;
+        }
         if (switchWepCD > 0) {
             return;
         }
