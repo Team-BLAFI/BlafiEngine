@@ -1,6 +1,7 @@
 package entity.player;
 
-import component.Health;
+
+import component.*;
 
 import entity.Entity;
 
@@ -11,6 +12,7 @@ import util.io.KL;
 import util.io.ML;
 import weapons.*;
 import window.WindowConstants;
+import window.scenes.GameScene;
 
 import java.awt.*;
 import java.awt.Component;
@@ -24,16 +26,15 @@ public class Player extends Entity {
     public Vector2D mousePos = new Vector2D();
     public Weapon currWeapon;
     public int maxInventorySize = 3;
-
     public Weapon[] weaponInventory = new Weapon[maxInventorySize];
     public int currWeaponIndex = 0;
     public int currInventorySize = 0;
     public double switchWepCD;
 
-    public WeaponPresets weaponPresets;
     private double unit = WindowConstants.SCREEN_UNIT;
 
     public boolean isInteracting = false;
+    public boolean isDead = false;
 
     /**
      * <p>
@@ -51,19 +52,23 @@ public class Player extends Entity {
         double h = WindowConstants.SCREEN_HEIGHT;
 
         transform = new Transform(x, y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
-
-        health = new Health(100.0, (int) (unit * 0.4), (int) -unit, this, true);
-        weaponPresets = new WeaponPresets();
-        switchWepCD = 1.5;
-        addNewWeapon(new Pistol(this, 10, 0.3, 0.2, 6, 3));
         System.out.printf("PlayerSpawn spawning at: %.2f, %.2f \n",transform.getX(),transform.getY());
 
+        health = new Health(
+                100.0,
+                (int) (unit * 0.4),
+                (int) - unit,
+                this,
+                true
+        );
+        switchWepCD = 1.5;
+        addNewWeapon(new Pistol(this, 10, 0.3, 0.2, 6, 3));
+        this.currWeapon.reload();
     }
 
     public void draw(Graphics g, Vector2D camera) {
         int x = (int) (transform.getX() - camera.getX());
         int y = (int) (transform.getY() - camera.getY());
-
         g.setColor(PlayerConstants.characterColor);
         g.fillRect(x, y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
         g.setColor(Color.RED);
@@ -77,6 +82,10 @@ public class Player extends Entity {
     }
 
     public void update(double deltaTime) {
+        if (this.health.getHealth() <= 0) {
+            isDead = true;
+        }
+
         HandleMovement(deltaTime);
 
         if (mouseListener.isPressed(MouseEvent.BUTTON1)) {
@@ -195,5 +204,7 @@ public class Player extends Entity {
         }
         currWeapon = weaponInventory[currWeaponIndex];
         switchWepCD = 1.5;
+        Sound.EQUIP_WEP.play();
+
     }
 }

@@ -1,6 +1,7 @@
 package entity.enemy;
 import component.Animator;
 import component.Health;
+import component.Sound;
 import entity.Entity;
 import entity.player.Player;
 import entity.player.PlayerConstants;
@@ -98,6 +99,8 @@ public class Enemy extends Entity {
         }
 
         movementVector.normalize();
+        Sound.WALK_ENEMY.play();
+        Sound.setVolume(-15f,Sound.WALK_ENEMY);
 
         movementVector.multiply(moveSpeed * dt);
 
@@ -129,7 +132,6 @@ public class Enemy extends Entity {
     }
 
     public void chasePlayer(double dt){
-
         isMoving = true;
         Vector2D v = getVectorToPlayer();
         v.normalize();
@@ -245,6 +247,7 @@ public class Enemy extends Entity {
                 setState(stateAttacking);
             }else{
                 chasePlayer(dt);
+
             }
 
         }

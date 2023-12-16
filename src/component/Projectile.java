@@ -4,7 +4,6 @@ import java.awt.*;
 import java.util.ArrayList;
 
 import entity.enemy.Enemy;
-import entity.player.PlayerConstants;
 import util.Transform;
 import util.*;
 import entity.*;
@@ -23,7 +22,7 @@ public class Projectile extends Component{
 	
 	public double baseCooldown;
 	public double baseFlightSpeed;
-	public double baseDamage;
+	public double baseDamage = 10;
 	public double maxFlightTime;  
 	public double currentFlightTime;
 	
@@ -34,51 +33,152 @@ public class Projectile extends Component{
 	private boolean toBeDestroy;
 
 	private ArrayList<Entity> hit = new ArrayList<>();
-	
-	
-	public enum BulletType {
-		Standard, Slow, Piercing, Ricochet
+	public Collider overlappedCollider;
+	public double prevX;
+	public double prevY;
+	public Boolean isActive;
+	public double timeInactive;
+	public BulletSpeed bulletSpeed;
+	public Ricochet ricochet;
+	public Piercing piercing;
+	public Chrono chrono;
+	public interface BulletType {}
+
+	public enum BulletSpeed implements BulletType {
+		Standard, Slow, Fast
+	}
+	public void setBaseFlightSpeed() {
+		switch (bulletSpeed) {
+			case Standard:
+				baseFlightSpeed = 60;
+				break;
+			case Slow:
+				baseFlightSpeed = 30;
+				break;
+			case Fast:
+				baseFlightSpeed = 90;
+				break;
+		}
+
+	}
+
+	public enum Ricochet implements BulletType {
+		Standard, StrongerOnBounce
+	}
+	public void Bounce(int code, Collider overlappedCollider) {
+		switch (code) {
+			case 1:
+				transform.setX(overlappedCollider.Bounds.x + transform.getWidth() + 1);
+				travelDirection.setX(-(travelDirection.getX()));
+				break;
+			case 2:
+				transform.setX(overlappedCollider.Bounds.x - 1);
+				travelDirection.setX(-(travelDirection.getX()));
+				break;
+			case 3:
+				transform.setY(overlappedCollider.Bounds.y + transform.getHeight() + 1);
+				travelDirection.setY(-(travelDirection.getY()));
+				break;
+			case 4:
+				transform.setY(overlappedCollider.Bounds.y - 1);
+				travelDirection.setY(-(travelDirection.getY()));
+				break;
+			default:
+				break;
+		}
+
+		/*if (direction.equals("vertical")) {
+			transform.setY(overlappedCollider.Bounds.y - transform.getHeight() - 1);
+			travelDirection.setY(-(travelDirection.getY()));
+		}
+		if(direction.equals("horizontal")) {
+			transform.setX(overlappedCollider.Bounds.x - transform.getWidth() - 1);
+			travelDirection.setX(-(travelDirection.getX()));
+		}*/
+		//change travel direction
+	}
+
+	public Boolean isRightOf(Collider c) {
+		if (prevX > c.Bounds.x + c.Bounds.w) {
+			System.out.println("bullet was right");
+			return true;
+		}
+		else { return false;}
+
+	}
+	public Boolean isLeftOf(Collider c) {
+		if (prevX + transform.getWidth() < c.Bounds.x) {
+			System.out.println("bullet was left");
+			return true;
+		}
+		else { return false;}
+	}
+	public Boolean isBelow(Collider c) {
+		if (prevY > c.Bounds.y + c.Bounds.h) {
+			System.out.println("bullet was below");
+			return true;
+		}
+		else { return false;}
+	}
+	public Boolean isAbove(Collider c) {
+		if (prevY + transform.getHeight() < c.Bounds.y) {
+			System.out.println("bullet was above");
+			return true;
+		}
+		else { return false;}
+	}
+	public enum Piercing implements BulletType {
+		Standard, StrongerOnPierce
+	}
+	public void setMaxHits(int maxHits) {
+		this.maxHits = maxHits;
+	}
+	public enum Chrono implements BulletType {
+		ResumeOnWall, ResumeOnButtonPress
+	}
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public void setTypes(BulletType... incomingTypes) {
+		for (BulletType type : incomingTypes) {
+			if (type instanceof BulletSpeed) {
+				System.out.println("bulletspeed is "+ type);
+				this.bulletSpeed = (BulletSpeed) type;
+				setBaseFlightSpeed();
+			}
+			if (type instanceof Ricochet) {
+				System.out.println("ricochet is "+ type);
+				this.ricochet = (Ricochet) type;
+				setMaxHits(5);
+			}
+			if (type instanceof Piercing) {
+				System.out.println("piercing is "+ type);
+				this.piercing = (Piercing) type;
+				setMaxHits(2);
+			}
+			if (type instanceof Chrono) {
+				System.out.println("chrono"+ type);
+				this.chrono = (Chrono) type;
+				setIsActive(true);
+				timeInactive = 0;
+			}
+		}
+	}
+
+	public void setOverlappedTile(Collider c) {
+		overlappedCollider = c;
 	}
 	public Projectile(int x, int y, Vector2D travDir, double lifeTime) {
 		transform = new Transform(x, y, unit/2, unit/2);
 		this.travelDirection = travDir;
 		this.lifeTime = lifeTime;
 		this.toBeDestroy = false;
-		setType(BulletType.Standard);
+		setTypes(BulletSpeed.Standard, Piercing.Standard, Ricochet.Standard, Chrono.ResumeOnWall
+		);
+
 	}
-	public Projectile(BulletType type) {
-		setType(type);
-	}
-	
-	public void setType(BulletType type) {
-		this.type = type;
-		switch (type) {
-		case Standard:
-			this.baseDamage = 30;
-			this.baseFlightSpeed = 70;
-			this.maxHits = 1;
-			break;
-		case Slow:
-			this.baseDamage = 40;
-			this.baseFlightSpeed = 30;
-			this.maxHits = 1;
-			break;
-		case Piercing:
-			this.baseDamage = 20;
-			this.baseFlightSpeed = 40;
-			this.maxHits = 5;
-			break;
-		case Ricochet:
-			this.baseDamage = 20;
-			this.baseFlightSpeed = 40;
-			this.maxHits = 3;
-			break;
-		default:
-			setType(BulletType.Standard);
-			break;
-			
-		}
-	}
+
 
 	
 	public void onHit(Enemy e) {
@@ -88,15 +188,7 @@ public class Projectile extends Component{
 		if (maxHits <= 0) {
 			toBeDestroy = true;
 		}
-		if (type == BulletType.Ricochet) {
-			Bounce();
-		}
-	}
-	
-	public void Bounce() {
-		this.baseDamage +=20;
-		this.lifeTime += 50;
-		//change travel direction
+
 	}
 
 	public boolean getToBeDestroy(){
@@ -105,12 +197,12 @@ public class Projectile extends Component{
 
 	@Override
 	public void update(double deltaTime) {
+		timeInactive = 0;
 
 		lifeTime -=deltaTime;
 		if (lifeTime <= 0){
 			toBeDestroy = true;
 		}
-
 
 		if(!GameScene.enemies.isEmpty()){
 			for (Enemy e : GameScene.enemies) {
@@ -128,7 +220,6 @@ public class Projectile extends Component{
 		moveVector.multiply(unit * baseFlightSpeed * deltaTime);
 
 		transform.movePositionBy( moveVector );
-
 	}
 
 	public void draw(Graphics g, Vector2D camera) {
@@ -144,6 +235,4 @@ public class Projectile extends Component{
 				(int) transform.getHeight()
 		);
 	}
-
-
 }

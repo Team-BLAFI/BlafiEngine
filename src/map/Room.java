@@ -5,6 +5,7 @@ import entity.enemy.EnemyConstants;
 import util.Transform;
 import util.Vector2D;
 import window.WindowConstants;
+import component.Projectile;
 
 import java.awt.*;
 import java.io.FileInputStream;
@@ -24,6 +25,8 @@ public class Room {
     public int[][] doors;
     boolean isLock = true;
     Color c_lighter = new Color(0x6BBBBBBB, true);
+
+    public Collider overlappedCollider;
 
     public Room(){
         try {

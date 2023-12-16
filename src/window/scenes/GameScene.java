@@ -1,5 +1,7 @@
 package window.scenes;
 
+import component.Sound;
+
 import component.UI;
 
 import entity.enemy.Enemy;
@@ -21,54 +23,71 @@ import java.util.ArrayList;
 
 public class GameScene extends Scene {
 
-
     private int frameRate = 0;
     private String weaponInfo = "";
     private String displayInfo = "";
-    public static Player player;
-    public static ArrayList<WeaponPickup> allWeaponPickups = new ArrayList<>();
+
     boolean pickupTest = true;
-    public static ArrayList<Enemy> enemies = new ArrayList<>();
+
     Camera mainCam;
     Room room;
 
     private UI ui;
-    public GameScene() {
+
+
+    private boolean isMute = false;
+    private double muteCD= 0.0;
+//    private Sound sound = new Sound();
+
+    public static Player player;
+    private static GameScene gameScene = null;
+
+    public static ArrayList<WeaponPickup> allWeaponPickups;
+
+    public static ArrayList<Enemy> enemies;
+
+
+    public GameScene(){
         room = new Room();
         Vector2D playerSpawn = room.getPlayerSpawnPoint();
         player = new Player(room,playerSpawn.getX(), playerSpawn.getY());
+        enemies = new ArrayList<>();
         mainCam = new Camera(player);
+        Sound.setVolume(-15f, Sound.TRACK_1);
+        Sound.playMusic(Sound.TRACK_1.getClip());
+
+        allWeaponPickups = new ArrayList<>();
+
         ui = new UI(this, player.health);
         generateEnemies();
+    }
 
+    public static GameScene getGameScene(){
+        if(GameScene.gameScene == null){
+            GameScene.gameScene = new GameScene();
+
+        }
+        return GameScene.gameScene;
     }
 
     @Override
     public void update(double deltaTime) {
-        mainCam.update(deltaTime);
-        for (Enemy e : enemies) {
-            if (e.health.getHealth() <= 0) {
-                allWeaponPickups.add(new WeaponPickup(e.transform.getX(), e.transform.getY(), new Shotgun(player, 69, 0.069, 0.69, 69, 1, 69), player));
-            }
+        frameRate = (int) (1 / deltaTime);
+        displayInfo = String.format("%d FPS (%.3f)", frameRate, deltaTime);
+
+        if (player.isDead) {
+            window.Window.getWindow().changeState(WindowConstants.GAMEOVER_SCENE);
         }
 
-//        //FIXME Create logic for properly spawning weaponpickups in different spots
-//        if (pickupTest) {
-//            allWeaponPickups.add(new WeaponPickup(700, 500, new Shotgun(player), player));
-//            allWeaponPickups.add(new WeaponPickup(500, 300, new Pistol(player, 69, 0.069, 0.69, 69, 1), player));
-//            allWeaponPickups.add(new WeaponPickup(800, 600, new Shotgun(player, 69, 0.069, 0.69, 69, 1, 69), player));
-//
-//            pickupTest = false;
-//        }
-        frameRate = (int) (5f / deltaTime);
+        mainCam.update(deltaTime);
+
+        muteCD -= deltaTime;
+
         try {
             weaponInfo = player.currWeapon.toString();
         } catch (Exception e) {
             weaponInfo = "";
         }
-        // Displays the INFO to UI
-
-        displayInfo = String.format("%d FPS (%.3f)", frameRate, deltaTime);
 
         player.update(deltaTime);
 
@@ -78,6 +97,32 @@ public class GameScene extends Scene {
                 continue;
             }
             enemies.get(i).update(deltaTime);
+        }
+
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_1)){
+            Sound.VolumeUp(Sound.TRACK_1, deltaTime);
+            System.out.println(Sound.getVolume(Sound.TRACK_1));
+        }
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_2)){
+            Sound.VolumeDown(Sound.TRACK_1, deltaTime);
+            System.out.println(Sound.getVolume(Sound.TRACK_1));
+        }
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_M) && muteCD < 0){
+            muteCD = 0.2;
+            if(isMute){
+                isMute = false;
+                Sound.setVolume(-15f,Sound.TRACK_1);
+
+            }else{
+                isMute = true;
+                Sound.setVolume(-80f,Sound.TRACK_1);
+            }
+        }
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_U)){
+            Sound.playMusic(Sound.TRACK_2.getClip());
+        }
+        if (KL.getKeyListener().isKeyDown(KeyEvent.VK_I)){
+            Sound.playMusic(Sound.TRACK_1.getClip());
         }
 
         handleWeaponPickups(deltaTime);
@@ -105,7 +150,6 @@ public class GameScene extends Scene {
             enemies.add(ne);
         }
     }
-
     @Override
     public void draw(Graphics g) {
         //Sets color to dark gray
@@ -133,6 +177,8 @@ public class GameScene extends Scene {
         ui.drawCore(g);
         ui.drawRemainingEnemies(g);
 
+        //Sound
+
         //Weapon
         ui.drawBullet(g);
         ui.draw(g, weaponInfo, (int) WindowConstants.SCREEN_UNIT * 5, ((int) WindowConstants.SCREEN_UNIT * 53), false);
@@ -144,7 +190,12 @@ public class GameScene extends Scene {
             for (int i = 0; i < allWeaponPickups.size(); i++) {
                 if (player.isInteracting && allWeaponPickups.get(i).canBePickedUp && player.isWeaponInventoryFull()) {
 
-                    WeaponPickup temp = new WeaponPickup(player.transform.getX() + 80, player.transform.getY(), player.weaponInventory[player.currWeaponIndex], player);
+                    WeaponPickup temp = new WeaponPickup(
+                            player.transform.getCenterX(),
+                            player.transform.getCenterY(),
+                            player.weaponInventory[player.currWeaponIndex],
+                            player
+                    );
 
                     player.weaponInventory[player.currWeaponIndex] = allWeaponPickups.get(i).getWeapon();
                     allWeaponPickups.set(i, temp);

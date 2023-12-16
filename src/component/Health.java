@@ -28,6 +28,7 @@ public class Health extends Component{
         double unit = SCREEN_UNIT;
         int BarWidth;
         int BarHeight;
+        this.isPlayer = isPlayer;
 
         BarWidth= (int) unit * 6;
         BarHeight= (int ) unit/2;

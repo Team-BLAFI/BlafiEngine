@@ -2,9 +2,9 @@ package weapons;
 
 import component.Component;
 import component.Projectile;
+import component.Sound;
 import entity.Entity;
 import util.Vector2D;
-import weapons.WeaponPresets;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -13,7 +13,6 @@ import java.util.Random;
 public abstract class Weapon extends Component {
     Entity owner;
 
-    public WeaponPresets weaponPresets;
     Projectile bullet;
 
     double dmg;
@@ -61,7 +60,8 @@ public abstract class Weapon extends Component {
         }
         if (fireCD <=0 && currentMag > 0) {
             // shoot bullet
-
+            Sound.setVolume(-20f,Sound.SHOOT_SINGLE);
+            Sound.SHOOT_SINGLE.play();
             Vector2D origin = new Vector2D(owner.transform.getCenterX(),owner.transform.getCenterY());
             Vector2D destination = new Vector2D(x,y);
 
@@ -79,6 +79,8 @@ public abstract class Weapon extends Component {
             currentMag--;
         } else if (currentMag == 0){
             reload();
+            Sound.RELOAD_SINGLE.play();
+
         }
     }
 
@@ -117,8 +119,9 @@ public abstract class Weapon extends Component {
     public double getLifeTime() {
         return lifeTime;
     }
+    public ArrayList<Projectile> getLiveProjectiles() {return liveProjectiles;}
 
-    @Override
+    //@Override
     public void update(double deltaTime) {
         fireCD -= deltaTime;
         activeRC -= deltaTime;
