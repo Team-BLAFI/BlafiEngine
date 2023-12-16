@@ -1,6 +1,7 @@
 package component;
 
 import util.Rect;
+import util.Vector2D;
 
 import java.awt.*;
 
@@ -22,7 +23,7 @@ public class Hitbox extends Component{
 
     }
 
-    public void draw(Graphics g) {
+    public void draw(Graphics g, Vector2D camera) {
 
     }
 

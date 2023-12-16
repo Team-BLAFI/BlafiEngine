@@ -2,6 +2,7 @@ package component;
 
 import util.Animation;
 import util.Rect;
+import util.Vector2D;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -181,7 +182,7 @@ public class Animator extends Component{
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void draw(Graphics g, Vector2D camera) {
 
     }
     

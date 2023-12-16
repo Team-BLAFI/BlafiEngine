@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import entity.player.Player;
 import util.Rect;
 import window.Window;
+import window.scenes.GameScene;
 import window.scenes.Scene;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -26,8 +27,12 @@ public class UI {
     private ImageIcon barOutline;
     public static String bitFontName;
 
+
+
     public UI(Scene gp, Health ph){
         // importing Custom Font
+        File greenCoreFile = new File("src/assets/blafiGreenCore2.png");
+
         try {
             Font customFont = (Font.createFont(Font.TRUETYPE_FONT, new File("src/assets/04B_30__.ttf")));
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -43,51 +48,13 @@ public class UI {
         arial_40 = new Font("Arial", Font.BOLD,25);
         arcadeFont = new Font(bitFontName, Font.TRUETYPE_FONT, 30);
 
-    }
-    public void draw(Graphics g2 , String Text, int x, int y,boolean FPS){
-        if(FPS){
-            g2.setFont(arial_40);
-        }else{
-            g2.setFont(arcadeFont);
-        }
-        g2.setColor(Color.WHITE);
-
-        // Draws the string with coordinates in gamescene
-        g2.drawString(Text,x,y);
-
-    }
-    public void drawBullet(Graphics g2, int x, int y){
         try{
             BufferedImage bulletSprite = ImageIO.read(new File("src/assets/bullet.png"));
             bullet = new ImageIcon(bulletSprite.getSubimage(10,0,11,31));
         }catch (Exception e) {
             e.printStackTrace();
         }
-        g2.drawImage(
-                bullet.getImage(),
-                x,
-                y,
-                25,
-                62,
-                null);
-    }
-    public void drawCore(Graphics g2){
-        File greenCoreFile = new File("src/assets/blaffiGreenCore2.png");
-        try{
-            BufferedImage greenCoreSprite = ImageIO.read(greenCoreFile);
-            greenCore= new ImageIcon(greenCoreSprite.getSubimage(3,4,122,119));
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-        g2.drawImage(
-                greenCore.getImage(),
-                (int)unit-5,
-                (int)unit*3-5,
-                135,
-                129,
-                null);
-    }
-    public void drawHealth(Graphics g2, Health ph){
+
         // Read File
         try{
             BufferedImage healthBarSprite = ImageIO.read(new File("src/assets/uiPack2.png"));
@@ -100,10 +67,60 @@ public class UI {
             e.printStackTrace();
         }
 
+        try{
+            BufferedImage greenCoreSprite = ImageIO.read(greenCoreFile);
+            greenCore= new ImageIcon(greenCoreSprite.getSubimage(3,4,122,119));
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+    }
+    public void draw(Graphics g , String Text, int x, int y,boolean FPS){
+        if(FPS){
+            g.setFont(arial_40);
+        }else{
+            g.setFont(arcadeFont);
+        }
+        g.setColor(Color.WHITE);
+
+        // Draws the string with coordinates in gamescene
+        g.drawString(Text,x,y);
+
+    }
+    public void drawBullet(Graphics g){
+        g.drawImage(
+                bullet.getImage(),
+                (int)unit*4,
+                (int)unit*53,
+                25,
+                62,
+                null);
+    }
+
+    public void drawCore(Graphics g){
+        g.drawImage(
+                greenCore.getImage(),
+                (int)unit-5,
+                (int)unit*3-5,
+                135,
+                129,
+                null
+        );
+    }
+
+    public void drawRemainingEnemies(Graphics g){
+       g.setColor(Color.WHITE);
+       g.setFont(arcadeFont);
+       g.drawString(String.format("%d",GameScene.getEnemyCount()),(int)unit * 50, (int) (unit * 5));
+    }
+    public void drawHealth(Graphics g, Health ph){
+
         /* -- Health -- */
         // bar fill
         if (ph.getHealth() > 0){
-            g2.drawImage(
+            g.drawImage(
                     barFill.getImage(),
                     (int)unit*7,
                     (int)unit*4,
@@ -113,18 +130,14 @@ public class UI {
 
         }
         // bar
-        g2.drawImage(
+        g.drawImage(
                 bar.getImage(),
                 (int)unit*7,
                 (int)unit*4,
                 400,
                 35,
-                null);
-
-
+                null
+        );
 
     }
-
-
-
 }

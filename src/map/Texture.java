@@ -1,5 +1,7 @@
 package map;
 
+import util.Rect;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
@@ -9,7 +11,9 @@ import java.rmi.server.ExportException;
 public class Texture {
 
     public static Texture[] textures = new Texture[100];
-    ImageIcon img;
+    public static Texture[] textures2 = new Texture[200];
+    public static  ImageIcon t_missing;
+    public ImageIcon img;
 
 
     public Texture(String path) {
@@ -40,5 +44,25 @@ public class Texture {
         }catch (Exception e){
             System.out.println("fail to load tile atlas");
             e.printStackTrace();}
+    }
+
+    public static void loadNewTiles(){
+        System.out.println("Loading New Tiles");
+        //FIXME: Change name please
+        try {
+            BufferedImage atlas = ImageIO.read(new File("src/assets/Tilesets/TileSet v1.0.png"));
+
+            t_missing = new ImageIcon(atlas.getSubimage(32*4,32,32,32));
+
+            for (int y = 0; y < 10; y++) {
+                for (int x = 0; x < 8; x++){
+                    ImageIcon img = new ImageIcon(atlas.getSubimage(32*x,32*y,32,32));
+                    textures2[y* 8 +x + 1] = new Texture(img);
+                }
+            }
+        }catch (Exception e){
+
+        }
+
     }
 }

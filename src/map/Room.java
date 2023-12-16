@@ -1,119 +1,162 @@
 package map;
 
 import component.Collider;
-import util.Door;
+import entity.enemy.EnemyConstants;
 import util.Transform;
+import util.Vector2D;
 import window.WindowConstants;
 import component.Projectile;
 
-import javax.swing.*;
 import java.awt.*;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.Random;
 
-import static window.WindowConstants.SCREEN_UNIT;
-
 public class Room {
+    public double unit = WindowConstants.SCREEN_UNIT;
+    public double tileSize = 10*unit;
 
-    private int roomHeight, roomWidth;
-
-    private int[][] roomLayout;
-    private Tile[][] tiles;
-
-    int tileNum;
-
-    int screenUnit = (int) SCREEN_UNIT*4;
-    int xOffset;
-    int yOffset;
-    private Door roomDoor;
+    public int[][][] roomData;
+    public int[][] walls;
+    public int[][] floor;
+    public int[][] props;
+    public int[][] enemySpawns;
+    public int[][] doors;
+    boolean isLock = true;
+    Color c_lighter = new Color(0x6BBBBBBB, true);
 
     public Collider overlappedCollider;
 
     public Room(){
-        loadMap();
+        try {
+            Random ran = new Random();
+            int rNum = ran.nextInt(6);
+            String path = String.format("src/assets/levels/Level%d.dat",5);
+            FileInputStream fis = new FileInputStream(path);
+            ObjectInputStream iis = new ObjectInputStream(fis);
+            roomData = (int[][][]) iis.readObject();
+        }catch (Exception e){
+            roomData = Rooms.room1;
+        }
+        walls = roomData[0];
+        floor = roomData[1];
+        props = roomData[2];
+        doors = roomData[3];
+        enemySpawns = roomData[4];
     }
 
-    public void loadMap(){
-        Random r = new Random();
-        int room = r.nextInt(3);
-        roomLayout = RoomLayouts.rooms[room];
+    public Room(String path){
+        try {
+            FileInputStream fis = new FileInputStream(path);
+            ObjectInputStream iis = new ObjectInputStream(fis);
+            roomData = (int[][][]) iis.readObject();
+        }catch (Exception e){
+            roomData = Rooms.room1;
+        }
+        walls = roomData[0];
+        floor = roomData[1];
+        props = roomData[2];
+        doors = roomData[3];
+        enemySpawns = roomData[4];
+    }
 
-        roomHeight = roomLayout.length;
-        roomWidth  = roomLayout[0].length;
+    public ArrayList<Transform> getTransformsForEnemies(){
+        ArrayList<Transform> e = new ArrayList<>();
 
-        xOffset =  WindowConstants.SCREEN_WIDTH/2 - screenUnit * roomWidth/2;
-        yOffset =  WindowConstants.SCREEN_HEIGHT/2 - screenUnit * roomHeight/2;
-
-        tiles = new Tile[roomHeight][roomWidth];
-
-//                ImageIcon Img = Texture.textures[i*roomHeight+j].img;
-        for(int i = 0; i < roomHeight; i++){
-            for(int j = 0; j< roomWidth; j++){
-                Transform t = new Transform(xOffset + j*screenUnit, yOffset + i*screenUnit,screenUnit,screenUnit);
-                boolean isSolid = RoomLayouts.Solids[roomLayout[i][j]];
-                tiles[i][j] = new Tile(roomLayout[i][j], t, isSolid);
-
-                if (roomLayout[i][j] == 22 ||
-                        roomLayout[i][j] == 38 ||
-                        roomLayout[i][j] == 30 ||
-                        roomLayout[i][j] == 46)
-                {
-                    roomDoor = new Door(t);
+        for (int y = 0; y < enemySpawns.length; y++) {
+            for (int x = 0; x < enemySpawns[y].length; x++){
+                if(enemySpawns[y][x]==1){
+                    Transform t = new Transform(x*tileSize,y*tileSize, EnemyConstants.ENEMY_WIDTH,EnemyConstants.ENEMY_HEIGHT);
+                    e.add(t);
                 }
+
             }
         }
+        return e;
     }
 
-    public boolean collidesWithTiles(Collider c){
-        boolean ret = false;
-
-        for (Tile[] tArray:tiles) {
-            for (Tile tile:tArray) {
-                if(tile.getIsSolid() && tile.getCollider().overlaps(c)){
-                    ret = true;
-                    overlappedCollider = tile.getCollider();
-                    if (c.bullet != null) {
-                        Projectile bullet = c.getBullet();
-                        bullet.setOverlappedTile(overlappedCollider);
+    public boolean isColliding(Collider c){
+        Collider wc;
+        for (int y = 0; y < walls.length; y++) {
+            for (int x = 0; x < walls[y].length; x++){
+                if(walls[y][x]!=0 || doors[y][x]!=0){
+                    wc = new Collider((int) (x*tileSize),
+                            (int) (y*tileSize),
+                            (int) tileSize,
+                            (int) tileSize
+                    );
+                    if (wc.overlaps(c)){
+                        return true;
                     }
-                    overlappedCollider = null;
+                }
+
+            }
+
+        }
+        return false;
+    }
+
+    public Vector2D getPlayerSpawnPoint(){
+        for (int y = 0; y < enemySpawns.length; y++) {
+            for (int x = 0; x < enemySpawns[y].length; x++) {
+                if (enemySpawns[y][x] == 2) {
+                    return new Vector2D(x * tileSize, y * tileSize);
                 }
             }
         }
-
-        return ret;
+        return new Vector2D();
     }
 
-
-    public boolean isInDoor(Collider c){
-        return roomDoor.getCollider().overlaps(c);
+    public void draw(Graphics g, Vector2D camera){
+        drawFloors(g, camera);
+        drawProps(g, camera);
+        drawWalls(g, camera);
+        drawArray(g,camera,doors,false);
     }
 
-    public void draw(Graphics g){
-        for(int i = 0; i < roomHeight; i++){
-            for(int j = 0; j< roomWidth; j++){
-                try {
+    private void drawFloors(Graphics g, Vector2D camera) {
+        drawArray(g,camera,floor,true);
+    }
 
-                    tiles[i][j].draw(g);
-                }catch (Exception e){
+    private void drawProps(Graphics g, Vector2D camera) {
+        drawArray(g,camera,props,false);
+    }
 
+    private void drawWalls(Graphics g, Vector2D camera) {
+        drawArray(g,camera,walls,false);
+    }
+
+    private void drawArray(Graphics g, Vector2D camera,int[][] array , boolean useShader){
+
+        int screenx = -(int) camera.getX();
+        int screeny = -(int) camera.getY();
+
+        for (int y = 0; y < array.length; y++) {
+            for (int x = 0; x < array[y].length; x++){
+                if(array[y][x]==0){
+                    continue;
+                }
+                g.drawImage(
+                        Texture.textures2[array[y][x]].img.getImage(),
+                        (int) (x*tileSize + screenx),
+                        (int) (y*tileSize + screeny),
+                        (int) tileSize,
+                        (int) tileSize,
+                        null
+                );
+                if (useShader){
+                    g.setColor(c_lighter);
+                    g.fillRect(
+                            (int) (x*tileSize + screenx),
+                            (int) (y*tileSize + screeny),
+                            (int) tileSize,
+                            (int) tileSize
+                    );
                 }
             }
+
         }
-        debugInfo(g);
+
     }
-
-    public void debugInfo(Graphics g) {
-        g.setColor(Color.WHITE);
-        Font myFont = new Font ("Courier New", 1, 17);
-        g.setFont(myFont);
-
-        g.drawString(String.format("Collides with solid tile: %d ",
-                tileNum),
-                WindowConstants.SCREEN_WIDTH-300,
-                (int) (WindowConstants.INSET_SIZE*1.5)
-        );
-    }
-
-
-
 }

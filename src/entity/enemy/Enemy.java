@@ -6,10 +6,7 @@ import entity.Entity;
 import entity.player.Player;
 import entity.player.PlayerConstants;
 
-import map.RoomManager;
-
-import util.Animation;
-
+import map.Room;
 import util.Transform;
 import util.Vector2D;
 import util.io.KL;
@@ -18,6 +15,7 @@ import window.scenes.GameScene;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.Random;
 
 import static entity.enemy.EnemyConstants.*;
 
@@ -33,7 +31,7 @@ public class Enemy extends Entity {
     private State stateAttacking = new Attacking();
     private State currentState;
     private double unit = WindowConstants.SCREEN_UNIT;
-    private final double moveSpeed = 20 * unit;
+    private double moveSpeed;
     private final double reach = 4 * unit;
     private final double attackSpeed = 1.0;
     private Player p;
@@ -43,17 +41,19 @@ public class Enemy extends Entity {
 
 
 
-    private RoomManager roomManager;
-    public Enemy(Player p){
+    private Room currentRoom;
+    public Enemy(Player p,Room currentRoom){
 
-        roomManager = new RoomManager();
+        this.currentRoom = currentRoom;
 
         setState(stateIdle);
 
         double w = WindowConstants.SCREEN_WIDTH;
         double h = WindowConstants.SCREEN_HEIGHT;
         this.p = p;
-        this.transform = new Transform( w/3, h/2,ENEMY_WIDTH, ENEMY_HEIGHT);
+        this.transform = new Transform( w/2, h/2,ENEMY_WIDTH, ENEMY_HEIGHT);
+
+        this.moveSpeed = (Math.random() * 20 + 10) * unit;
 
         animator = new Animator();
         animator.addAnimation(IDLE_ANIMATION, IDLE_A_ID);
@@ -115,11 +115,10 @@ public class Enemy extends Entity {
         newPos.moveXBy(movementVector.getX());
         newPos.moveYBy(movementVector.getY());
 
-        if (!roomManager.collidesWithTiles(newPos.getAsCollider())){
+        if (!currentRoom.isColliding(newPos.getAsCollider())){
             transform.setPosition(newPos.getPosition());
         }
-        //*/
-        Vector2D d = new Vector2D(transform.getCenterX(), transform.getCenterY());
+
 
     }
 
@@ -136,7 +135,23 @@ public class Enemy extends Entity {
         isMoving = true;
         Vector2D v = getVectorToPlayer();
         v.normalize();
-        transform.movePositionBy(v.multiply(moveSpeed * dt));
+        v.multiply(moveSpeed * dt);
+
+        Transform newPos = new Transform(transform);
+
+
+
+        newPos.moveXBy(v.getX());
+        if (!currentRoom.isColliding(newPos.getAsCollider())){
+            transform.setPosition(newPos.getPosition());
+        }
+
+        newPos = new Transform(transform);
+        newPos.moveYBy(v.getY());
+        if (!currentRoom.isColliding(newPos.getAsCollider())){
+            transform.setPosition(newPos.getPosition());
+        }
+
 
     }
 
@@ -149,8 +164,6 @@ public class Enemy extends Entity {
             GameScene.player.health.takeDamage(damagePerSecond *dt);
         }
     }
-
-
 
     private void handleCD(double dt){
         recoveryTime -= dt;
@@ -172,40 +185,17 @@ public class Enemy extends Entity {
     }
 
     @Override
-    public void draw(Graphics g) {
-        Vector2D s = WindowConstants.MID_SCREENPOINT;
+    public void draw(Graphics g, Vector2D camera) {
+        int x = (int)(transform.getX() - camera.getX());
+        int y = (int)(transform.getY() - camera.getY());
 
-
-//        g.fillRect(
-//                (int) this.transform.getX(),
-//                (int) this.transform.getY(),
-//                (int) this.transform.getWidth(),
-//                (int) this.transform.getHeight()
-//        );
-        health.draw(g);
-
-        int x = (int) (transform.getCenterX());
-        int y = (int) (transform.getCenterY());
-
-        g.setColor(Color.GREEN);
-        g.drawLine(x, y, (int) (x+4*unit),y);
-        g.drawLine(x, y, x, (int) (y-4*unit));
+        health.draw(g, camera);
 
         if (facingLeft){
-            animator.RenderCurrentSpriteFlipVer(g,(int)transform.getX(),(int)transform.getY());
-
+            animator.RenderCurrentSpriteFlipVer(g,x,y);
         }else{
-
-            animator.RenderCurrentSprite(g,(int)transform.getX(),(int)transform.getY());
+            animator.RenderCurrentSprite(g,x,y);
         }
-
-
-        g.drawOval(
-                (int) (x - 4*unit),
-                (int) (y- 4*unit),
-                (int) (8*unit),
-                (int) (8*unit)
-        );
     }
 
     public class Attacking implements entity.enemy.State{

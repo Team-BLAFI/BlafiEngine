@@ -4,8 +4,6 @@ import component.Component;
 import component.Projectile;
 import component.Sound;
 import entity.Entity;
-import map.Room;
-import map.RoomManager;
 import util.Vector2D;
 
 import java.awt.*;
@@ -26,7 +24,6 @@ public abstract class Weapon extends Component {
     int currentMag;
     ArrayList<Projectile> liveProjectiles = new ArrayList<>();
     double lifeTime;
-    public RoomManager roomManager;
 
     @Override
     public String toString() {
@@ -86,6 +83,7 @@ public abstract class Weapon extends Component {
 
         }
     }
+
     public void createProjectile(Vector2D travelDirection) {
         liveProjectiles.add(new Projectile(
                 (int) (owner.transform.getX() + owner.transform.getSize().getX()/2),
@@ -123,7 +121,6 @@ public abstract class Weapon extends Component {
     }
     public ArrayList<Projectile> getLiveProjectiles() {return liveProjectiles;}
 
-    public RoomManager getRoomManager() { return roomManager; }
     //@Override
     public void update(double deltaTime) {
         fireCD -= deltaTime;
@@ -144,12 +141,30 @@ public abstract class Weapon extends Component {
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void draw(Graphics g, Vector2D camera) {
         for (Projectile p:liveProjectiles) {
-            p.draw(g);
+            p.draw(g, camera);
         }
     }
 
+    public void shootT(Vector2D travelDirection) {
+        if(activeRC>0){
+            return;
+        }
+        if (fireCD <=0 && currentMag > 0) {
+
+            liveProjectiles.add(new Projectile(
+                    (int) (owner.transform.getCenterX()),
+                    (int) (owner.transform.getCenterY()),
+                    travelDirection,
+                    this.lifeTime)
+            );
+            fireCD = fireRate;
+            currentMag--;
+        } else if (currentMag == 0){
+            reload();
+        }
+    }
 }
 
 //specific fire rates based on bullet(add weapon entity for projectile class, to edit weapon properties on projectile creation?)

@@ -11,7 +11,7 @@ public class WindowConstants {
 
     public static int INSET_SIZE = 0;
 
-    public static final String SCREEN_TITLE = "UntitledRoguelite";
+    public static final String SCREEN_TITLE = "Blafi Adventure";
 
     public static final Vector2D MID_SCREENPOINT = new Vector2D(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 
