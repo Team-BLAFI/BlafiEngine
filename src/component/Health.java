@@ -1,6 +1,7 @@
 package component;
 
 import entity.Entity;
+import entity.player.Player;
 import util.Rect;
 import util.Vector2D;
 import window.WindowConstants;
@@ -18,6 +19,7 @@ public class Health extends Component{
     private Rect barFill;
     private Rect barOutline;
     private boolean isPlayer;
+
     public Health(double h, Entity owner, boolean isPlayer){
         this(h,1,0,owner,isPlayer);
     }
@@ -39,19 +41,25 @@ public class Health extends Component{
                 BarWidth,
                 BarHeight
         );
+
         barFill = new Rect(
                 xOffset,
                 yOffset,
                 BarWidth,
                 BarHeight
         );
+
         barOutline = new Rect(
                 xOffset         - borderUnit,
                 yOffset         - borderUnit,
                 BarWidth,
                 BarHeight
         );
+
         this.owner = owner;
+        if (this.owner.getClass()== Player.class){
+            isPlayer = true;
+        }
     }
 
     public double getHealth(){
@@ -75,6 +83,7 @@ public class Health extends Component{
         double fillPercentage = health / maxHealth;
         barFill.w = (int) (bar.w * fillPercentage);
     }
+
     @Override
     public void draw(Graphics g, Vector2D camera){
         int x = (int) (owner.transform.getX() - camera.getX());
@@ -107,11 +116,8 @@ public class Health extends Component{
             );
         }
 
-
     }
 
     @Override
-    public void update(double deltaTime) {
-
-    }
+    public void update(double deltaTime) {}
 }

@@ -14,6 +14,7 @@ import window.scenes.GameScene;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.Random;
 
 import static entity.enemy.EnemyConstants.*;
 
@@ -29,7 +30,7 @@ public class Enemy extends Entity {
     private State stateAttacking = new Attacking();
     private State currentState;
     private double unit = WindowConstants.SCREEN_UNIT;
-    private final double moveSpeed = 20 * unit;
+    private double moveSpeed;
     private final double reach = 4 * unit;
     private final double attackSpeed = 1.0;
     private Player p;
@@ -50,6 +51,8 @@ public class Enemy extends Entity {
         double h = WindowConstants.SCREEN_HEIGHT;
         this.p = p;
         this.transform = new Transform( w/2, h/2,ENEMY_WIDTH, ENEMY_HEIGHT);
+
+        this.moveSpeed = (Math.random() * 20 + 10) * unit;
 
         animator = new Animator();
         animator.addAnimation(IDLE_ANIMATION, IDLE_A_ID);

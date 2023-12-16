@@ -2,10 +2,8 @@ package entity.player;
 
 import component.Health;
 
-
 import entity.Entity;
 
-//import util.Shooting;
 import map.Room;
 import util.Transform;
 import util.Vector2D;
@@ -37,7 +35,6 @@ public class Player extends Entity {
 
     public boolean isInteracting = false;
 
-
     /**
      * <p>
      * Saves a pointer to the singleton instance of the KeyListener class
@@ -47,24 +44,23 @@ public class Player extends Entity {
     private ML mouseListener = ML.getMouseListener();
     public Room currentRoom;
 
-    public Player(Room currentRoom) {
+    public Player(Room currentRoom,double x,double y) {
         this.currentRoom = currentRoom;
 
         double w = WindowConstants.SCREEN_WIDTH;
         double h = WindowConstants.SCREEN_HEIGHT;
 
-        transform = new Transform(w / 2.0, h / 2, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
-
+        transform = new Transform(x, y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
 
         health = new Health(100.0, (int) (unit * 0.4), (int) -unit, this, true);
         weaponPresets = new WeaponPresets();
         switchWepCD = 1.5;
         addNewWeapon(new Pistol(this, 10, 0.3, 0.2, 6, 3));
+        System.out.printf("PlayerSpawn spawning at: %.2f, %.2f \n",transform.getX(),transform.getY());
 
     }
 
     public void draw(Graphics g, Vector2D camera) {
-
         int x = (int) (transform.getX() - camera.getX());
         int y = (int) (transform.getY() - camera.getY());
 
@@ -74,8 +70,6 @@ public class Player extends Entity {
         g.drawRect(x, y, (int) transform.getWidth(), (int) transform.getHeight());
 
         g.setColor(Color.YELLOW);
-
-        health.draw(g, camera);
 
         for (int i = 0; i < currInventorySize; i++) {
             weaponInventory[i].draw(g, camera);
@@ -152,7 +146,6 @@ public class Player extends Entity {
      * @return Point2D.Double returns the movement keys pressed as a vector to move the player by
      */
     private Vector2D GetMovementVector() {
-
         Vector2D movementVector = new Vector2D();
 
         if (keyListener.isKeyDown(KeyEvent.VK_W)) {
@@ -176,29 +169,21 @@ public class Player extends Entity {
     }
 
     public void addNewWeapon(Weapon weapon) {
-        System.out.println("initial activation");
         if (isWeaponInventoryFull()) {
-            System.out.println("inventory full!");
             return;
         }
-        //weaponInventory.add(weaponPresets.createShotgun(this));
         weaponInventory[currInventorySize] = weapon;
         currInventorySize++;
         currWeaponIndex = currInventorySize - 1;
 
         setWeapon();
-        System.out.println("player addNewWeapon invoked");
     }
 
     public void setWeapon() {
         currWeapon = weaponInventory[currWeaponIndex];
-        System.out.println("setting weapon" + currWeaponIndex);
     }
-
-    //FIXME Seems to cause bugs
     public void switchWeapon(int addIndex) {
         if (switchWepCD > 0) {
-            System.out.println("switch cd");
             return;
         }
         currWeaponIndex += addIndex;
@@ -209,9 +194,6 @@ public class Player extends Entity {
             currWeaponIndex = weaponInventory.length - 1;
         }
         currWeapon = weaponInventory[currWeaponIndex];
-        System.out.println("switched weapon!" + currWeaponIndex);
         switchWepCD = 1.5;
     }
-
-
 }

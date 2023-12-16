@@ -6,7 +6,7 @@ import entity.enemy.Enemy;
 import map.Camera;
 import map.Room;
 import util.Transform;
-import weapons.Pistol;
+import util.Vector2D;
 import weapons.WeaponPickup;
 import weapons.Shotgun;
 
@@ -27,26 +27,20 @@ public class GameScene extends Scene {
     private String displayInfo = "";
     public static Player player;
     public static ArrayList<WeaponPickup> allWeaponPickups = new ArrayList<>();
-    int pickupTest = 1;
+    boolean pickupTest = true;
     public static ArrayList<Enemy> enemies = new ArrayList<>();
     Camera mainCam;
     Room room;
 
     private UI ui;
-    public static int getEnemyCount(){
-        try {
-            return enemies.size();
-        }catch (Exception e){
-            return 0;
-        }
-    }
-
     public GameScene() {
         room = new Room();
-        player = new Player(room);
+        Vector2D playerSpawn = room.getPlayerSpawnPoint();
+        player = new Player(room,playerSpawn.getX(), playerSpawn.getY());
         mainCam = new Camera(player);
         ui = new UI(this, player.health);
         generateEnemies();
+
     }
 
     @Override
@@ -58,15 +52,15 @@ public class GameScene extends Scene {
             }
         }
 
-        //FIXME Need to figure out logic for properly spawning weaponpickups in different spots
-        if (pickupTest == 1) {
-            allWeaponPickups.add(new WeaponPickup(700, 500, new Shotgun(player), player));
-            allWeaponPickups.add(new WeaponPickup(500, 300, new Pistol(player, 69, 0.069, 0.69, 69, 1), player));
-            allWeaponPickups.add(new WeaponPickup(800, 600, new Shotgun(player, 69, 0.069, 0.69, 69, 1, 69), player));
-
-            pickupTest -= 1;
-        }
-        frameRate = (int) (1 / deltaTime);
+//        //FIXME Create logic for properly spawning weaponpickups in different spots
+//        if (pickupTest) {
+//            allWeaponPickups.add(new WeaponPickup(700, 500, new Shotgun(player), player));
+//            allWeaponPickups.add(new WeaponPickup(500, 300, new Pistol(player, 69, 0.069, 0.69, 69, 1), player));
+//            allWeaponPickups.add(new WeaponPickup(800, 600, new Shotgun(player, 69, 0.069, 0.69, 69, 1, 69), player));
+//
+//            pickupTest = false;
+//        }
+        frameRate = (int) (5f / deltaTime);
         try {
             weaponInfo = player.currWeapon.toString();
         } catch (Exception e) {
@@ -86,20 +80,25 @@ public class GameScene extends Scene {
             enemies.get(i).update(deltaTime);
         }
 
-
         handleWeaponPickups(deltaTime);
 
         if (KL.getKeyListener().isKeyDown(KeyEvent.VK_ESCAPE)) {
             Window.getWindow().changeState(WindowConstants.MENU_SCENE);
         }
 
+    }
 
+    public static int getEnemyCount(){
+        try {
+            return enemies.size();
+        }catch (Exception e){
+            return 0;
+        }
     }
 
     private void generateEnemies() {
         ArrayList<Transform> e;
-
-        e = room.spawnEnemies();
+        e = room.getTransformsForEnemies();
         for (Transform t: e){
             Enemy ne = new Enemy(player, room);
             ne.transform = t;
@@ -115,7 +114,6 @@ public class GameScene extends Scene {
         g.setColor(Color.GREEN);
 
         room.draw(g, mainCam.transform.getPosition());
-        debugWepInfo(g);
 
         // Player
         player.draw(g, mainCam.transform.getPosition());
@@ -138,7 +136,6 @@ public class GameScene extends Scene {
         //Weapon
         ui.drawBullet(g);
         ui.draw(g, weaponInfo, (int) WindowConstants.SCREEN_UNIT * 5, ((int) WindowConstants.SCREEN_UNIT * 53), false);
-
 
     }
 
@@ -171,6 +168,7 @@ public class GameScene extends Scene {
     }
 
     public void debugWepInfo(Graphics g) {
+
         g.setColor(Color.WHITE);
         Font myFont = new Font("Courier New", 1, 20);
         g.setFont(myFont);

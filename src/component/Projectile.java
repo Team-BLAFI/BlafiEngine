@@ -28,10 +28,8 @@ public class Projectile extends Component{
 	public double currentFlightTime;
 	
 	public int maxHits;
+
 	//either time or distance to determine when bullet is destroyed
-
-
-
 	private double lifeTime;
 	private boolean toBeDestroy;
 

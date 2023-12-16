@@ -166,11 +166,11 @@ public class Window extends JFrame implements Runnable {
     private void draw(Graphics g){
 
         currentScene.draw(g);
-
+        g.setPaintMode();
     }
 
     /**<p>
-     * Entry point of the window.Window class(besides the constructor) starts executing when the thread is started
+//     * Entry point of the window.Window class(besides the constructor) starts executing when the thread is started
      * <br>
      * <br>
      * uses the util.Time class to calculate the time since last frame.

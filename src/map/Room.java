@@ -1,7 +1,6 @@
 package map;
 
 import component.Collider;
-import entity.enemy.Enemy;
 import entity.enemy.EnemyConstants;
 import util.Transform;
 import util.Vector2D;
@@ -15,7 +14,7 @@ import java.util.Random;
 
 public class Room {
     public double unit = WindowConstants.SCREEN_UNIT;
-    public double tileSize = 7*unit;
+    public double tileSize = 10*unit;
 
     public int[][][] roomData;
     public int[][] walls;
@@ -24,14 +23,13 @@ public class Room {
     public int[][] enemySpawns;
     public int[][] doors;
     boolean isLock = true;
-    Color c_ligther = new Color(0x6BBBBBBB, true);
-
+    Color c_lighter = new Color(0x6BBBBBBB, true);
 
     public Room(){
         try {
             Random ran = new Random();
             int rNum = ran.nextInt(6);
-            String path = String.format("src/assets/levels/Level%d.dat",rNum);
+            String path = String.format("src/assets/levels/Level%d.dat",5);
             FileInputStream fis = new FileInputStream(path);
             ObjectInputStream iis = new ObjectInputStream(fis);
             roomData = (int[][][]) iis.readObject();
@@ -59,27 +57,27 @@ public class Room {
         doors = roomData[3];
         enemySpawns = roomData[4];
     }
-    public ArrayList<Transform> spawnEnemies(){
+
+    public ArrayList<Transform> getTransformsForEnemies(){
         ArrayList<Transform> e = new ArrayList<>();
 
         for (int y = 0; y < enemySpawns.length; y++) {
             for (int x = 0; x < enemySpawns[y].length; x++){
-
-                if(enemySpawns[y][x]!=0){
+                if(enemySpawns[y][x]==1){
                     Transform t = new Transform(x*tileSize,y*tileSize, EnemyConstants.ENEMY_WIDTH,EnemyConstants.ENEMY_HEIGHT);
                     e.add(t);
                 }
 
             }
-
         }
         return e;
     }
+
     public boolean isColliding(Collider c){
         Collider wc;
         for (int y = 0; y < walls.length; y++) {
             for (int x = 0; x < walls[y].length; x++){
-                if(walls[y][x]!=0){
+                if(walls[y][x]!=0 || doors[y][x]!=0){
                     wc = new Collider((int) (x*tileSize),
                             (int) (y*tileSize),
                             (int) tileSize,
@@ -93,83 +91,69 @@ public class Room {
             }
 
         }
-
         return false;
     }
-    public void draw(Graphics g, Vector2D camera){
 
+    public Vector2D getPlayerSpawnPoint(){
+        for (int y = 0; y < enemySpawns.length; y++) {
+            for (int x = 0; x < enemySpawns[y].length; x++) {
+                if (enemySpawns[y][x] == 2) {
+                    return new Vector2D(x * tileSize, y * tileSize);
+                }
+            }
+        }
+        return new Vector2D();
+    }
+
+    public void draw(Graphics g, Vector2D camera){
         drawFloors(g, camera);
         drawProps(g, camera);
         drawWalls(g, camera);
+        drawArray(g,camera,doors,false);
     }
+
     private void drawFloors(Graphics g, Vector2D camera) {
-        int screenx = -(int) camera.getX();
-        int screeny = -(int) camera.getY();
-
-        for (int y = 0; y < floor.length; y++) {
-            for (int x = 0; x < floor[y].length; x++){
-                if(floor[y][x]==0){
-                    continue;
-                }
-                g.drawImage(
-                        Texture.textures2[floor[y][x]].img.getImage(),
-                        (int) (x*tileSize + screenx),
-                        (int) (y*tileSize + screeny),
-                        (int) tileSize,
-                        (int) tileSize,
-                        null
-                );
-                g.setColor(c_ligther);
-                g.fillRect(
-                        (int) (x*tileSize + screenx),
-                        (int) (y*tileSize + screeny),
-                        (int) tileSize,
-                        (int) tileSize
-                );
-            }
-
-        }
+        drawArray(g,camera,floor,true);
     }
+
     private void drawProps(Graphics g, Vector2D camera) {
-        int screenx = -(int) camera.getX();
-        int screeny = -(int) camera.getY();
-
-        for (int y = 0; y < props.length; y++) {
-            for (int x = 0; x < props[y].length; x++){
-                if(props[y][x]==0){
-                    continue;
-                }
-                g.drawImage(
-                        Texture.textures2[props[y][x]].img.getImage(),
-                        (int) (x*tileSize + screenx),
-                        (int) (y*tileSize + screeny),
-                        (int) tileSize,
-                        (int) tileSize,
-                        null
-                );
-            }
-
-        }
+        drawArray(g,camera,props,false);
     }
+
     private void drawWalls(Graphics g, Vector2D camera) {
+        drawArray(g,camera,walls,false);
+    }
+
+    private void drawArray(Graphics g, Vector2D camera,int[][] array , boolean useShader){
+
         int screenx = -(int) camera.getX();
         int screeny = -(int) camera.getY();
 
-        for (int y = 0; y < walls.length; y++) {
-            for (int x = 0; x < walls[y].length; x++){
-                if(walls[y][x]==0){
+        for (int y = 0; y < array.length; y++) {
+            for (int x = 0; x < array[y].length; x++){
+                if(array[y][x]==0){
                     continue;
                 }
                 g.drawImage(
-                        Texture.textures2[walls[y][x]].img.getImage(),
+                        Texture.textures2[array[y][x]].img.getImage(),
                         (int) (x*tileSize + screenx),
                         (int) (y*tileSize + screeny),
                         (int) tileSize,
                         (int) tileSize,
                         null
                 );
+                if (useShader){
+                    g.setColor(c_lighter);
+                    g.fillRect(
+                            (int) (x*tileSize + screenx),
+                            (int) (y*tileSize + screeny),
+                            (int) tileSize,
+                            (int) tileSize
+                    );
+                }
             }
 
         }
+
     }
 }

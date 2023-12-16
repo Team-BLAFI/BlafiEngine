@@ -27,8 +27,12 @@ public class UI {
     private ImageIcon barOutline;
     public static String bitFontName;
 
+
+
     public UI(Scene gp, Health ph){
         // importing Custom Font
+        File greenCoreFile = new File("src/assets/blafiGreenCore2.png");
+
         try {
             Font customFont = (Font.createFont(Font.TRUETYPE_FONT, new File("src/assets/04B_30__.ttf")));
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -44,6 +48,34 @@ public class UI {
         arial_40 = new Font("Arial", Font.BOLD,25);
         arcadeFont = new Font(bitFontName, Font.TRUETYPE_FONT, 30);
 
+        try{
+            BufferedImage bulletSprite = ImageIO.read(new File("src/assets/bullet.png"));
+            bullet = new ImageIcon(bulletSprite.getSubimage(10,0,11,31));
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Read File
+        try{
+            BufferedImage healthBarSprite = ImageIO.read(new File("src/assets/uiPack2.png"));
+            BufferedImage healthSprite = ImageIO.read(new File("src/assets/uiPack2.png"));
+
+            bar = new ImageIcon(healthBarSprite.getSubimage(288,35,46,11));
+            barFill = new ImageIcon(healthSprite.getSubimage(243,21,43,6));
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try{
+            BufferedImage greenCoreSprite = ImageIO.read(greenCoreFile);
+            greenCore= new ImageIcon(greenCoreSprite.getSubimage(3,4,122,119));
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
     }
     public void draw(Graphics g , String Text, int x, int y,boolean FPS){
         if(FPS){
@@ -58,12 +90,6 @@ public class UI {
 
     }
     public void drawBullet(Graphics g){
-        try{
-            BufferedImage bulletSprite = ImageIO.read(new File("src/assets/bullet.png"));
-            bullet = new ImageIcon(bulletSprite.getSubimage(10,0,11,31));
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
         g.drawImage(
                 bullet.getImage(),
                 (int)unit*4,
@@ -74,13 +100,6 @@ public class UI {
     }
 
     public void drawCore(Graphics g){
-        File greenCoreFile = new File("src/assets/blaffiGreenCore2.png");
-        try{
-            BufferedImage greenCoreSprite = ImageIO.read(greenCoreFile);
-            greenCore= new ImageIcon(greenCoreSprite.getSubimage(3,4,122,119));
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
         g.drawImage(
                 greenCore.getImage(),
                 (int)unit-5,
@@ -96,23 +115,12 @@ public class UI {
        g.setFont(arcadeFont);
        g.drawString(String.format("%d",GameScene.getEnemyCount()),(int)unit * 50, (int) (unit * 5));
     }
-    public void drawHealth(Graphics g2, Health ph){
-        // Read File
-        try{
-            BufferedImage healthBarSprite = ImageIO.read(new File("src/assets/uiPack2.png"));
-            BufferedImage healthSprite = ImageIO.read(new File("src/assets/uiPack2.png"));
-
-            bar = new ImageIcon(healthBarSprite.getSubimage(288,35,46,11));
-            barFill = new ImageIcon(healthSprite.getSubimage(243,21,43,6));
-
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void drawHealth(Graphics g, Health ph){
 
         /* -- Health -- */
         // bar fill
         if (ph.getHealth() > 0){
-            g2.drawImage(
+            g.drawImage(
                     barFill.getImage(),
                     (int)unit*7,
                     (int)unit*4,
@@ -122,7 +130,7 @@ public class UI {
 
         }
         // bar
-        g2.drawImage(
+        g.drawImage(
                 bar.getImage(),
                 (int)unit*7,
                 (int)unit*4,
@@ -130,8 +138,6 @@ public class UI {
                 35,
                 null
         );
-
-
 
     }
 }

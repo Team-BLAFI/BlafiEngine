@@ -26,7 +26,7 @@ public class Shotgun extends Weapon {
         }
         if (fireCD <=0 && currentMag > 0) {
             // shoot bullet
-            Vector2D origin = new Vector2D(owner.transform.getCenterX(),owner.transform.getCenterY());
+            Vector2D origin = new Vector2D();
             Vector2D destination = new Vector2D(x,y);
 
             double totalArc = 60f;

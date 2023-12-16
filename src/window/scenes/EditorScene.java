@@ -29,7 +29,7 @@ public class EditorScene extends Scene {
     Color c_shade = new Color(0x45000000, true);
     Color c_levels = new Color(0xB49E9E);
 
-    Color c_ligther = new Color(0x45FFFFFF, true);
+    Color c_lighter = new Color(0x45FFFFFF, true);
 
     Rect r_layout = new Rect((int) unit * 3, (int) unit * 3, (int) unit * 6, (int) unit * 2);
     Rect r_floor = new Rect((int) (unit * 3 + unit * 7), (int) (unit * 3), (int) unit * 6, (int) unit * 2);
@@ -153,12 +153,15 @@ public class EditorScene extends Scene {
 
     private void drawCurrentEdit(Graphics g) {
 
-        if (currentSection == 4) {
+        if (currentSection == 4 || currentSection == 3 ) {
             for (int y = 0; y < currentEdit.length; y++) {
                 for (int x = 0; x < currentEdit[y].length; x++) {
 
                     if (currentEdit[y][x] != 0) {
-                        g.setColor(Color.red);
+                        g.setColor(Color.red.darker());
+                        if (currentEdit[y][x] == 2){
+                            g.setColor(Color.green);
+                        }
                         g.fillRect(
                                 r_mapTiles[y][x].x,
                                 r_mapTiles[y][x].y,
@@ -166,11 +169,13 @@ public class EditorScene extends Scene {
                                 (int) tileEditorSize
                         );
                     }
+
+
                     // If drawing something other than the walls editor add shades to know where walls are
 
                     if (currentSection != 0) {
                         g.setColor(c_shade);
-                        if (currentRoom.walls[y][x] != 0) {
+                        if (currentRoom.walls[y][x] != 0){
                             g.fillRect(r_mapTiles[y][x].x, r_mapTiles[y][x].y, (int) tileEditorSize, (int) tileEditorSize);
                         }
                     }
@@ -178,7 +183,7 @@ public class EditorScene extends Scene {
                     g.drawRect(r_mapTiles[y][x].x, r_mapTiles[y][x].y, (int) tileEditorSize, (int) tileEditorSize);
                 }
             }
-        } else {
+        }else {
             for (int y = 0; y < currentEdit.length; y++) {
                 for (int x = 0; x < currentEdit[y].length; x++) {
 
@@ -193,7 +198,6 @@ public class EditorScene extends Scene {
                         );
 
                         // If drawing something other than the walls editor add shades to know where walls are
-
 
                     }
                     if (currentSection != 0) {
@@ -315,6 +319,7 @@ public class EditorScene extends Scene {
         }
 
         if (ml.isPressed(MouseEvent.BUTTON1)) {
+
             if (ml.isMouseInsideRect(r_layout)) {
                 currentSection = 0;
                 currentEdit = currentRoom.roomData[currentSection];
@@ -339,6 +344,28 @@ public class EditorScene extends Scene {
 
             }
 
+            if (ml.isMouseInsideRect(r_enemySpawns)) {
+                currentSection = 4;
+                currentEdit = currentRoom.roomData[currentSection];
+
+            }
+
+            if (ml.isMouseInsideRect(r_save)) {
+                try {
+                    String save = String.format("src/assets/levels/Elevel%d.dat", 0);
+
+
+                    FileOutputStream fos = new FileOutputStream(save);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(currentRoom.roomData);
+
+                } catch (Exception e) {
+                    System.out.println("fail to save");
+                }
+
+
+            }
+
             for (int i = 0; i<10; i++){
                 if (ml.isMouseInsideRect(r_levels[i])){
                     System.out.println(String.format("Attempting to load level%d.dat",i));
@@ -347,16 +374,19 @@ public class EditorScene extends Scene {
                 }
             }
 
-            if (ml.isMouseInsideRect(r_enemySpawns)) {
-                currentSection = 4;
-                currentEdit = currentRoom.roomData[currentSection];
 
-            }
 
             for (int y = 0; y < currentEdit.length; y++) {
                 for (int x = 0; x < currentEdit[y].length; x++) {
                     if (ml.isMouseInsideRect(r_mapTiles[y][x])) {
-                        currentEdit[y][x] = currentSelection;
+                        if (currentSection == 3){
+                            currentEdit[y][x] = 48;
+                        } else if (currentSection == 4){
+                            currentEdit[y][x] = 1;
+                        } else{
+                            currentEdit[y][x] = currentSelection;
+
+                        }
                     }
                 }
             }
@@ -371,22 +401,6 @@ public class EditorScene extends Scene {
             }
 
         }
-
-        if (ml.isMouseInsideRect(r_save)) {
-            try {
-                String save = String.format("src/assets/levels/Elevel%d.dat", 0);
-
-                FileOutputStream fos = new FileOutputStream(save);
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(currentRoom.roomData);
-
-            } catch (Exception e) {
-                System.out.println("fail to load");
-            }
-
-
-        }
-
 
         if (ml.isPressed(MouseEvent.BUTTON2)) {
             for (int y = 0; y < currentEdit.length; y++) {
@@ -453,6 +467,15 @@ public class EditorScene extends Scene {
                 for (int x = (int) pos1.getX(); x < (int) pos2.getX(); x++) {
                     currentEdit[y][x] = currentSelection;
 
+                }
+            }
+        }
+        if (kl.isKeyDown(KeyEvent.VK_P)) {
+            for (int y = 0; y < currentEdit.length; y++) {
+                for (int x = 0; x < currentEdit[y].length; x++) {
+                    if (ml.isMouseInsideRect(r_mapTiles[y][x])) {
+                        currentEdit[y][x] = 2;
+                    }
                 }
             }
         }
