@@ -1,7 +1,6 @@
 package window;
 
 
-import component.Sound;
 import map.Texture;
 import util.Time;
 import util.io.KL;
@@ -11,9 +10,6 @@ import window.scenes.*;
 
 import javax.swing.*;
 import java.awt.*;
-
-import java.io.File;
-import java.io.IOException;
 
 import java.awt.image.VolatileImage;
 

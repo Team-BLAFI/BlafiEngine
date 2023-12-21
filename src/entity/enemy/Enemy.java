@@ -1,7 +1,7 @@
 package entity.enemy;
 import component.Animator;
 import component.Health;
-import component.Sound;
+import util.io.Sound;
 import entity.Entity;
 import entity.player.Player;
 import entity.player.PlayerConstants;
@@ -15,7 +15,6 @@ import window.scenes.GameScene;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.Random;
 
 import static entity.enemy.EnemyConstants.*;
 
@@ -23,7 +22,7 @@ import static entity.enemy.EnemyConstants.*;
 public class Enemy extends Entity {
 
     private final double damagePerSecond = 30.0;
-    Animator animator = new Animator();
+    Animator animator;
 
     private double stateLock = 0;
     private State stateIdle = new Idle();

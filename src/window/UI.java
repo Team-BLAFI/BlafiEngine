@@ -1,6 +1,7 @@
-package component;
+package window;
 import java.awt.Graphics2D;
 
+import component.Health;
 import entity.player.Player;
 import util.Rect;
 import window.Window;

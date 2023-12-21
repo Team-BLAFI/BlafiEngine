@@ -2,7 +2,7 @@ package weapons;
 
 import component.Component;
 import component.Projectile;
-import component.Sound;
+import util.io.Sound;
 import entity.Entity;
 import util.Vector2D;
 

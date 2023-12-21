@@ -9,9 +9,6 @@ public class EnemyConstants {
     public static final int ENEMY_HEIGHT = (int) (WindowConstants.SCREEN_UNIT*4);
     public static final int ENEMY_WIDTH = (int) (ENEMY_HEIGHT*(1.0/1.5));
 
-    public static final double ENEMY_SPEED = WindowConstants.SCREEN_UNIT * 20;
-    public static final Color enemyColor = Color.RED;
-
     public final static String IDLE_A_ID = "idle";
     public final static String ATTACK_A_ID = "attack";
     public final static String WALKING_A_ID = "walking";

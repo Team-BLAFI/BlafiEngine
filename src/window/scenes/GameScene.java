@@ -1,8 +1,8 @@
 package window.scenes;
 
-import component.Sound;
+import util.io.Sound;
 
-import component.UI;
+import window.UI;
 
 import entity.enemy.Enemy;
 import map.Camera;
@@ -10,7 +10,6 @@ import map.Room;
 import util.Transform;
 import util.Vector2D;
 import weapons.WeaponPickup;
-import weapons.Shotgun;
 
 import entity.player.Player;
 import util.io.KL;

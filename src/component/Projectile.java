@@ -86,16 +86,6 @@ public class Projectile extends Component{
 			default:
 				break;
 		}
-
-		/*if (direction.equals("vertical")) {
-			transform.setY(overlappedCollider.Bounds.y - transform.getHeight() - 1);
-			travelDirection.setY(-(travelDirection.getY()));
-		}
-		if(direction.equals("horizontal")) {
-			transform.setX(overlappedCollider.Bounds.x - transform.getWidth() - 1);
-			travelDirection.setX(-(travelDirection.getX()));
-		}*/
-		//change travel direction
 	}
 
 	public Boolean isRightOf(Collider c) {
