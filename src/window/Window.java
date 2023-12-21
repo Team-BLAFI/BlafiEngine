@@ -39,7 +39,7 @@ public class Window extends JFrame implements Runnable {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         isRunning = true;
-        changeState(WindowConstants.GAME_SCENE);
+        changeState(WindowConstants.MENU_SCENE);
         WindowConstants.INSET_SIZE = getInsets().top;
         addKeyListener(KL.getKeyListener());
         addMouseListener(ML.getMouseListener());

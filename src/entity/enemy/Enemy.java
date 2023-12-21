@@ -223,7 +223,9 @@ public class Enemy extends Entity {
     public class Idle implements entity.enemy.State{
         @Override
         public void enterState() {
-            animator.changeAnimationTo(IDLE_A_ID);
+            try {
+                animator.changeAnimationTo(IDLE_A_ID);
+            } catch (Exception e) {}
         }
         @Override
         public void stateUpdate(double dt) {
