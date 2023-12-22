@@ -20,10 +20,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+import static entity.player.PlayerConstants.*;
+
+
 public class Player extends Entity {
 
     private ArrayList<Component> components = new ArrayList<>();
     public Vector2D mousePos = new Vector2D();
+    Animator animator;
     public Weapon currWeapon;
     public int maxInventorySize = 3;
     public Weapon[] weaponInventory = new Weapon[maxInventorySize];
@@ -35,6 +39,7 @@ public class Player extends Entity {
 
     public boolean isInteracting = false;
     public boolean isDead = false;
+    public boolean isFacingLeft = false;
 
     /**
      * <p>
@@ -64,16 +69,24 @@ public class Player extends Entity {
         switchWepCD = 1.5;
         addNewWeapon(new Pistol(this, 10, 0.3, 0.2, 6, 3));
         this.currWeapon.reload();
+        //Animation
+        animator = new Animator();
+        animator.addAnimation(IDLE_ANIMATION, IDLE_A_ID);
+        animator.addAnimation(WALKING_ANIMATION, WALKING_A_ID);
+        animator.changeAnimationTo(IDLE_A_ID);
+
     }
 
     public void draw(Graphics g, Vector2D camera) {
         int x = (int) (transform.getX() - camera.getX());
         int y = (int) (transform.getY() - camera.getY());
-        g.setColor(PlayerConstants.characterColor);
-        g.fillRect(x, y, PlayerConstants.PLAYER_WIDTH, PlayerConstants.PLAYER_HEIGHT);
-        g.setColor(Color.RED);
-        g.drawRect(x, y, (int) transform.getWidth(), (int) transform.getHeight());
+        if(isFacingLeft){
+            animator.RenderCurrentSpriteFlipVer(g, x, y);
+        }else{
+            animator.RenderCurrentSprite(g,x,y);
+        }
 
+        g.setColor(PlayerConstants.characterColor);
         g.setColor(Color.YELLOW);
 
         for (int i = 0; i < currInventorySize; i++) {
@@ -82,6 +95,8 @@ public class Player extends Entity {
     }
 
     public void update(double deltaTime) {
+        animator.update(deltaTime);
+
         if (this.health.getHealth() <= 0) {
             isDead = true;
         }
@@ -144,6 +159,12 @@ public class Player extends Entity {
         newPos.moveYBy(movementVector.getY());
         if (!currentRoom.isColliding(newPos.getAsCollider())){
             transform.setPosition(newPos.getPosition());
+        }
+        if(movementVector.getX()== 0.0 && movementVector.getY() == 00){
+            animator.changeAnimationNotReset(IDLE_A_ID);
+        }else{
+           animator.changeAnimationNotReset(WALKING_A_ID);
+           isFacingLeft = movementVector.getX()<0;
         }
     }
 

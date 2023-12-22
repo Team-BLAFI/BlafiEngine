@@ -28,6 +28,7 @@ public class EnemyConstants {
             new Rect(64*4,0,64,64),
     };
 
+
     public final static Animation IDLE_ANIMATION = new Animation(
             ANIMATION_PATH,
             IDLE_ANIMATION_POS,
