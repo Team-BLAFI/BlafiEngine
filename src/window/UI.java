@@ -28,8 +28,6 @@ public class UI {
     private ImageIcon barOutline;
     public static String bitFontName;
 
-
-
     public UI(Scene gp, Health ph){
         // importing Custom Font
         File greenCoreFile = new File("src/assets/blafiGreenCore2.png");
@@ -93,8 +91,8 @@ public class UI {
     public void drawBullet(Graphics g){
         g.drawImage(
                 bullet.getImage(),
-                (int)unit*4,
-                (int)unit*53,
+                (int)unit*2,
+                (int)unit*50,
                 25,
                 62,
                 null);
