@@ -18,8 +18,8 @@ public class Sound {
     public static final Sound TRACK_2 = new Sound("/assets/audio/versus.wav");
     public final Set<Clip> clips = Collections.synchronizedSet(new HashSet<>());
 
-    private final AudioFormat format;
     private final byte[] bytes;
+    private final AudioFormat format;
     private static float currVolume = 0;
     private float volumeF;
 

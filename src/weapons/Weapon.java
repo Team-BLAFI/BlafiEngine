@@ -60,8 +60,7 @@ public abstract class Weapon extends Component {
         }
         if (fireCD <=0 && currentMag > 0) {
             // shoot bullet
-            Sound.setVolume(-20f,Sound.SHOOT_SINGLE);
-            Sound.SHOOT_SINGLE.play();
+//            Sound.setVolume(-10f,Sound.SHOOT_SINGLE);
             Vector2D origin = new Vector2D(owner.transform.getCenterX(),owner.transform.getCenterY());
             Vector2D destination = new Vector2D(x,y);
 
@@ -152,6 +151,8 @@ public abstract class Weapon extends Component {
             return;
         }
         if (fireCD <=0 && currentMag > 0) {
+            Sound.setVolume(-15f,Sound.SHOOT_SINGLE);
+            Sound.SHOOT_SINGLE.play();
 
             liveProjectiles.add(new Projectile(
                     (int) (owner.transform.getCenterX()),
@@ -163,6 +164,8 @@ public abstract class Weapon extends Component {
             currentMag--;
         } else if (currentMag == 0){
             reload();
+            Sound.setVolume(-5f,Sound.RELOAD_SINGLE);
+            Sound.RELOAD_SINGLE.play();
         }
     }
 }
